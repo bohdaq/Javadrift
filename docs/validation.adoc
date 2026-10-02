@@ -5,10 +5,17 @@
 Local JDK 23, Java 17 bytecode target. Seven fixture/CLI tests pass. A smoke scan
 of the default README scope completed without crashing on these pinned trees:
 
-* commonmark/commonmark-java: 1 README, 232 public types.
-* apache/commons-lang: 1 README, 287 public types.
-* apache/commons-io: 1 README, 300 public types.
+* commonmark/commonmark-java (b89e72fdb25948c1b9623d64baa29d35d49f8abf): 1 README, 232 public types.
+* apache/commons-lang (7fce4c843fcd758da9b3408aaf9435c2471ab218): 1 README, 287 public types.
+* apache/commons-io (05f968e913fb43f21ccecb44eba5d523999999f9): 1 README, 300 public types.
 
 A CommonMark nested-type reference exposed a false positive during development;
 the index now includes accessible nested types as members, with a regression test.
 These smoke scans are not a manually triaged accuracy corpus.
+
+== History scanner
+
+Synthetic Git histories cover five member-reference forms, removed bare types,
+comments, wildcard paths, stable baselines and machine output. These deterministic
+fixtures test behavior; they do not replace the five real history replays required
+by the design's 0.2 release gate. Javadrift's own docs scan has no findings.

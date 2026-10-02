@@ -11,10 +11,34 @@ public final class Analyzer {
     public record Result(List<Finding> findings,int documents,int types) {
         public boolean fails(Config config) {Severity level=Severity.parse(config.failOn);return findings.stream().anyMatch(f->f.severity().ordinal()>=level.ordinal());}
     }
-    public Result analyze(Path root,Config config) throws IOException {
+    public Result analyze(Path root,Config config) throws IOException {return analyze(root,config,null,true);}
+    public Result analyze(Path root,Config config,String since,boolean useBaseline) throws IOException {
         root=root.toAbsolutePath().normalize();if(!Files.isDirectory(root))throw new IOException("Project directory does not exist: "+root);
         SymbolIndex index=new SourceIndexer().index(root);
-        return scan(root,config,index);
+        Result full=scan(root,config,index);
+        TreeSet<Finding> findings=new TreeSet<>(full.findings());
+        if(since!=null) {
+            List<GitHistory.Removed> removed=new GitHistory().removed(root,since);
+            try(var files=Files.walk(root)) {
+                for(Path file:files.filter(Files::isRegularFile).sorted().toList()) {
+                    if(!config.includes(relative(root,file)))continue;
+                    DocReader.Document doc=new DocReader().read(file);
+                    for(DocReader.Fragment fragment:doc.fragments()) {
+                        if(fragment.kind()==DocReader.Kind.LINK)continue;
+                        for(GitHistory.Removed symbol:removed) {
+                            Matcher m=symbol.pattern().matcher(fragment.text());
+                            while(m.find()) add(root,config,findings,doc,fragment,m.start(),Check.JD004,m.group(),"Removed symbol `"+symbol.token()+"` is still documented",symbol.suggestion());
+                        }
+                    }
+                }
+            }
+            // Prefer a history-backed finding to a generic missing symbol at the same location.
+            Set<String> historyLocations=new HashSet<>();
+            findings.stream().filter(f->f.checkId().equals("JD004")).forEach(f->historyLocations.add(f.file()+":"+f.line()+":"+f.column()));
+            findings.removeIf(f->Set.of("JD001","JD002").contains(f.checkId()) && historyLocations.contains(f.file()+":"+f.line()+":"+f.column()));
+        }
+        List<Finding> filtered=useBaseline?Baseline.filter(root.resolve(config.baseline),List.copyOf(findings)):List.copyOf(findings);
+        return new Result(filtered,full.documents(),full.types());
     }
     public Result scan(Path root,Config config,SymbolIndex index) throws IOException {
         TreeSet<Finding> findings=new TreeSet<>();int count=0;
@@ -44,7 +68,10 @@ public final class Analyzer {
                         if(packages.stream().anyMatch(p->name.startsWith(p+".")) && !index.types.containsKey(name))
                             add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,name,"Unknown project type `"+name+"`",null);
                     }
-                    Matcher paths=PATH.matcher(fragment.text());while(paths.find())path(root,config,findings,doc,fragment,paths.group(),paths.start(),false);
+                    Matcher paths=PATH.matcher(fragment.text());while(paths.find()) {
+                        if(paths.end()<fragment.text().length() && "*{?".indexOf(fragment.text().charAt(paths.end()))>=0)continue;
+                        path(root,config,findings,doc,fragment,paths.group(),paths.start(),false);
+                    }
                 }
             }
         }
@@ -70,7 +97,15 @@ public final class Analyzer {
     static void add(Path root,Config config,Set<Finding> out,DocReader.Document doc,DocReader.Fragment f,int offset,Check check,String ref,String message,String suggestion) {
         Severity severity=config.severity(check);if(severity==Severity.OFF)return;
         if(config.ignore.stream().anyMatch(g->Glob.matches(g,ref)))return;
+        String[] lines=doc.text().split("\\n",-1);
+        int at=f.lineAt(offset)-1;
+        if(ignored(lines,at) || (f.kind()==DocReader.Kind.BLOCK && ignored(lines,f.line()-2)))return;
         out.add(new Finding(relative(root,doc.path()),f.lineAt(offset),f.columnAt(offset),check.name(),severity,ref,message,suggestion));
+    }
+    private static boolean ignored(String[] lines,int line) {
+        if(line<=0 || line>lines.length)return false;
+        String previous=lines[line-1].trim();
+        return previous.equals("<!-- javadrift:ignore-next -->") || previous.equals("// javadrift:ignore-next");
     }
     static String relative(Path root,Path file) {return root.relativize(file).toString().replace('\\','/');}
 }

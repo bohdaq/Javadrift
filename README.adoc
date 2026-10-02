@@ -49,3 +49,26 @@ ignore: ['LegacyClient#*']
 
 Exit codes: 0 for success, 1 for findings at the failure threshold, 2 for
 invalid input/configuration. --warn-only leaves input errors as exit 2.
+
+== Git history and legacy adoption
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --since origin/main --format github
+java -jar javadrift-cli/target/javadrift.jar check --format json --output findings.json
+java -jar javadrift-cli/target/javadrift.jar baseline
+----
+
+Fetch the base ref before diff mode. Source symbols are compared at the supplied
+ref and HEAD; the current working-tree docs are scanned. Bare removed class and
+method names are checked only when no matching name survives. Existing overloads
+are not reported as entirely removed members.
+
+Place an HTML comment containing javadrift:ignore-next immediately above an
+inline reference or opening Markdown fence. In AsciiDoc use a line comment
+containing javadrift:ignore-next above the reference or opening delimiter.
+
+The baseline file accepts findings by document path, check ID and reference,
+so adding lines above a known finding does not invalidate it. Regenerating a
+baseline replaces it with all current unsuppressed findings. Review and commit
+the file; newly introduced references still fail.

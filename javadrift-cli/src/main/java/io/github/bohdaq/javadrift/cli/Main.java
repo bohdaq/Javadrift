@@ -6,7 +6,7 @@ import java.nio.file.*;
 import java.util.concurrent.Callable;
 
 @Command(name="javadrift",mixinStandardHelpOptions=true,version="Javadrift 0.1.0-SNAPSHOT",
-        description="Offline stale documentation detection for JVM projects",subcommands={Main.CheckCommand.class,Main.Explain.class})
+        description="Offline stale documentation detection for JVM projects",subcommands={Main.CheckCommand.class,Main.BaselineCommand.class,Main.Explain.class})
 public final class Main implements Runnable {
     public void run() {new CommandLine(this).usage(System.out);}
     public static CommandLine commandLine() {
@@ -21,13 +21,31 @@ public final class Main implements Runnable {
         @Option(names="--config",description="YAML configuration file") Path configPath;
         @Option(names="--warn-only",description="Report findings without failing") boolean warnOnly;
         @Option(names="--output",description="Write report to a file") Path output;
+        @Option(names="--since",description="Compare source symbols at a Git ref with HEAD") String since;
+        @Option(names="--format",defaultValue="text",description="text, json or github") String format;
         @Spec Model.CommandSpec spec;
         public Integer call() throws Exception {
             Config config=Config.load(root,configPath);
-            Analyzer.Result result=new Analyzer().analyze(root,config);
-            String report=Reporters.text(result);
+            Analyzer.Result result=new Analyzer().analyze(root,config,since,true);
+            String report=Reporters.render(result,format);
             if(output==null) {spec.commandLine().getOut().print(report);spec.commandLine().getOut().flush();} else Files.writeString(output,report);
             return !warnOnly && result.fails(config)?1:0;
+        }
+    }
+    @Command(name="baseline",mixinStandardHelpOptions=true,description="Accept current findings in a baseline file")
+    public static final class BaselineCommand implements Callable<Integer> {
+        @Option(names={"--root","-r"},defaultValue=".") Path root;
+        @Option(names="--config") Path configPath;
+        @Option(names="--since") String since;
+        @Option(names="--output",description="Override baseline path") Path output;
+        @Spec Model.CommandSpec spec;
+        public Integer call() throws Exception {
+            Config config=Config.load(root,configPath);
+            Analyzer.Result result=new Analyzer().analyze(root,config,since,false);
+            Path target=output==null?root.resolve(config.baseline):output;
+            Baseline.write(target,result.findings());
+            spec.commandLine().getOut().println("Accepted "+result.findings().size()+" findings in "+target);
+            return 0;
         }
     }
     @Command(name="explain",mixinStandardHelpOptions=true,description="Describe a check")
