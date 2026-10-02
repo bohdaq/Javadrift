@@ -18,7 +18,7 @@ public final class SourceIndexer {
     }
     public static boolean productionJava(String path) {
         return path.endsWith(".java") && !path.matches("(?:.*?/)?(?:target|build|\\.git|node_modules|vendor)/.*")
-            && !path.contains("/src/test/") && !path.startsWith("src/test/");
+            && !path.matches("(?:.*?/)?src/(?:test|it|testFixtures)/.*");
     }
     public void add(SymbolIndex index,String source,String path) throws IOException {
         ParseResult<CompilationUnit> result=parser.parse(source);

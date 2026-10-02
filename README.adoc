@@ -72,3 +72,37 @@ The baseline file accepts findings by document path, check ID and reference,
 so adding lines above a known finding does not invalidate it. Regenerating a
 baseline replaces it with all current unsuppressed findings. Review and commit
 the file; newly introduced references still fail.
+
+== Compiled projects and Maven
+
+Compiled classes under Maven target/classes and Gradle build/classes/java/main
+or build/classes/kotlin/main override source declarations. This covers generated
+APIs and compiled Kotlin without executing class initializers. For custom outputs
+use repeatable --class-dir options. Supply dependencies with --classpath using
+the platform path separator. JD006 reads Maven coordinates or the project section
+of YAML; Gradle users can set project.groupId/artifactId/version in YAML.
+
+Version checking uses a non-snapshot project version or the highest local numeric
+Git tag for a snapshot (optional v prefix). It never looks up releases online.
+Without a release tag, snapshot projects skip JD006. Maven property placeholders
+are expanded only from that POM's properties; unresolved placeholders are skipped.
+
+Build and install the tool locally with mvn install before using the development
+plugin. Add this block to the reactor root POM:
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.github.bohdaq</groupId>
+  <artifactId>javadrift-maven-plugin</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <inherited>false</inherited>
+  <executions><execution><goals><goal>check</goal></goals></execution></executions>
+</plugin>
+----
+
+The aggregator checks root docs against all selected reactor modules. It forks
+the compile phase to make reactor class outputs available before root verify.
+The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
+javadrift.format, javadrift.output and javadrift.skip system properties.
+No artifacts have been published to Maven Central yet.

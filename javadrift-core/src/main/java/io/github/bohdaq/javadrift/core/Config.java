@@ -10,6 +10,9 @@ public final class Config {
         public List<String> exclude=new ArrayList<>();
     }
     public static final class Sources { public List<String> basePackages=new ArrayList<>(); }
+    public static final class Project { public String groupId,artifactId,version; }
+    public Project project=new Project();
+    public List<String> classes=new ArrayList<>(),classpath=new ArrayList<>();
     public Docs docs=new Docs(); public Sources sources=new Sources();
     public Map<String,String> checks=new LinkedHashMap<>();
     public String failOn="error"; public String baseline="javadrift-baseline.json";
@@ -21,7 +24,7 @@ public final class Config {
             return new Config();
         }
         Config c=new ObjectMapper(new YAMLFactory()).readValue(file.toFile(),Config.class);
-        if(c==null || c.docs==null || c.sources==null || c.checks==null || c.ignore==null || c.baseline==null
+        if(c==null || c.project==null || c.classes==null || c.classpath==null || c.docs==null || c.sources==null || c.checks==null || c.ignore==null || c.baseline==null
            || c.docs.include==null || c.docs.exclude==null || c.sources.basePackages==null)
             throw new IllegalArgumentException("Configuration sections cannot be null");
         Severity failure=Severity.parse(c.failOn);

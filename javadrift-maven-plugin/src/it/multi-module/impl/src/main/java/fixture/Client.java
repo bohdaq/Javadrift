@@ -1,0 +1,1 @@
+package fixture; public class Client { public void place() {} }

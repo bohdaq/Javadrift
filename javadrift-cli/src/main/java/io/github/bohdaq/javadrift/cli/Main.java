@@ -21,11 +21,15 @@ public final class Main implements Runnable {
         @Option(names="--config",description="YAML configuration file") Path configPath;
         @Option(names="--warn-only",description="Report findings without failing") boolean warnOnly;
         @Option(names="--output",description="Write report to a file") Path output;
+        @Option(names="--class-dir",description="Compiled project classes (repeatable)") java.util.List<String> classes=new java.util.ArrayList<>();
+        @Option(names="--classpath",description="Dependency classpath using the platform path separator") String classpath;
         @Option(names="--since",description="Compare source symbols at a Git ref with HEAD") String since;
         @Option(names="--format",defaultValue="text",description="text, json or github") String format;
         @Spec Model.CommandSpec spec;
         public Integer call() throws Exception {
             Config config=Config.load(root,configPath);
+            config.classes.addAll(classes);
+            if(classpath!=null)config.classpath.addAll(java.util.Arrays.asList(classpath.split(java.util.regex.Pattern.quote(java.io.File.pathSeparator))));
             Analyzer.Result result=new Analyzer().analyze(root,config,since,true);
             String report=Reporters.render(result,format);
             if(output==null) {spec.commandLine().getOut().print(report);spec.commandLine().getOut().flush();} else Files.writeString(output,report);

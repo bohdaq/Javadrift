@@ -15,6 +15,19 @@ public final class Analyzer {
     public Result analyze(Path root,Config config,String since,boolean useBaseline) throws IOException {
         root=root.toAbsolutePath().normalize();if(!Files.isDirectory(root))throw new IOException("Project directory does not exist: "+root);
         SymbolIndex index=new SourceIndexer().index(root);
+        BytecodeIndexer bytecode=new BytecodeIndexer();
+        try(var paths=Files.walk(root)) {
+            for(Path dir:paths.filter(Files::isDirectory).sorted().toList()) {
+                String path=relative(root,dir);
+                if(path.matches("(?:.*/)?(?:target/classes|build/classes/(?:java|kotlin)/main)") && !path.matches(".*(?:target|build)/(?!classes(?:/|$)).*"))bytecode.add(index,dir,true);
+            }
+        }
+        for(String dir:config.classes)bytecode.add(index,root.resolve(dir),true);
+        for(String entry:config.classpath) {
+            Path path=root.resolve(entry);if(!Files.exists(path))throw new IOException("Classpath entry does not exist: "+path);
+            bytecode.add(index,path,false);
+        }
+        bytecode.addJdkParents(index);
         Result full=scan(root,config,index);
         TreeSet<Finding> findings=new TreeSet<>(full.findings());
         if(since!=null) {
@@ -42,6 +55,7 @@ public final class Analyzer {
     }
     public Result scan(Path root,Config config,SymbolIndex index) throws IOException {
         TreeSet<Finding> findings=new TreeSet<>();int count=0;
+        List<ProjectVersions.Coordinates> coordinates=new ProjectVersions().discover(root,config);
         Set<String> packages=config.sources.basePackages.isEmpty()?index.packages():new TreeSet<>(config.sources.basePackages);
         try(var files=Files.walk(root)) {
             for(Path file:files.filter(Files::isRegularFile).sorted().toList()) {
@@ -58,6 +72,7 @@ public final class Analyzer {
                         Optional<SymbolIndex.Type> resolved=index.resolve(typeName);
                         if(resolved.isEmpty())continue;
                         SymbolIndex.Type type=resolved.get();
+                        if(!type.project)continue;
                         boolean known=index.members(type).stream().anyMatch(m->m.name().equals(name));
                         if(!known && !type.generated && !index.unresolvedParents(type) && !Set.of("toString","hashCode","equals","getClass","wait","notify","notifyAll","clone","finalize").contains(name))
                             add(root,config,findings,doc,fragment,members.start(),Check.JD002,members.group(),typeName+" has no member `"+name+"`",suggest(index,type,name));
@@ -68,6 +83,7 @@ public final class Analyzer {
                         if(packages.stream().anyMatch(p->name.startsWith(p+".")) && !index.types.containsKey(name))
                             add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,name,"Unknown project type `"+name+"`",null);
                     }
+                    new ProjectVersions().check(root,config,findings,doc,fragment,coordinates);
                     Matcher paths=PATH.matcher(fragment.text());while(paths.find()) {
                         if(paths.end()<fragment.text().length() && "*{?".indexOf(fragment.text().charAt(paths.end()))>=0)continue;
                         path(root,config,findings,doc,fragment,paths.group(),paths.start(),false);
@@ -75,7 +91,7 @@ public final class Analyzer {
                 }
             }
         }
-        return new Result(List.copyOf(findings),count,index.types.size());
+        return new Result(List.copyOf(findings),count,(int)index.types.values().stream().filter(t->t.project).count());
     }
     private String suggest(SymbolIndex index,SymbolIndex.Type type,String name) {
         return index.members(type).stream().map(SymbolIndex.Member::name).distinct().sorted().filter(n->distance(n,name)<=Math.max(2,name.length()/3)).findFirst().map(n->"Did you mean `"+n+"`?").orElse(null);

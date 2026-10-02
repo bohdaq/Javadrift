@@ -7,7 +7,7 @@ public final class SymbolIndex {
     public static final class Type {
         public final String name; public final List<Member> members=new ArrayList<>();
         public final List<String> parents=new ArrayList<>();
-        public boolean generated, compiled, forRemoval;
+        public boolean generated, compiled, forRemoval; public boolean project=true;
         public Type(String name) {this.name=name;}
         public String simpleName() {return name.substring(name.lastIndexOf('.')+1);}
     }
@@ -36,7 +36,7 @@ public final class SymbolIndex {
     }
     public Set<String> packages() {
         Set<String> p=new TreeSet<>();
-        for(String n:types.keySet()) {int i=n.lastIndexOf('.');if(i>0)p.add(n.substring(0,i));}
+        for(String n:types.values().stream().filter(t->t.project).map(t->t.name).toList()) {int i=n.lastIndexOf('.');if(i>0)p.add(n.substring(0,i));}
         return p;
     }
 }

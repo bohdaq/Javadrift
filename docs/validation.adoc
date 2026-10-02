@@ -19,3 +19,11 @@ Synthetic Git histories cover five member-reference forms, removed bare types,
 comments, wildcard paths, stable baselines and machine output. These deterministic
 fixtures test behavior; they do not replace the five real history replays required
 by the design's 0.2 release gate. Javadrift's own docs scan has no findings.
+
+== Compiled projects and Maven
+
+Seventeen core/CLI tests pass, including a compiled generated API that overrides
+a source-only Lombok skip, JDK inheritance without class initialization, and
+numeric Git tag release selection. Maven Invoker verifies a two-module reactor
+and a stale-doc build failure; post-build assertions require the expected JD002
+finding and compiled output files.
