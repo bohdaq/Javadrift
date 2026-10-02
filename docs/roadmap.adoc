@@ -1,6 +1,6 @@
 = Implementation roadmap
 
-Each completed piece is tested, committed and pushed independently.
+Each completed implementation piece below is tested, committed and pushed independently. All six implementation pieces are present in the development snapshot.
 
 . Foundation: Java 17 Maven reactor, reusable core, packaged JVM CLI, CI and license.
 . Full scan: Java source index, Markdown/AsciiDoc extraction, JD001/JD002/JD007,

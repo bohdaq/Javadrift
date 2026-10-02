@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.regex.*;
 public final class Analyzer {
-    private static final Pattern MEMBER=Pattern.compile("(?<![\\w.$])([A-Z][\\w$]*(?:\\.[A-Z][\\w$]*)*|[a-z][\\w$]*(?:\\.[\\w$]+)+)(#|::|\\.)([a-zA-Z_$][\\w$]*)(\\([^()]*\\))?");
+    private static final Pattern MEMBER=Pattern.compile("(?<![\\w.$])([A-Z][\\w$]*(?:\\.[A-Z][\\w$]*)*|[a-z][\\w$]*(?:\\.[\\w$]+)+)(#|::|\\.)([a-zA-Z_$][\\w$]*)");
     private static final Pattern QUALIFIED=Pattern.compile("(?<![\\w$])(?:[a-z][\\w$]*\\.)+[A-Z][\\w$]*(?:\\.[A-Z][\\w$]*)*");
     private static final Pattern PATH=Pattern.compile("(?<![\\w:/])(?:\\./)?(?:src|docs|config|gradle|\\.github)/[\\w./$@+-]+|(?<![\\w])(?:pom\\.xml|build\\.gradle(?:\\.kts)?|settings\\.gradle(?:\\.kts)?)");
     public record Result(List<Finding> findings,int documents,int types) {
@@ -55,6 +55,16 @@ public final class Analyzer {
     }
     public Result scan(Path root,Config config,SymbolIndex index) throws IOException {
         TreeSet<Finding> findings=new TreeSet<>();int count=0;
+        PropertyIndex properties=config.severity(Check.JD009)==Severity.OFF?null:new PropertyIndex(root);
+        List<Path> compilationClasspath=new ArrayList<>();
+        for(String entry:config.classes)compilationClasspath.add(root.resolve(entry));
+        for(String entry:config.classpath)compilationClasspath.add(root.resolve(entry));
+        try(var dirs=Files.walk(root)) {
+            for(Path dir:dirs.filter(Files::isDirectory).toList()) {
+                String path=relative(root,dir);
+                if(path.matches("(?:.*/)?(?:target/classes|build/classes/(?:java|kotlin)/main)") && !path.matches(".*(?:target|build)/(?!classes(?:/|$)).*"))compilationClasspath.add(dir);
+            }
+        }
         List<ProjectVersions.Coordinates> coordinates=new ProjectVersions().discover(root,config);
         Set<String> packages=config.sources.basePackages.isEmpty()?index.packages():new TreeSet<>(config.sources.basePackages);
         try(var files=Files.walk(root)) {
@@ -68,22 +78,36 @@ public final class Analyzer {
                     while(members.find()) {
                         String typeName=members.group(1), name=members.group(3);
                         // A dotted member requires call syntax; fields use # or ::.
-                        if(members.group(2).equals(".") && members.group(4)==null)continue;
+                        Optional<CallArguments.Call> call=CallArguments.parse(fragment.text(),members.end());
+                        if(members.group(2).equals(".") && call.isEmpty())continue;
                         Optional<SymbolIndex.Type> resolved=index.resolve(typeName);
                         if(resolved.isEmpty())continue;
                         SymbolIndex.Type type=resolved.get();
                         if(!type.project)continue;
-                        boolean known=index.members(type).stream().anyMatch(m->m.name().equals(name));
+                        List<SymbolIndex.Member> matching=index.members(type).stream().filter(m->m.name().equals(name)).toList();
+                        boolean known=!matching.isEmpty();
+                        if(known && call.isPresent() && matching.stream().anyMatch(SymbolIndex.Member::method) && matching.stream().noneMatch(m->CallArguments.matches(m,call.get().arguments(),index)))
+                            add(root,config,findings,doc,fragment,members.start(),Check.JD003,fragment.text().substring(members.start(),call.get().end()),
+                                "No overload of `"+typeName+"#"+name+"` matches the documented arguments",null);
+                        if(type.forRemoval || (!matching.isEmpty() && matching.stream().allMatch(SymbolIndex.Member::forRemoval)))
+                            add(root,config,findings,doc,fragment,members.start(),Check.JD005,members.group(),"API `"+members.group()+"` is deprecated for removal",null);
                         if(!known && !type.generated && !index.unresolvedParents(type) && !Set.of("toString","hashCode","equals","getClass","wait","notify","notifyAll","clone","finalize").contains(name))
                             add(root,config,findings,doc,fragment,members.start(),Check.JD002,members.group(),typeName+" has no member `"+name+"`",suggest(index,type,name));
                     }
                     Matcher qualified=QUALIFIED.matcher(fragment.text());
                     while(qualified.find()) {
                         String name=qualified.group();
-                        if(packages.stream().anyMatch(p->name.startsWith(p+".")) && !index.types.containsKey(name))
+                        SymbolIndex.Type mentioned=index.types.get(name);
+                        if(mentioned!=null && mentioned.project && mentioned.forRemoval && findings.stream().noneMatch(f->f.checkId().equals("JD005") && f.file().equals(relative(root,doc.path())) && f.line()==fragment.lineAt(qualified.start()) && f.column()==fragment.columnAt(qualified.start())))
+                            add(root,config,findings,doc,fragment,qualified.start(),Check.JD005,name,"Type `"+name+"` is deprecated for removal",null);
+                        String parentName=name.contains(".")?name.substring(0,name.lastIndexOf('.')):"";
+                        boolean accessibleField=index.resolve(parentName).map(t->index.members(t).stream().anyMatch(m->m.name().equals(name.substring(name.lastIndexOf('.')+1)))).orElse(false);
+                        if(packages.stream().anyMatch(p->name.startsWith(p+".")) && !index.types.containsKey(name) && !accessibleField)
                             add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,name,"Unknown project type `"+name+"`",null);
                     }
                     new ProjectVersions().check(root,config,findings,doc,fragment,coordinates);
+                    new SnippetCompiler().check(root,config,findings,doc,fragment,compilationClasspath);
+                    if(properties!=null)properties.check(root,config,findings,doc,fragment);
                     Matcher paths=PATH.matcher(fragment.text());while(paths.find()) {
                         if(paths.end()<fragment.text().length() && "*{?".indexOf(fragment.text().charAt(paths.end()))>=0)continue;
                         path(root,config,findings,doc,fragment,paths.group(),paths.start(),false);
@@ -94,7 +118,7 @@ public final class Analyzer {
         return new Result(List.copyOf(findings),count,(int)index.types.values().stream().filter(t->t.project).count());
     }
     private String suggest(SymbolIndex index,SymbolIndex.Type type,String name) {
-        return index.members(type).stream().map(SymbolIndex.Member::name).distinct().sorted().filter(n->distance(n,name)<=Math.max(2,name.length()/3)).findFirst().map(n->"Did you mean `"+n+"`?").orElse(null);
+        return index.members(type).stream().map(SymbolIndex.Member::name).distinct().sorted(Comparator.comparingInt((String n)->distance(n,name)).thenComparing(n->n)).filter(n->distance(n,name)<=Math.max(2,name.length()/3)).findFirst().map(n->"Did you mean `"+n+"`?").orElse(null);
     }
     static int distance(String a,String b) {
         int[] prev=new int[b.length()+1];for(int j=0;j<=b.length();j++)prev[j]=j;
@@ -116,7 +140,15 @@ public final class Analyzer {
         String[] lines=doc.text().split("\\n",-1);
         int at=f.lineAt(offset)-1;
         if(ignored(lines,at) || (f.kind()==DocReader.Kind.BLOCK && ignored(lines,f.line()-2)))return;
-        out.add(new Finding(relative(root,doc.path()),f.lineAt(offset),f.columnAt(offset),check.name(),severity,ref,message,suggestion));
+        int column=f.columnAt(offset);
+        if(at>=0 && at<lines.length) {
+            int localLine=f.lineAt(offset)-f.line();String[] fragmentLines=f.text().split("\\n",-1);
+            if(localLine<fragmentLines.length) {
+                int start=lines[at].indexOf(fragmentLines[localLine],localLine==0?Math.max(0,f.column()-1):0);
+                if(start>=0)column=start+(localLine==0?offset:column-1)+1;
+            }
+        }
+        out.add(new Finding(relative(root,doc.path()),f.lineAt(offset),column,check.name(),severity,ref,message,suggestion));
     }
     private static boolean ignored(String[] lines,int line) {
         if(line<=0 || line>lines.length)return false;

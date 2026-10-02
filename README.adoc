@@ -147,3 +147,49 @@ java -jar javadrift-cli/target/javadrift.jar check --format sarif --output findi
 SARIF 2.1.0 includes stable rule IDs, locations and baseline fingerprints. Use
 GitHub's upload-sarif action with the generated report; grant security-events
 write permission in that consuming workflow.
+
+== Advanced checks
+
+JD003 validates argument counts and clear literal types against overloads,
+including varargs. It leaves unknown expression types alone. JD005 flags
+references to types or members deprecated with forRemoval=true. Both default
+to warnings; set failOn to warning to enforce them.
+
+JD008 and JD009 remain off by default. Enable them explicitly:
+
+[source,yaml]
+----
+checks:
+  snippet-compile: warning
+  unknown-property: warning
+snippets:
+  imports: ['com.acme.OrderService']
+  release: '17'
+----
+
+JD008 compiles each Java fence as a complete unit, class members, then statements.
+Supply compiled project classes and dependencies first. Annotation processing
+is disabled and bytecode stays in memory. A line consisting of three dots, a
+Java comment containing only three dots, or a javadrift:skip line comment skips
+the whole block. Every block is isolated; variables do not carry between fences.
+Complete units with package declarations must supply their own imports.
+Compilation uses a JDK and the configured release (17 by default).
+
+JD009 checks dotted inline keys and dotted assignments in code blocks against
+production .properties/YAML resources, Spring configuration metadata in source
+resources, literal System.getProperty calls and Spring Value annotations.
+Third-party keys, dynamically declared keys and source-only ConfigurationProperties
+beans without metadata need ignore patterns. It does not infer arbitrary Java
+configuration APIs or every YAML example's intended schema.
+
+== Current limits
+
+Kotlin is supported through compiled JVM classes. Source-only Kotlin parsing
+and Kotlin Git history are not implemented. AsciiDoc support covers backtick
+code, source/listing blocks and link/xref targets; it does not expand include
+macros, attributes or resolve anchors. Markdown anchors and external URLs are
+not checked. Build class outputs before checking so they describe current sources.
+
+The development snapshot implements all nine check IDs and build integrations.
+Publishing and the design's external accuracy/adoption gates remain pending; see
+link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].

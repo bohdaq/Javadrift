@@ -21,7 +21,7 @@ class FullScanTest {
         write("src/main/java/com/acme/Item.java","package com.acme; public record Item(String name) {}");
         write("src/main/java/com/acme/State.java","package com.acme; public enum State { READY }");
         write("src/main/java/other/Child.java","package other; public class Child {}");
-        write("README.md","`com.acme.Child#inherited` `Base#Factory` `Item#name` `State#READY` `State.values()` `Child#missing`");
+        write("README.md","`com.acme.Child#inherited` `Base#Factory` `Base#Factory()` `Item#name` `State#READY` `State.values()` `Child#missing`");
         assertTrue(new Analyzer().analyze(root,new Config()).findings().isEmpty());
     }
     @Test void skipsGeneratedAndUnresolvedInheritedMembers() throws Exception {

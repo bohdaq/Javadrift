@@ -10,6 +10,8 @@ public final class Config {
         public List<String> exclude=new ArrayList<>();
     }
     public static final class Sources { public List<String> basePackages=new ArrayList<>(); }
+    public static final class Snippets { public List<String> imports=new ArrayList<>(); public String release="17"; }
+    public Snippets snippets=new Snippets();
     public static final class Project { public String groupId,artifactId,version; }
     public Project project=new Project();
     public List<String> classes=new ArrayList<>(),classpath=new ArrayList<>();
@@ -24,13 +26,15 @@ public final class Config {
             return new Config();
         }
         Config c=new ObjectMapper(new YAMLFactory()).readValue(file.toFile(),Config.class);
-        if(c==null || c.project==null || c.classes==null || c.classpath==null || c.docs==null || c.sources==null || c.checks==null || c.ignore==null || c.baseline==null
+        if(c==null || c.snippets==null || c.snippets.imports==null || c.snippets.release==null || c.project==null || c.classes==null || c.classpath==null || c.docs==null || c.sources==null || c.checks==null || c.ignore==null || c.baseline==null
            || c.docs.include==null || c.docs.exclude==null || c.sources.basePackages==null)
             throw new IllegalArgumentException("Configuration sections cannot be null");
         Severity failure=Severity.parse(c.failOn);
         if(failure==Severity.OFF) throw new IllegalArgumentException("failOn must be warning or error");
         c.checks.forEach((k,v)->{Check.from(k);Severity.parse(v);});
-        for(List<String> list:List.of(c.docs.include,c.docs.exclude,c.sources.basePackages,c.ignore))
+        if(!c.snippets.release.matches("[0-9]+"))throw new IllegalArgumentException("snippets.release must be a Java release number");
+        for(String name:c.snippets.imports)if(name==null || !name.matches("(?:static )?[a-zA-Z_$][\\w$]*(?:\\.[\\w$*]+)+"))throw new IllegalArgumentException("Invalid snippet import: "+name);
+        for(List<String> list:List.of(c.docs.include,c.docs.exclude,c.sources.basePackages,c.ignore,c.classes,c.classpath))
             if(list.stream().anyMatch(Objects::isNull)) throw new IllegalArgumentException("Patterns cannot be null");
         return c;
     }
