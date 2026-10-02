@@ -14,3 +14,38 @@ java -jar javadrift-cli/target/javadrift.jar --help
 
 See link:docs/roadmap.adoc[the implementation roadmap].
 Licensed under link:LICENSE[Apache-2.0].
+
+== Check documentation
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --root /path/to/project
+java -jar javadrift-cli/target/javadrift.jar check --warn-only
+java -jar javadrift-cli/target/javadrift.jar explain JD002
+----
+
+Full scans check qualified project types (JD001), unique type/member references
+(JD002) and repository paths (JD007). Bare names and prose are skipped. Java
+public/protected declarations, records, enums and project inheritance are indexed.
+Unknown inherited APIs and source-only Lombok members are skipped conservatively.
+
+Default inputs are the root README.md/README.adoc and Markdown/AsciiDoc files
+under docs/. Source files under build outputs and src/test are excluded.
+Java parser failures are reported as errors rather than silently dropping types.
+
+[source,yaml]
+----
+# javadrift.yml
+docs:
+  include: ['README.md', 'README.adoc', 'docs/**/*.md', 'docs/**/*.adoc']
+  exclude: ['docs/archive/**']
+sources:
+  basePackages: ['com.acme']
+checks:
+  unknown-member: error
+failOn: error
+ignore: ['LegacyClient#*']
+----
+
+Exit codes: 0 for success, 1 for findings at the failure threshold, 2 for
+invalid input/configuration. --warn-only leaves input errors as exit 2.

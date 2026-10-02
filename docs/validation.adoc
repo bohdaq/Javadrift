@@ -1,0 +1,14 @@
+= Validation evidence
+
+== Full scanner
+
+Local JDK 23, Java 17 bytecode target. Seven fixture/CLI tests pass. A smoke scan
+of the default README scope completed without crashing on these pinned trees:
+
+* commonmark/commonmark-java: 1 README, 232 public types.
+* apache/commons-lang: 1 README, 287 public types.
+* apache/commons-io: 1 README, 300 public types.
+
+A CommonMark nested-type reference exposed a false positive during development;
+the index now includes accessible nested types as members, with a regression test.
+These smoke scans are not a manually triaged accuracy corpus.
