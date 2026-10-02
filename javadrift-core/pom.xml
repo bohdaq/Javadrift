@@ -1,0 +1,14 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+ <parent><groupId>io.github.bohdaq</groupId><artifactId>javadrift</artifactId><version>0.1.0-SNAPSHOT</version></parent>
+ <artifactId>javadrift-core</artifactId>
+ <dependencies>
+  <dependency><groupId>org.commonmark</groupId><artifactId>commonmark</artifactId><version>0.24.0</version></dependency>
+  <dependency><groupId>com.github.javaparser</groupId><artifactId>javaparser-core</artifactId><version>3.28.2</version></dependency>
+  <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.18.3</version></dependency>
+  <dependency><groupId>com.fasterxml.jackson.dataformat</groupId><artifactId>jackson-dataformat-yaml</artifactId><version>2.18.3</version></dependency>
+  <dependency><groupId>org.eclipse.jgit</groupId><artifactId>org.eclipse.jgit</artifactId><version>6.10.0.202406032230-r</version></dependency>
+  <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-nop</artifactId><version>2.0.13</version></dependency>
+  <dependency><groupId>org.ow2.asm</groupId><artifactId>asm</artifactId><version>9.7.1</version></dependency>
+  <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><scope>test</scope></dependency>
+ </dependencies>
+</project>

@@ -1,0 +1,16 @@
+= Javadrift
+
+Javadrift detects stale references in Markdown and AsciiDoc documentation using
+Java sources and compiled JVM classes. Analysis is offline and never executes
+project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
+
+== Build
+
+[source,shell]
+----
+mvn verify
+java -jar javadrift-cli/target/javadrift.jar --help
+----
+
+See link:docs/roadmap.adoc[the implementation roadmap].
+Licensed under link:LICENSE[Apache-2.0].

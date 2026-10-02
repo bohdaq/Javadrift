@@ -1,0 +1,31 @@
+= Implementation roadmap
+
+Each completed piece is tested, committed and pushed independently.
+
+. Foundation: Java 17 Maven reactor, reusable core, packaged JVM CLI, CI and license.
+. Full scan: Java source index, Markdown/AsciiDoc extraction, JD001/JD002/JD007,
+  conservative matching, YAML configuration, readable output and fixture tests.
+. History: Git ref comparison, JD004, rename suggestions, suppressions, baseline,
+  JSON/GitHub reporters and replay tests.
+. Compiled projects: ASM index (including Kotlin bytecode), Maven aggregator,
+  version checks and integration fixtures.
+. CI integrations: Gradle task, composite GitHub Action and SARIF reporter.
+. Advanced checks: overload/deprecation checks, opt-in snippet compilation and
+  configuration property checks, with explicit limits.
+
+== Release gates
+
+Implementation does not establish the design's release acceptance targets.
+Maven Central/Gradle Portal publishing, an external CI adopter, 20 pinned
+repositories with manually triaged findings, five real history replays and the
+500-document/5,000-class performance budget remain release validation work.
+Do not claim a 1.0 accuracy rate until that evidence exists.
+
+== Decisions
+
+* Apache-2.0 license.
+* Markdown and AsciiDoc docs.
+* JVM CLI only; no native binary.
+* Kotlin compiled classes use the same ASM index as Java. A source-only Kotlin
+  parser is a future enhancement; Kotlin history is not claimed as supported.
+* Diff matching stays inside code formatting to avoid noisy prose matches.
