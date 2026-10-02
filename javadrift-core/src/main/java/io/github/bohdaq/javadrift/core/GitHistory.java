@@ -10,6 +10,16 @@ import java.util.*;
 import java.util.regex.Pattern;
 public final class GitHistory {
     public record Removed(String token,Pattern pattern,String suggestion) {}
+    public static String state(Path root) throws IOException {
+        FileRepositoryBuilder builder=new FileRepositoryBuilder().findGitDir(root.toFile());
+        if(builder.getGitDir()==null)return "no-git";
+        try(Repository repo=builder.build()) {
+            List<String> values=new ArrayList<>();
+            ObjectId head=repo.resolve("HEAD");values.add(head==null?"unborn":head.name());
+            repo.getRefDatabase().getRefsByPrefix("refs/").forEach(r->{if(r.getObjectId()!=null)values.add(r.getName()+":"+r.getObjectId().name());});
+            Collections.sort(values);return String.join("\n",values);
+        }
+    }
     public List<Removed> removed(Path root,String since) throws IOException {
         FileRepositoryBuilder builder=new FileRepositoryBuilder().findGitDir(root.toFile());
         if(builder.getGitDir()==null)throw new IOException("Diff mode requires a Git repository");

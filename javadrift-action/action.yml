@@ -1,0 +1,53 @@
+name: Javadrift
+description: Detect stale documentation using the JVM CLI
+inputs:
+  version:
+    description: Published GitHub release tag (required until the first release exists)
+    required: true
+  since:
+    description: Optional base Git ref for diff mode
+    default: ''
+  format:
+    description: text, json, github or sarif
+    default: github
+  warn-only:
+    description: Report findings without failing
+    default: 'false'
+  root:
+    description: Project directory
+    default: '.'
+  output:
+    description: Optional output file (use for SARIF)
+    default: ''
+runs:
+  using: composite
+  steps:
+    - name: Download and verify CLI
+      shell: bash
+      env:
+        JAVADRIFT_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        [[ "$JAVADRIFT_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-A-Za-z0-9.]*)$ ]] || { echo 'Invalid release tag'; exit 2; }
+        task_dir="$(mktemp -d "$RUNNER_TEMP/javadrift.XXXXXX")"
+        release="https://github.com/bohdaq/Javadrift/releases/download/$JAVADRIFT_VERSION"
+        curl --fail --location --retry 3 "$release/javadrift.jar" -o "$task_dir/javadrift.jar"
+        curl --fail --location --retry 3 "$release/javadrift.jar.sha256" -o "$task_dir/javadrift.jar.sha256"
+        (cd "$task_dir" && sha256sum -c javadrift.jar.sha256)
+        echo "JAVADRIFT_JAR=$task_dir/javadrift.jar" >> "$GITHUB_ENV"
+    - name: Check docs
+      shell: bash
+      env:
+        JAVADRIFT_SINCE: ${{ inputs.since }}
+        JAVADRIFT_FORMAT: ${{ inputs.format }}
+        JAVADRIFT_WARN_ONLY: ${{ inputs.warn-only }}
+        JAVADRIFT_ROOT: ${{ inputs.root }}
+        JAVADRIFT_OUTPUT: ${{ inputs.output }}
+      run: |
+        set -euo pipefail
+        args=(check --root "$JAVADRIFT_ROOT" --format "$JAVADRIFT_FORMAT")
+        [[ -z "$JAVADRIFT_SINCE" ]] || args+=(--since "$JAVADRIFT_SINCE")
+        [[ -z "$JAVADRIFT_OUTPUT" ]] || args+=(--output "$JAVADRIFT_OUTPUT")
+        if [[ "$JAVADRIFT_WARN_ONLY" == true ]]; then args+=(--warn-only);
+        elif [[ "$JAVADRIFT_WARN_ONLY" != false ]]; then echo 'warn-only must be true or false'; exit 2; fi
+        java -jar "$JAVADRIFT_JAR" "${args[@]}"

@@ -24,7 +24,7 @@ public final class Main implements Runnable {
         @Option(names="--class-dir",description="Compiled project classes (repeatable)") java.util.List<String> classes=new java.util.ArrayList<>();
         @Option(names="--classpath",description="Dependency classpath using the platform path separator") String classpath;
         @Option(names="--since",description="Compare source symbols at a Git ref with HEAD") String since;
-        @Option(names="--format",defaultValue="text",description="text, json or github") String format;
+        @Option(names="--format",defaultValue="text",description="text, json, github or sarif") String format;
         @Spec Model.CommandSpec spec;
         public Integer call() throws Exception {
             Config config=Config.load(root,configPath);

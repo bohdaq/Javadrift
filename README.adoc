@@ -106,3 +106,44 @@ the compile phase to make reactor class outputs available before root verify.
 The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
 javadrift.format, javadrift.output and javadrift.skip system properties.
 No artifacts have been published to Maven Central yet.
+
+== Gradle
+
+Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
+plugin release is published, add this repository as an included plugin build
+in the consuming project's settings script:
+
+[source,kotlin]
+----
+pluginManagement { includeBuild("/path/to/Javadrift") }
+----
+
+Then apply it in build.gradle.kts:
+
+[source,kotlin]
+----
+plugins { id("io.github.bohdaq.javadrift") }
+javadrift { warnOnly.set(true) }
+----
+
+The javadriftCheck task joins check and compiles Java source sets in the project
+and its subprojects first. It writes a report under the build reports directory.
+Use javadrift.since and javadrift.format extension properties for history and
+output. Full scans can be up to date; diff mode always runs. Configuration,
+baselines, Git refs and repository file changes are tracked as inputs.
+
+== GitHub Actions and SARIF
+
+The composite action lives in javadrift-action/. It requires a release tag with
+the CLI jar and SHA-256 checksum. The release workflow produces those assets
+when a version tag is pushed. Until the first release, build the CLI in CI.
+The runner needs JDK 17+; diff mode also needs a checkout with full history.
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --format sarif --output findings.sarif
+----
+
+SARIF 2.1.0 includes stable rule IDs, locations and baseline fingerprints. Use
+GitHub's upload-sarif action with the generated report; grant security-events
+write permission in that consuming workflow.

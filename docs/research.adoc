@@ -1,0 +1,15 @@
+= Related tools and naming
+
+A preliminary search on 3 October 2026 found several adjacent projects:
+
+* https://github.com/georg-nikola/docs-drift[docs-drift] validates executable
+  Markdown examples in JavaScript, Python, Bash, Go and Ruby.
+* https://github.com/NicoSchwandner/docdrift[docdrift] supports Java and tracks
+  method-body changes using explicit documentation links and baselines.
+* https://github.com/pallaprolus/drift[drift] includes Java Javadoc checks.
+
+Javadrift focuses on conservative Java API resolution in repository docs and
+removed public symbols in Git history, and does not execute examples. The
+search is preliminary and does not establish novelty or reserve a package name.
+No Javadrift result appeared in the Maven Central or Gradle Plugin Portal web
+searches; verify availability through their publishing processes before release.

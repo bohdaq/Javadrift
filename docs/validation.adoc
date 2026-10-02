@@ -27,3 +27,13 @@ a source-only Lombok skip, JDK inheritance without class initialization, and
 numeric Git tag release selection. Maven Invoker verifies a two-module reactor
 and a stale-doc build failure; post-build assertions require the expected JD002
 finding and compiled output files.
+
+== Gradle and CI outputs
+
+Both Gradle TestKit integrations pass, covering root/subproject compilation,
+clean findings, stale members, removed repository assets and unchanged inputs
+being up to date. Gradle validatePlugins passes. The Maven reactor still passes
+including its two Invoker projects. SARIF fixtures verify stable rule IDs,
+locations, escaped URI paths and fingerprints. Composite action shell blocks
+pass bash syntax validation; release downloads have not been exercised because
+no GitHub release has been published.
