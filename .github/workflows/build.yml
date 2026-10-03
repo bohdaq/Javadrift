@@ -50,3 +50,31 @@ jobs:
           name: javadrift-documentation-report
           path: javadrift.sarif
           if-no-files-found: error
+
+  sample-adoption:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Exercise local CLI, Maven and Gradle adoption
+        run: python3 scripts/smoke-sample.py --output validation-results/sample-smoke.json
+      - name: Save sample reports and command logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: local-adoption-reports
+          path: |
+            validation-results/sample-smoke.json
+            validation-results/sample-smoke-logs/
+          if-no-files-found: warn

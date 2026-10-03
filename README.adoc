@@ -81,6 +81,14 @@ so adding lines above a known finding does not invalidate it. Regenerating a
 baseline replaces it with all current unsuppressed findings. Review and commit
 the file; newly introduced references still fail.
 
+== Try the current source
+
+Follow link:docs/local-setup.adoc[local CLI, Maven and Gradle setup] or run the
+link:examples/local-adoption/README.adoc[Java/Kotlin adoption sample]. The automated
+smoke script uses temporary consumers and verifies valid, stale, warn-only and
+restored documentation through all three entry points. No Javadrift registry
+publication or new release is needed.
+
 == Compiled projects and Maven
 
 Compiled classes under Maven target/classes and Gradle build/classes/java/main

@@ -335,3 +335,28 @@ in newly created partial clones. Local cached objects had hidden this setup issu
 History replay now creates complete clones and materializes each pinned revision
 before giving the object database to JGit, including when reusing partial caches.
 Offline replay disables native Git lazy fetching during that materialization.
+
+== Local adoption walkthrough
+
+The runnable sample compiles a Java Greeter and Kotlin Welcomer using both Maven
+and Gradle, then checks one AsciiDoc guide. A valid guide and a deliberately stale
+variant are checked in; only the active guide is in the sample's configured scope.
+The smoke script copies the sample into separate temporary consumers for each
+entry point and verifies valid, strict stale, warn-only stale and restored guides.
+It checks both sample class files after each build adapter's initial compilation,
+and removes old report files before commands so stale outputs cannot mask failures.
+
+All 12 consumer scenarios pass locally on JDK 17. A separate fresh tracked checkout
+also rebuilds/installs the current tool and passes those scenarios. Dependency caches
+are reused, but neither the producer nor consumers begin with build outputs.
+The stale guide emits exactly one Java and one Kotlin JD002 finding; both remain
+reported in warn-only mode. Correcting the guide clears both findings and lets
+strict builds pass. Evidence is in validation/sample-local.json and
+validation/sample-clean-checkout.json. The Gradle sample's pinned Kotlin 2.2.21
+plugin emits an embedded compiler-classpath warning; this validation does not
+establish compatibility with other Kotlin Gradle plugin versions.
+
+The build workflow now includes a sample-adoption job that runs the source-build
+and consumer walkthrough, then uploads the JSON report and per-command logs even
+after failure. Follow link:local-setup.adoc[local setup] and the sample README for
+commands. Registry uploads and new releases remain deferred.

@@ -1,0 +1,136 @@
+= Trying Javadrift from source
+
+Use the current source checkout to try the CLI and build adapters without publishing
+a release. You need JDK 17, Maven, Git and Python 3.12 or newer for the smoke script.
+Set JAVA_HOME to JDK 17 and put its bin directory on PATH. The repository includes
+a Gradle wrapper. Initial builds download dependencies from Maven Central and the
+Gradle Plugin Portal; subsequent documentation analysis uses local inputs.
+
+== Build the tool and try the sample
+
+[source,shell]
+----
+git clone https://github.com/bohdaq/Javadrift.git
+cd Javadrift
+mvn -B -DskipTests install
+java -jar javadrift-cli/target/javadrift.jar check --root examples/local-adoption --format json
+mvn -B -f examples/local-adoption/pom.xml verify
+./gradlew -p examples/local-adoption check --no-daemon
+----
+
+The CLI should exit zero with no findings. Maven and Gradle compile both sample
+languages, then check the same guide. Installation places Javadrift's Maven artifacts
+in your local Maven repository. The Gradle sample includes this checkout as its
+plugin build, so neither adapter requires a Javadrift registry publication.
+-DskipTests is used to build the tool quickly here; the repository's CI runs its
+unit and integration tests separately.
+
+The sample's variants directory contains valid and deliberately stale guides.
+Use link:../examples/local-adoption/README.adoc[the sample walkthrough] to swap the
+guide, observe two JD002 failures, try warn-only mode and restore the valid guide.
+The walkthrough's copies change the checked-in guide; restore it before committing.
+
+For an automated walkthrough using temporary copies instead:
+
+[source,shell]
+----
+python3 scripts/smoke-sample.py --output /tmp/javadrift-sample-results/report.json
+----
+
+This command builds/installs the current checkout and checks valid, stale, warn-only
+and restored documentation through each adapter. It requires both Java and Kotlin
+class files after each build adapter's first successful compilation. Each consumer
+starts without build outputs. Reports and per-command logs survive after the temporary
+consumers are removed. --skip-build reuses an already built CLI and locally installed
+Maven adapter; omit it when validating a fresh checkout or a changed tool.
+
+== CLI in your project
+
+Run the jar built above against another checkout. Root README.md/README.adoc and
+docs Markdown/AsciiDoc files are included by default. A project-local javadrift.yml
+can override this scope. The CLI can parse Java/Kotlin source declarations without
+compiling the project; existing class outputs are also indexed.
+
+[source,shell]
+----
+java -jar /path/to/Javadrift/javadrift-cli/target/javadrift.jar check --root /path/to/project
+java -jar /path/to/Javadrift/javadrift-cli/target/javadrift.jar check --root /path/to/project --warn-only
+----
+
+Strict mode exits 1 when configured finding severities fail the check; input errors
+exit 2. Warn-only reports the same findings and exits zero, but still fails on input
+errors. Supply --classpath and --class-dir for dependencies or nonstandard outputs.
+See link:../README.adoc[the reference] for history mode, baselines and other checks.
+
+== Maven in your project
+
+After installing the tool from source, add the plugin under build/plugins in your
+reactor root POM:
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.github.bohdaq</groupId>
+  <artifactId>javadrift-maven-plugin</artifactId>
+  <version>0.2.0</version>
+  <inherited>false</inherited>
+  <executions>
+    <execution><goals><goal>check</goal></goals></execution>
+  </executions>
+</plugin>
+----
+
+Run mvn verify to check documentation against selected reactor modules. The plugin
+forks compile before checking, so configure Java/Kotlin compilation normally in your
+own project. The sample POM demonstrates Kotlin compilation. Run mvn verify with
+-Djavadrift.warnOnly=true for initial adoption, then remove that property to enforce
+findings. Reinstall Javadrift after changing its source; the Maven consumer resolves
+the locally installed artifact rather than live source files.
+
+== Gradle in your project
+
+Add the Javadrift source checkout to your settings.gradle.kts:
+
+[source,kotlin]
+----
+pluginManagement {
+    includeBuild("/path/to/Javadrift")
+}
+----
+
+Apply the plugin alongside your normal Java or Kotlin JVM plugin:
+
+[source,kotlin]
+----
+plugins {
+    java
+    id("io.github.bohdaq.javadrift")
+}
+----
+
+Run your Gradle check task. Javadrift registers javadriftCheck and depends on the
+project's main classes. It writes build/reports/javadrift/report.txt by default.
+You can configure javadrift.format and javadrift.warnOnly through the extension:
+
+[source,kotlin]
+----
+javadrift {
+    format.set("json")
+    warnOnly.set(true)
+}
+----
+
+Set warnOnly to false when enforcing findings. The sample additionally maps its
+-PwarnOnly=true property to this extension; that property is specific to the sample
+build script. An included build uses the current source checkout on each build.
+The sample pins Kotlin Gradle plugin 2.2.21, which currently emits an embedded
+compiler-classpath warning for Javadrift's parser dependency. Its compilation and
+checks pass; other Kotlin plugin versions are outside this sample's validation.
+
+== CI coverage
+
+The build workflow's sample-adoption job uses JDK 17 and runs the smoke script from
+a fresh checkout. It uploads local-adoption-reports with the JSON results and each
+command's logs, including after failures. Corpus/history gates remain separate and
+continue to protect reviewed upstream findings. No workflow in this setup publishes
+a registry artifact or creates a release.

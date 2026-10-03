@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "environment": "macOS / JDK 17; fresh tracked Git checkout with no build outputs; local dependency caches reused",
+  "sourceCommit": "7c8a64ec9fffcedf341bdf20ce70b87da75943a5",
+  "jarSha256": "18c9757daac38c982f0ab54a05d695e1792e9d7dd562f553dd9d9f13f93ea740",
+  "passed": true,
+  "runs": [
+    {
+      "name": "build-and-install",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 25.379
+    },
+    {
+      "name": "cli-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.688
+    },
+    {
+      "name": "cli-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 0.75
+    },
+    {
+      "name": "cli-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.678
+    },
+    {
+      "name": "cli-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.636
+    },
+    {
+      "name": "maven-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 3.353
+    },
+    {
+      "name": "maven-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 2.997
+    },
+    {
+      "name": "maven-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 2.992
+    },
+    {
+      "name": "maven-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 3.036
+    },
+    {
+      "name": "gradle-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 10.322
+    },
+    {
+      "name": "gradle-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 5.21
+    },
+    {
+      "name": "gradle-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 4.665
+    },
+    {
+      "name": "gradle-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 4.946
+    }
+  ]
+}
