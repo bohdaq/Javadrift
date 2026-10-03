@@ -131,6 +131,18 @@ worker. Add mavenCentral() to the consumer's repositories for engine dependencie
 the included source build supplies Javadrift core. The embedded Kotlin parser stays
 off the build classpath used by the Kotlin Gradle plugin.
 
+The sample accepts -PkotlinVersion to select its Kotlin Gradle plugin. Its Maven
+compiler stays pinned separately. To verify just Gradle with a selected version:
+
+[source,shell]
+----
+python3 scripts/smoke-sample.py --gradle-only --kotlin-version 2.3.21 --output /tmp/javadrift-kotlin/report.json
+----
+
+This needs JDK 17 and dependency downloads, but no built CLI or installed Maven
+plugin. It verifies compilation, valid docs, strict stale failure, warn-only stale
+findings and restored docs. Embedded compiler-classpath warnings fail the check.
+
 == CI coverage
 
 The build workflow's sample-adoption job uses JDK 17 and runs the smoke script from

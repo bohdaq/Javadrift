@@ -378,3 +378,22 @@ contain no embedded compiler warning. The smoke script now rejects that warning.
 The earlier sample evidence above records behavior before this isolation change.
 
 The implementation follows link:https://docs.gradle.org/current/userguide/worker_api.html[Gradle's isolated worker guidance].
+
+== Kotlin Gradle version coverage
+
+The local Gradle walkthrough passes on JDK 17 and Gradle 8.14.3 with Kotlin Gradle
+plugins 2.2.21, 2.3.21 and 2.4.20. Each version compiles both sample classes and
+passes four scenarios: valid docs, two strict stale JD002 findings with a failed
+build, the same findings in warn-only mode with a successful build, and corrected
+docs with no findings. None emits the embedded compiler-classpath warning.
+Evidence is in validation/kotlin-gradle-local.json.
+
+Select the consumer version using --kotlin-version with the smoke script's
+--gradle-only option. This uses the same report assertions as the full adoption
+walkthrough and needs neither CLI outputs nor a local Maven plugin installation.
+Javadrift's embedded parser remains 2.2.21 independently of the consumer version.
+This verifies integration on the sample's Kotlin syntax; it does not test every
+language feature added after the parser's version.
+
+The selected Gradle/Kotlin combinations are within
+link:https://kotlinlang.org/docs/gradle-configure-project.html[Kotlin's documented Gradle compatibility ranges].

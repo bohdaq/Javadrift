@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--java', default='java')
 parser.add_argument('--maven', default='mvn')
 parser.add_argument('--skip-build', action='store_true', help='Use an already built CLI and installed Maven plugin')
+parser.add_argument('--gradle-only', action='store_true', help='Check only Gradle; no CLI or Maven installation required')
+parser.add_argument('--kotlin-version', default='2.2.21', help='Kotlin Gradle plugin version for the sample consumer')
 parser.add_argument('--output', type=Path, default=Path(tempfile.gettempdir()) / 'javadrift-sample-results/report.json')
 args = parser.parse_args()
 output = args.output.resolve()
@@ -24,7 +26,9 @@ logs.mkdir(exist_ok=True)
 jar = PROJECT / 'javadrift-cli/target/javadrift.jar'
 wrapper = PROJECT / ('gradlew.bat' if os.name == 'nt' else 'gradlew')
 report = {'schemaVersion': 1, 'scope': 'Local source-built CLI, locally installed Maven plugin and included Gradle build; temporary consumers',
-          'runs': [], 'passed': False}
+          'kotlinGradlePlugin': args.kotlin_version, 'runs': [], 'passed': False}
+if args.gradle_only:
+    report['scope'] = 'Source-built Gradle plugin and core; temporary mixed Java/Kotlin consumer'
 expected = {('JD002', 'demo.Greeter#salute'), ('JD002', 'demo.Welcomer#hello')}
 
 
@@ -63,41 +67,44 @@ def compiled(root, files):
 
 
 try:
-    if not args.skip_build:
+    if not args.skip_build and not args.gradle_only:
         run('build-and-install', [args.maven, '-B', '-DskipTests', 'install'], PROJECT)
-    if not jar.is_file():
+    if not args.gradle_only and not jar.is_file():
         raise RuntimeError('Build the CLI before using --skip-build')
-    report['jarSha256'] = hashlib.sha256(jar.read_bytes()).hexdigest()
+    if not args.gradle_only:
+        report['jarSha256'] = hashlib.sha256(jar.read_bytes()).hexdigest()
     with tempfile.TemporaryDirectory(prefix='javadrift-adoption-') as directory:
         roots = {}
-        for adapter in ('cli', 'maven', 'gradle'):
+        for adapter in (('gradle',) if args.gradle_only else ('cli', 'maven', 'gradle')):
             root = Path(directory) / adapter
             shutil.copytree(PROJECT / 'examples/local-adoption', root,
                             ignore=shutil.ignore_patterns('target', 'build', '.gradle'))
             roots[adapter] = root
-        root = roots['cli']
-        cli_report = root / 'report.json'
-        cli = [args.java, '-jar', str(jar), 'check', '--root', str(root), '--format', 'json', '--output', str(cli_report)]
-        run('cli-valid', cli, root, json_file=cli_report)
-        select(root, 'stale')
-        run('cli-stale', cli, root, exit_code=1, json_file=cli_report, stale=True)
-        run('cli-warn-only', cli + ['--warn-only'], root, json_file=cli_report, stale=True)
-        select(root, 'valid')
-        run('cli-restored', cli, root, json_file=cli_report)
+        if not args.gradle_only:
+            root = roots['cli']
+            cli_report = root / 'report.json'
+            cli = [args.java, '-jar', str(jar), 'check', '--root', str(root), '--format', 'json', '--output', str(cli_report)]
+            run('cli-valid', cli, root, json_file=cli_report)
+            select(root, 'stale')
+            run('cli-stale', cli, root, exit_code=1, json_file=cli_report, stale=True)
+            run('cli-warn-only', cli + ['--warn-only'], root, json_file=cli_report, stale=True)
+            select(root, 'valid')
+            run('cli-restored', cli, root, json_file=cli_report)
 
-        root = roots['maven']
-        maven = [args.maven, '-B', 'verify']
-        maven_report = root / 'target/javadrift.json'
-        run('maven-valid', maven, root, json_file=maven_report)
-        compiled(root, ['target/classes/demo/Greeter.class', 'target/classes/demo/Welcomer.class'])
-        select(root, 'stale')
-        run('maven-stale', maven, root, exit_code=1, json_file=maven_report, stale=True)
-        run('maven-warn-only', maven + ['-Djavadrift.warnOnly=true'], root, json_file=maven_report, stale=True)
-        select(root, 'valid')
-        run('maven-restored', maven, root, json_file=maven_report)
+            root = roots['maven']
+            maven = [args.maven, '-B', 'verify']
+            maven_report = root / 'target/javadrift.json'
+            run('maven-valid', maven, root, json_file=maven_report)
+            compiled(root, ['target/classes/demo/Greeter.class', 'target/classes/demo/Welcomer.class'])
+            select(root, 'stale')
+            run('maven-stale', maven, root, exit_code=1, json_file=maven_report, stale=True)
+            run('maven-warn-only', maven + ['-Djavadrift.warnOnly=true'], root, json_file=maven_report, stale=True)
+            select(root, 'valid')
+            run('maven-restored', maven, root, json_file=maven_report)
 
         root = roots['gradle']
-        gradle = [str(wrapper), '-p', str(root), '-PjavadriftSource=' + str(PROJECT), 'check', '--no-daemon']
+        gradle = [str(wrapper), '-p', str(root), '-PjavadriftSource=' + str(PROJECT),
+                  '-PkotlinVersion=' + args.kotlin_version, 'check', '--no-daemon']
         gradle_report = root / 'build/reports/javadrift/report.txt'
         run('gradle-valid', gradle, root, json_file=gradle_report)
         compiled(root, ['build/classes/java/main/demo/Greeter.class', 'build/classes/kotlin/main/demo/Welcomer.class'])

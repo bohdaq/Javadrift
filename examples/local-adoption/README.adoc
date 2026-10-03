@@ -67,3 +67,14 @@ The Gradle adapter loads its analysis engine and embedded Kotlin parser in an
 isolated worker. The sample's Maven Central repository supplies engine dependencies;
 the included source build supplies Javadrift core. The parser stays off the build
 classpath used by the Kotlin Gradle plugin.
+
+Override the sample's Kotlin Gradle plugin version with -PkotlinVersion=2.3.21.
+To run the four Gradle scenarios without building the CLI or installing Maven:
+
+[source,shell]
+----
+python3 scripts/smoke-sample.py --gradle-only --kotlin-version 2.3.21
+----
+
+Run the script from the Javadrift checkout. This selects only the consumer's Kotlin
+compiler; Javadrift's parser remains pinned independently inside the worker.

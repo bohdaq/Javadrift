@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "java": 17,
+  "gradle": "8.14.3",
+  "engineCommit": "bd539ae5f0a6562d1ed9b5ab9232c9a5dd38de53",
+  "scope": "Mixed Java/Kotlin Gradle consumer using source plugin/core and an isolated Kotlin parser",
+  "versions": [
+    {
+      "kotlinGradlePlugin": "2.2.21",
+      "passed": true,
+      "scenarios": [
+        {
+          "name": "gradle-valid",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        },
+        {
+          "name": "gradle-stale",
+          "exitCode": 1,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-warn-only",
+          "exitCode": 0,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-restored",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        }
+      ]
+    },
+    {
+      "kotlinGradlePlugin": "2.3.21",
+      "passed": true,
+      "scenarios": [
+        {
+          "name": "gradle-valid",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        },
+        {
+          "name": "gradle-stale",
+          "exitCode": 1,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-warn-only",
+          "exitCode": 0,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-restored",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        }
+      ]
+    },
+    {
+      "kotlinGradlePlugin": "2.4.20",
+      "passed": true,
+      "scenarios": [
+        {
+          "name": "gradle-valid",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        },
+        {
+          "name": "gradle-stale",
+          "exitCode": 1,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-warn-only",
+          "exitCode": 0,
+          "findings": 2,
+          "types": 2
+        },
+        {
+          "name": "gradle-restored",
+          "exitCode": 0,
+          "findings": 0,
+          "types": 2
+        }
+      ]
+    }
+  ]
+}
