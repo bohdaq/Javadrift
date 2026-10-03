@@ -287,6 +287,10 @@ Third-party keys, dynamically declared keys and source-only ConfigurationPropert
 beans without metadata need ignore patterns. It does not infer arbitrary Java
 configuration APIs or every YAML example's intended schema.
 
+Follow link:docs/optional-checks.adoc[optional checks setup and validation] for a
+runnable Jackson-backed sample, complete dependency classpaths on Linux/macOS and
+Windows, reviewed stale cases, and warning/strict behavior.
+
 == Current limits
 
 Java and Kotlin sources are indexed without building upstream projects. Kotlin

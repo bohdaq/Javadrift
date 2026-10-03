@@ -27,6 +27,18 @@ stale settings misspell a metadata key and document a test-only key, producing t
 JD009 findings. The active guides start valid; check variants only by copying them
 over the active files in a temporary sample.
 
+Run the automated temporary-consumer walkthrough from the Javadrift checkout:
+
+[source,shell]
+----
+python scripts/smoke-optional-checks.py --output validation-results/optional-checks.json
+----
+
+Use python3 where appropriate. See
+link:../../docs/optional-checks.adoc[optional checks setup] for shell/PowerShell
+classpath commands, scopes, severity thresholds and limitations. The walkthrough
+builds the CLI and sample unless --skip-build reuses an existing CLI.
+
 Jackson API usage is based on its
 link:https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.18.3[2.18.3 API documentation].
 The metadata file follows the

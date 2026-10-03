@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "os": "Darwin",
+  "runs": [
+    {
+      "name": "java-version",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "build-sample",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "valid-enabled",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "snippet-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 1
+    },
+    {
+      "name": "snippet-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 1
+    },
+    {
+      "name": "properties-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 2
+    },
+    {
+      "name": "properties-warning",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 2
+    },
+    {
+      "name": "properties-warning-fails",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 2
+    },
+    {
+      "name": "properties-warning-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 2
+    },
+    {
+      "name": "both-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 3
+    },
+    {
+      "name": "both-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 3
+    },
+    {
+      "name": "both-disabled",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "default-checks-off",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "snippets-only",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 1
+    },
+    {
+      "name": "properties-only",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 2
+    },
+    {
+      "name": "restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "missing-dependencies",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 5
+    },
+    {
+      "name": "missing-dependencies-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 5
+    },
+    {
+      "name": "missing-classpath-file",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "missing-classpath-file-warn-only",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "malformed-resource",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "malformed-resource-warn-only",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "disabled-property-parser",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "final-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    }
+  ],
+  "passed": true,
+  "triageSha256": "1b24ec39af4211e4f7db3528fc8930aeea6b24a16cb853260d5b3cc02ff26510",
+  "jarSha256": "da57ce1b3ce63937c60450b19004ed7c991c994e600fe1c52d445c9bd2429c40",
+  "javaVersion": "openjdk version \"17.0.20.1\" 2026-08-18\nOpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)\nOpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)",
+  "dependencies": [
+    {
+      "name": "jackson-databind-2.18.3.jar",
+      "sha256": "510bdda75a7a6186c5bf33b851239488a1450906ae5757121f2e1cc48a7e108f"
+    },
+    {
+      "name": "jackson-annotations-2.18.3.jar",
+      "sha256": "8aa5740d80b5a5025508b41bbadbaa1fb3772267c628b2e30681a4f45f8b8931"
+    },
+    {
+      "name": "jackson-core-2.18.3.jar",
+      "sha256": "056bc4d3e5e53ce821450fa97b3f9e0f8dde125cf6da6884353bb1f09582e1d9"
+    }
+  ]
+}

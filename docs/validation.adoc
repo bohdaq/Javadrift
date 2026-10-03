@@ -480,3 +480,15 @@ key at docs/settings.adoc line 8, and a test-only key at line 11. Exact location
 references, classifications, evidence and normalized fixture hashes are recorded
 in validation/optional-checks-triage.json. These authored application cases use a
 real dependency; they are separate from the source-only upstream corpus.
+
+The automated temporary-consumer walkthrough passes 22 scenarios locally on JDK
+17, including default-off behavior, independent checks, warning thresholds,
+strict/warn-only findings, missing dependency classpaths, invalid classpath files
+and malformed enabled property resources. Five valid blocks become five JD008
+findings without dependency JARs, proving that Javadrift's bundled Jackson is not
+used as the snippet compilation classpath. The script verifies exact reviewed
+finding identities and unchanged compiled class-file hashes throughout. Correcting
+the guides clears all findings. Evidence is in validation/optional-checks-local.json.
+
+See link:optional-checks.adoc[optional checks setup] for shell and PowerShell
+classpath commands, property scopes, severity controls and current limitations.
