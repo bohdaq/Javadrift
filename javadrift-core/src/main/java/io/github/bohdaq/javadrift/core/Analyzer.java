@@ -7,7 +7,7 @@ import java.util.regex.*;
 public final class Analyzer {
     private static final Pattern MEMBER=Pattern.compile("(?<![\\w.$])([A-Z][\\w$]*(?:\\.[A-Z][\\w$]*)*|[a-z][\\w$]*(?:\\.[\\w$]+)+)(#|::|\\.)([a-zA-Z_$][\\w$]*)");
     private static final Pattern QUALIFIED=Pattern.compile("(?<![\\w$])(?:[a-z][\\w$]*\\.)+[A-Z][\\w$]*(?:\\.[A-Z][\\w$]*)*");
-    private static final Pattern PATH=Pattern.compile("(?<![\\w:/])(?:\\./)?(?:src|docs|config|gradle|\\.github)/[\\w./$@+-]+|(?<![\\w])(?:pom\\.xml|build\\.gradle(?:\\.kts)?|settings\\.gradle(?:\\.kts)?)");
+    private static final Pattern PATH=Pattern.compile("(?<![\\w:/.~])(?:\\./)?(?:src|docs|config|gradle|\\.github)/[\\w./$@+-]+|(?<![\\w])(?:pom\\.xml|build\\.gradle(?:\\.kts)?|settings\\.gradle(?:\\.kts)?)");
     public record Result(List<Finding> findings,int documents,int types) {
         public boolean fails(Config config) {Severity level=Severity.parse(config.failOn);return findings.stream().anyMatch(f->f.severity().ordinal()>=level.ordinal());}
     }
@@ -131,18 +131,20 @@ public final class Analyzer {
         for(int i=1;i<=a.length();i++){int[] next=new int[b.length()+1];next[0]=i;for(int j=1;j<=b.length();j++)next[j]=Math.min(Math.min(next[j-1]+1,prev[j]+1),prev[j-1]+(a.charAt(i-1)==b.charAt(j-1)?0:1));prev=next;}
         return prev[b.length()];
     }
-    private void path(Path root,Config config,Set<Finding> out,DocReader.Document doc,DocReader.Fragment f,String value,int offset,boolean link) {
+    private void path(Path root,Config config,Set<Finding> out,DocReader.Document doc,DocReader.Fragment f,String value,int offset,boolean link) throws IOException {
         if(value.startsWith("#")||value.contains(":")||value.startsWith("//")||value.contains("{")||value.contains("$")||value.contains("*")||value.contains(".."+"."))return;
         String path=value.split("[#?]",2)[0];if(path.isBlank())return;
         try {
             if(link)path=URI.create(path).getPath();
-            Path target=link?(path.startsWith("/")?root.resolve(path.substring(1)):doc.path().getParent().resolve(path)):root.resolve(path);
+            Path origin=RepositoryPaths.origin(root,doc.path());
+            Path target=link?(path.startsWith("/")?root.resolve(path.substring(1)):origin.getParent().resolve(path)):root.resolve(path);
+            if(link && f.language().equals("xref") && !path.contains("/") && !path.contains("."))return; // Same-document anchor.
             if(link && f.language().equals("xref")) {
                 // Antora page IDs are rooted at their module's pages family.
-                for(Path module=doc.path().getParent();module!=null && module.startsWith(root);module=module.getParent()) {
+                for(Path module=origin.getParent();module!=null && module.startsWith(root);module=module.getParent()) {
                     if(module.getParent()!=null && module.getParent().getFileName().toString().equals("modules")) {
                         target=path.startsWith("./")||path.startsWith("../")
-                            ?doc.path().getParent().resolve(path):module.resolve("pages").resolve(path);
+                            ?origin.getParent().resolve(path):module.resolve("pages").resolve(path);
                         break;
                     }
                 }
@@ -150,7 +152,7 @@ public final class Analyzer {
             // Escaping links include GitHub sibling-repo and wiki navigation.
             // They are outside the repository-file check's scope.
             if(link && (path.startsWith("/") || !target.toAbsolutePath().normalize().startsWith(root.toAbsolutePath().normalize())))return;
-            if(!Files.exists(target.normalize()))add(root,config,out,doc,f,offset,Check.JD007,value,"Missing repository path `"+path+"`",null);
+            if(!RepositoryPaths.exists(root,origin,target,path,link) && (link || !RepositoryPaths.ambiguousInline(root,doc.path(),f,path)))add(root,config,out,doc,f,offset,Check.JD007,value,"Missing repository path `"+path+"`",null);
         } catch(IllegalArgumentException e) { /* Not an unambiguous filesystem path. */ }
     }
     static void add(Path root,Config config,Set<Finding> out,DocReader.Document doc,DocReader.Fragment f,int offset,Check check,String ref,String message,String suggestion) {

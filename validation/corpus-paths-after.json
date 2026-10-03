@@ -1,0 +1,1064 @@
+{
+  "schemaVersion": 1,
+  "jarSha256": "18957350b28208166f2654628fce3130fe3221774b95c064caf264b3e8a05078",
+  "scope": "all-repository-docs",
+  "mode": "full/source-only/no-Git-tags",
+  "runs": [
+    {
+      "repository": "commonmark/commonmark-java",
+      "commit": "b89e72fdb25948c1b9623d64baa29d35d49f8abf",
+      "exitCode": 1,
+      "seconds": 1.503,
+      "result": {
+        "findings": [
+          {
+            "file": "CHANGELOG.md",
+            "line": 524,
+            "column": 4,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "DelimiterProcessor#getDelimiterChar",
+            "message": "DelimiterProcessor has no member `getDelimiterChar`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 566,
+            "column": 12,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "MatchedBlockParser#getParagraphStartLine",
+            "message": "MatchedBlockParser has no member `getParagraphStartLine`",
+            "suggestion": "Did you mean `getParagraphLines`?"
+          }
+        ],
+        "documents": 10,
+        "types": 232
+      }
+    },
+    {
+      "repository": "apache/commons-lang",
+      "commit": "7fce4c843fcd758da9b3408aaf9435c2471ab218",
+      "exitCode": 0,
+      "seconds": 2.312,
+      "result": {
+        "findings": [],
+        "documents": 5,
+        "types": 287
+      }
+    },
+    {
+      "repository": "apache/commons-io",
+      "commit": "05f968e913fb43f21ccecb44eba5d523999999f9",
+      "exitCode": 0,
+      "seconds": 1.779,
+      "result": {
+        "findings": [],
+        "documents": 5,
+        "types": 300
+      }
+    },
+    {
+      "repository": "apache/commons-text",
+      "commit": "23428d0ba4fc23e8f080d1ec50aee17f72276f9d",
+      "exitCode": 0,
+      "seconds": 1.62,
+      "result": {
+        "findings": [],
+        "documents": 6,
+        "types": 80
+      }
+    },
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
+      "exitCode": 1,
+      "seconds": 1.911,
+      "result": {
+        "findings": [
+          {
+            "file": "src/site/markdown/bloomFilters/advanced.md",
+            "line": 27,
+            "column": 302,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "BitMapExtractor.processBitmapPairs",
+            "message": "BitMapExtractor has no member `processBitmapPairs`",
+            "suggestion": "Did you mean `processBitMapPairs`?"
+          },
+          {
+            "file": "src/site/markdown/bloomFilters/advanced.md",
+            "line": 29,
+            "column": 130,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "BitMapExtractor.processBitmapPairs",
+            "message": "BitMapExtractor has no member `processBitmapPairs`",
+            "suggestion": "Did you mean `processBitMapPairs`?"
+          },
+          {
+            "file": "src/site/markdown/bloomFilters/advanced.md",
+            "line": 32,
+            "column": 8,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.commons.collections4.bloomfilter.BitMap",
+            "message": "Unknown project type `org.apache.commons.collections4.bloomfilter.BitMap`",
+            "suggestion": null
+          }
+        ],
+        "documents": 10,
+        "types": 408
+      }
+    },
+    {
+      "repository": "apache/commons-codec",
+      "commit": "5444a15a34dada7b6d92f6f96c58bef74cee2817",
+      "exitCode": 0,
+      "seconds": 1.244,
+      "result": {
+        "findings": [],
+        "documents": 5,
+        "types": 110
+      }
+    },
+    {
+      "repository": "apache/commons-compress",
+      "commit": "f4eea9e5cf73e38cf352c0d5f85376e5bbb630b9",
+      "exitCode": 0,
+      "seconds": 2.402,
+      "result": {
+        "findings": [],
+        "documents": 8,
+        "types": 416
+      }
+    },
+    {
+      "repository": "apache/commons-csv",
+      "commit": "c6ac1bde5b6b9545a8b85b570f5f118930c2b50f",
+      "exitCode": 1,
+      "seconds": 0.744,
+      "result": {
+        "findings": [
+          {
+            "file": "BENCHMARK.md",
+            "line": 79,
+            "column": 62,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.commons.csv.PerformanceTest",
+            "message": "Unknown project type `org.apache.commons.csv.PerformanceTest`",
+            "suggestion": null
+          }
+        ],
+        "documents": 6,
+        "types": 10
+      }
+    },
+    {
+      "repository": "google/gson",
+      "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+      "exitCode": 1,
+      "seconds": 1.338,
+      "result": {
+        "findings": [
+          {
+            "file": "CHANGELOG.md",
+            "line": 110,
+            "column": 22,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "GsonBuilder.newBuilder",
+            "message": "GsonBuilder has no member `newBuilder`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 371,
+            "column": 13,
+            "checkId": "JD003",
+            "severity": "WARNING",
+            "reference": "Gson.fromJson(JsonElement)",
+            "message": "No overload of `Gson#fromJson` matches the documented arguments",
+            "suggestion": null
+          },
+          {
+            "file": "ReleaseProcess.md",
+            "line": 108,
+            "column": 75,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "gson/src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+            "message": "Missing repository path `gson/src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java`",
+            "suggestion": null
+          },
+          {
+            "file": "ReleaseProcess.md",
+            "line": 116,
+            "column": 5,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+            "message": "Missing repository path `src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java`",
+            "suggestion": null
+          },
+          {
+            "file": "Troubleshooting.md",
+            "line": 369,
+            "column": 25,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.example.MyClass",
+            "message": "Unknown project type `com.example.MyClass`",
+            "suggestion": null
+          }
+        ],
+        "documents": 16,
+        "types": 112
+      }
+    },
+    {
+      "repository": "google/guava",
+      "commit": "72dd370d951967fe97756ecaaa938c7cb5bcbc28",
+      "exitCode": 0,
+      "seconds": 8.097,
+      "result": {
+        "findings": [],
+        "documents": 5,
+        "types": 812
+      }
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "exitCode": 1,
+      "seconds": 0.952,
+      "result": {
+        "findings": [
+          {
+            "file": "CHANGELOG.md",
+            "line": 22,
+            "column": 14,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "TypeSpec.alwaysQualify",
+            "message": "TypeSpec has no member `alwaysQualify`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 25,
+            "column": 14,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "CodeBlock.clear",
+            "message": "CodeBlock has no member `clear`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 31,
+            "column": 14,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "TypeName.canonicalName",
+            "message": "TypeName has no member `canonicalName`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 103,
+            "column": 10,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "MethodSpec.addComment",
+            "message": "MethodSpec has no member `addComment`",
+            "suggestion": null
+          },
+          {
+            "file": "README.md",
+            "line": 493,
+            "column": 70,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "CodeBlock.add",
+            "message": "CodeBlock has no member `add`",
+            "suggestion": null
+          },
+          {
+            "file": "README.md",
+            "line": 511,
+            "column": 78,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "CodeBlock.addNamed",
+            "message": "CodeBlock has no member `addNamed`",
+            "suggestion": null
+          },
+          {
+            "file": "README.md",
+            "line": 762,
+            "column": 28,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "TypeSpec.anonymousInnerClass",
+            "message": "TypeSpec has no member `anonymousInnerClass`",
+            "suggestion": null
+          }
+        ],
+        "documents": 4,
+        "types": 22
+      }
+    },
+    {
+      "repository": "square/retrofit",
+      "commit": "3724fffb6ce312bc0191a31e0e8c7fb0c5796d39",
+      "exitCode": 1,
+      "seconds": 2.155,
+      "result": {
+        "findings": [
+          {
+            "file": "CHANGELOG.md",
+            "line": 391,
+            "column": 5,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Response.isSuccess",
+            "message": "Response has no member `isSuccess`",
+            "suggestion": "Did you mean `success`?"
+          },
+          {
+            "file": "CHANGELOG.md",
+            "line": 584,
+            "column": 18,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Response#getBody",
+            "message": "Response has no member `getBody`",
+            "suggestion": null
+          }
+        ],
+        "documents": 36,
+        "types": 105
+      }
+    },
+    {
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "exitCode": 0,
+      "seconds": 2.298,
+      "result": {
+        "findings": [],
+        "documents": 5,
+        "types": 157
+      }
+    },
+    {
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "exitCode": 0,
+      "seconds": 3.806,
+      "result": {
+        "findings": [],
+        "documents": 6,
+        "types": 697
+      }
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "exitCode": 1,
+      "seconds": 4.618,
+      "result": {
+        "findings": [
+          {
+            "file": ".claude/docs/ruled-out.md",
+            "line": 57,
+            "column": 38,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Cache.unwrap",
+            "message": "Cache has no member `unwrap`",
+            "suggestion": null
+          },
+          {
+            "file": ".claude/docs/ruled-out.md",
+            "line": 637,
+            "column": 35,
+            "checkId": "JD003",
+            "severity": "WARNING",
+            "reference": "Cache.get(Callable)",
+            "message": "No overload of `Cache#get` matches the documented arguments",
+            "suggestion": null
+          },
+          {
+            "file": ".claude/docs/testing.md",
+            "line": 93,
+            "column": 15,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.github.benmanes.caffeine.testing.CacheSubject",
+            "message": "Unknown project type `com.github.benmanes.caffeine.testing.CacheSubject`",
+            "suggestion": null
+          },
+          {
+            "file": ".claude/docs/testing.md",
+            "line": 121,
+            "column": 15,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.github.benmanes.caffeine.testing.Awaits",
+            "message": "Unknown project type `com.github.benmanes.caffeine.testing.Awaits`",
+            "suggestion": null
+          },
+          {
+            "file": ".claude/skills/audit-sibling-divergence/SKILL.md",
+            "line": 41,
+            "column": 37,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "AsyncLoadingCache.refresh",
+            "message": "AsyncLoadingCache has no member `refresh`",
+            "suggestion": null
+          },
+          {
+            "file": ".github/actions/spelling/README.md",
+            "line": 5,
+            "column": 2,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "dictionary.txt",
+            "message": "Missing repository path `dictionary.txt`",
+            "suggestion": null
+          },
+          {
+            "file": ".github/actions/spelling/README.md",
+            "line": 9,
+            "column": 2,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "only.txt",
+            "message": "Missing repository path `only.txt`",
+            "suggestion": null
+          },
+          {
+            "file": ".github/actions/spelling/advice.md",
+            "line": 12,
+            "column": 98,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "../tree/HEAD/README.md",
+            "message": "Missing repository path `../tree/HEAD/README.md`",
+            "suggestion": null
+          }
+        ],
+        "documents": 73,
+        "types": 444
+      }
+    },
+    {
+      "repository": "junit-team/junit5",
+      "commit": "2b484caa962ad9b0d9a6af5d2c25100b6a8f4ef6",
+      "exitCode": 1,
+      "seconds": 4.782,
+      "result": {
+        "findings": [
+          {
+            "file": "CONTRIBUTING.md",
+            "line": 130,
+            "column": 10,
+            "checkId": "JD007",
+            "severity": "ERROR",
+            "reference": "src/main",
+            "message": "Missing repository path `src/main`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/extensions/registering-extensions.adoc",
+            "line": 45,
+            "column": 13,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "WebServerExtension::class",
+            "message": "WebServerExtension has no member `class`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/extensions/registering-extensions.adoc",
+            "line": 77,
+            "column": 13,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "WebServerExtension::class",
+            "message": "WebServerExtension has no member `class`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/extensions/registering-extensions.adoc",
+            "line": 106,
+            "column": 39,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "WebServerExtension::class",
+            "message": "WebServerExtension has no member `class`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/extensions/registering-extensions.adoc",
+            "line": 137,
+            "column": 13,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "WebServerExtension::class",
+            "message": "WebServerExtension has no member `class`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/extensions/registering-extensions.adoc",
+            "line": 181,
+            "column": 39,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "WebServerExtension::class",
+            "message": "WebServerExtension has no member `class`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/build-support.adoc",
+            "line": 455,
+            "column": 27,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.example.project.CalculatorTests",
+            "message": "Unknown project type `com.example.project.CalculatorTests`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/build-support.adoc",
+            "line": 468,
+            "column": 15,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.example.project.CalculatorTests",
+            "message": "Unknown project type `com.example.project.CalculatorTests`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 73,
+            "column": 4,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.MyCustomImpl",
+            "message": "Unknown project type `org.example.MyCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 74,
+            "column": 4,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.MyCustomImpl",
+            "message": "Unknown project type `org.example.MyCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 75,
+            "column": 4,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.MyCustomImpl",
+            "message": "Unknown project type `org.example.MyCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 75,
+            "column": 30,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.TheirCustomImpl",
+            "message": "Unknown project type `org.example.TheirCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 76,
+            "column": 20,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.MyCustomImpl",
+            "message": "Unknown project type `org.example.MyCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/running-tests/configuration-parameters.adoc",
+            "line": 76,
+            "column": 50,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.example.TheirCustomImpl",
+            "message": "Unknown project type `org.example.TheirCustomImpl`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/writing-tests/built-in-extensions.adoc",
+            "line": 264,
+            "column": 16,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.junit.jupiter.api.io.TempDirFactory$Standard",
+            "message": "Unknown project type `org.junit.jupiter.api.io.TempDirFactory$Standard`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/writing-tests/built-in-extensions.adoc",
+            "line": 324,
+            "column": 16,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.junit.jupiter.api.io.TempDirDeletionStrategy$Standard",
+            "message": "Unknown project type `org.junit.jupiter.api.io.TempDirDeletionStrategy$Standard`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/writing-tests/display-names.adoc",
+            "line": 222,
+            "column": 5,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.junit.jupiter.api.DisplayNameGenerator$ReplaceUnderscores",
+            "message": "Unknown project type `org.junit.jupiter.api.DisplayNameGenerator$ReplaceUnderscores`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/writing-tests/test-execution-order.adoc",
+            "line": 81,
+            "column": 5,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.junit.jupiter.api.MethodOrderer$OrderAnnotation",
+            "message": "Unknown project type `org.junit.jupiter.api.MethodOrderer$OrderAnnotation`",
+            "suggestion": null
+          },
+          {
+            "file": "documentation/modules/ROOT/pages/writing-tests/test-execution-order.adoc",
+            "line": 127,
+            "column": 5,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.junit.jupiter.api.ClassOrderer$OrderAnnotation",
+            "message": "Unknown project type `org.junit.jupiter.api.ClassOrderer$OrderAnnotation`",
+            "suggestion": null
+          }
+        ],
+        "documents": 103,
+        "types": 643
+      }
+    },
+    {
+      "repository": "qos-ch/slf4j",
+      "commit": "90658112710a99a6ff7dbb2db0c1d13f8fb456f8",
+      "exitCode": 0,
+      "seconds": 1.525,
+      "result": {
+        "findings": [],
+        "documents": 4,
+        "types": 156
+      }
+    },
+    {
+      "repository": "jhy/jsoup",
+      "commit": "088614f4a1454232a1f03c63b7f80742f1f2a854",
+      "exitCode": 1,
+      "seconds": 1.842,
+      "result": {
+        "findings": [
+          {
+            "file": "CHANGES.md",
+            "line": 164,
+            "column": 31,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.jsoup.internal.Functions",
+            "message": "Unknown project type `org.jsoup.internal.Functions`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 169,
+            "column": 46,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Normalizer#normalize",
+            "message": "Normalizer has no member `normalize`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 170,
+            "column": 15,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#sslSocketFactory",
+            "message": "Connection has no member `sslSocketFactory`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 194,
+            "column": 32,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Validate#ensureNotNull",
+            "message": "Validate has no member `ensureNotNull`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 206,
+            "column": 10,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#readFully",
+            "message": "Connection has no member `readFully`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 206,
+            "column": 56,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#bufferUp",
+            "message": "Connection has no member `bufferUp`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 206,
+            "column": 127,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#readBody",
+            "message": "Connection has no member `readBody`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 206,
+            "column": 156,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#body",
+            "message": "Connection has no member `body`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 206,
+            "column": 188,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Connection#bufferUp",
+            "message": "Connection has no member `bufferUp`",
+            "suggestion": null
+          },
+          {
+            "file": "CHANGES.md",
+            "line": 299,
+            "column": 41,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.jsoup.UncheckedIOException",
+            "message": "Unknown project type `org.jsoup.UncheckedIOException`",
+            "suggestion": null
+          }
+        ],
+        "documents": 5,
+        "types": 129
+      }
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "exitCode": 1,
+      "seconds": 4.621,
+      "result": {
+        "findings": [
+          {
+            "file": "log4j-core-test/src/test/resources/README.md",
+            "line": 30,
+            "column": 2,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.logging.log4j.test.appender.ListAppender",
+            "message": "Unknown project type `org.apache.logging.log4j.test.appender.ListAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/faq.adoc",
+            "line": 82,
+            "column": 24,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "com.example.Foo",
+            "message": "Unknown project type `com.example.Foo`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/appenders/message-queue.adoc",
+            "line": 309,
+            "column": 2,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.logging.log4j.flume.appender.FlumeEventFactory",
+            "message": "Unknown project type `org.apache.logging.log4j.flume.appender.FlumeEventFactory`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/appenders/message-queue.adoc",
+            "line": 310,
+            "column": 65,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.logging.log4j.flume.appender.FlumeEvent",
+            "message": "Unknown project type `org.apache.logging.log4j.flume.appender.FlumeEvent`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/filters.adoc",
+            "line": 132,
+            "column": 2,
+            "checkId": "JD003",
+            "severity": "WARNING",
+            "reference": "LoggerConfig#log()",
+            "message": "No overload of `LoggerConfig#log` matches the documented arguments",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/filters.adoc",
+            "line": 167,
+            "column": 2,
+            "checkId": "JD003",
+            "severity": "WARNING",
+            "reference": "AppenderControl#callAppender()",
+            "message": "No overload of `AppenderControl#callAppender` matches the documented arguments",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/layouts.adoc",
+            "line": 154,
+            "column": 99,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest",
+            "message": "Unknown project type `org.apache.logging.log4j.core.layout.CsvLogEventLayoutTest`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/scripts.adoc",
+            "line": 132,
+            "column": 16,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner",
+            "message": "Unknown project type `org.apache.logging.log4j.core.script.ScriptManager$MainScriptRunner`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/manual/thread-context.adoc",
+            "line": 54,
+            "column": 1,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "ThreadContext.clear",
+            "message": "ThreadContext has no member `clear`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 540,
+            "column": 126,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.AsyncAppender",
+            "message": "Unknown project type `org.apache.log4j.AsyncAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 542,
+            "column": 137,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.DailyRollingFileAppender",
+            "message": "Unknown project type `org.apache.log4j.DailyRollingFileAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 545,
+            "column": 127,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.net.SocketAppender",
+            "message": "Unknown project type `org.apache.log4j.net.SocketAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 546,
+            "column": 127,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.net.SyslogAppender",
+            "message": "Unknown project type `org.apache.log4j.net.SyslogAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 547,
+            "column": 128,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.rewrite.RewriteAppender",
+            "message": "Unknown project type `org.apache.log4j.rewrite.RewriteAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 548,
+            "column": 140,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.rolling.RollingFileAppender",
+            "message": "Unknown project type `org.apache.log4j.rolling.RollingFileAppender`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 558,
+            "column": 121,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.HTMLLayout",
+            "message": "Unknown project type `org.apache.log4j.HTMLLayout`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 559,
+            "column": 162,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.EnhancedPatternLayout",
+            "message": "Unknown project type `org.apache.log4j.EnhancedPatternLayout`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 561,
+            "column": 121,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.TTCCLayout",
+            "message": "Unknown project type `org.apache.log4j.TTCCLayout`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 562,
+            "column": 120,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.xml.XMLLayout",
+            "message": "Unknown project type `org.apache.log4j.xml.XMLLayout`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 565,
+            "column": 137,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.rolling.CompositeTriggeringPolicy",
+            "message": "Unknown project type `org.apache.log4j.rolling.CompositeTriggeringPolicy`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 566,
+            "column": 137,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.rolling.SizeBasedTriggeringPolicy",
+            "message": "Unknown project type `org.apache.log4j.rolling.SizeBasedTriggeringPolicy`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+            "line": 567,
+            "column": 134,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "org.apache.log4j.rolling.TimeBasedRollingPolicy",
+            "message": "Unknown project type `org.apache.log4j.rolling.TimeBasedRollingPolicy`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-logback.adoc",
+            "line": 131,
+            "column": 8,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "example.MigrateFromLogback",
+            "message": "Unknown project type `example.MigrateFromLogback`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/pages/migrate-from-logback.adoc",
+            "line": 158,
+            "column": 8,
+            "checkId": "JD001",
+            "severity": "ERROR",
+            "reference": "example.MigrateFromLogback",
+            "message": "Unknown project type `example.MigrateFromLogback`",
+            "suggestion": null
+          },
+          {
+            "file": "src/site/antora/modules/ROOT/partials/manual/systemproperties/properties-log4j-core-misc.adoc",
+            "line": 35,
+            "column": 109,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "Clock#systemDefaultZone",
+            "message": "Clock has no member `systemDefaultZone`",
+            "suggestion": null
+          }
+        ],
+        "documents": 155,
+        "types": 1612
+      }
+    },
+    {
+      "repository": "resilience4j/resilience4j",
+      "commit": "7e3ab5252ed380b596e25240f19376a4435570b8",
+      "exitCode": 0,
+      "seconds": 2.441,
+      "result": {
+        "findings": [],
+        "documents": 10,
+        "types": 694
+      }
+    }
+  ],
+  "summary": {
+    "repositories": 20,
+    "errors": 0,
+    "documents": 477,
+    "findings": 82
+  }
+}

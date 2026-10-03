@@ -206,3 +206,24 @@ passed with the javadrift-documentation-report artifact. This is self-adoption;
 no external repository was changed, as requested. Registry uploads remain pending
 user account credentials and a signing key; signing and Portal authentication
 have not been validated locally.
+
+== Path triage after the preview
+
+The unchanged 20 pins and 477 documents reproduce the original 580 findings with
+zero input errors. All 504 path findings are classified in validation/path-triage.json:
+502 false positives under repository-path checking and two real stale benchmark
+paths in Gson. Its benchmark moved to the metrics module; the old gson/src paths
+remain documented. No upstream repository was modified.
+
+447 reports refer to generated Javadoc routes backed by Java sources (or module
+POM/package directory) in the pinned tree. Other reviewed groups cover Maven site
+HTML inputs, GitHub template context, module/workspace paths, consumer conventions,
+same-page anchors and a symlinked document's link base. Source-backed Javadoc
+resolution does not prove generated nested pages or anchors are valid.
+
+Path fixes reduce the complete stress pass to 82 findings, including six paths:
+the two Gson errors and four known false positives in optional spelling configuration,
+GitHub branch navigation and a multi-module contributor directory convention.
+validation/corpus-triage-before.json and validation/corpus-paths-after.json preserve
+the raw scans. Regression tests retain genuinely missing links/source files.
+The remaining false positives mean this is not a broad precision pass.

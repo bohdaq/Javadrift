@@ -250,3 +250,18 @@ Registry workflows and artifact metadata are prepared. Maven Central and Plugin
 Portal uploads need your publishing accounts, namespace and signing key. Follow
 link:docs/publishing.adoc[the publishing setup] to configure the six GitHub secrets
 and run the workflow. Until publication is confirmed, build adapters locally.
+
+== Documentation path context
+
+Inline paths can resolve from the document's module or documentation workspace as
+well as the repository root. Outside root documents, bare build filenames and
+inline directory mentions are treated conservatively as consumer-project conventions.
+Explicit links and named source files still report missing targets. Home-directory
+path fragments are not interpreted as repository paths.
+
+For Maven site inputs, linked HTML can resolve to its Markdown/AsciiDoc input.
+Generated Javadoc routes can resolve to an outer Java source file, package directory
+or module POM. This checks source-backed paths without building a site; it does not
+validate generated nested-class pages or anchors. Extensionless AsciiDoc xrefs are
+same-document anchors. Symlinked documentation resolves links from its actual source
+directory. GitHub contribution-template links can use the repository root context.
