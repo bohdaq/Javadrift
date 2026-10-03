@@ -179,3 +179,7 @@ Kotlin plugins 2.2.21, 2.3.21 and 2.4.20 on JDK 17 and the pinned Gradle wrapper
 Each job saves its JSON report and command logs in a kotlin-gradle artifact named
 for that version. These jobs build plugin/core from the checkout and need no local
 Maven installation step.
+
+The cli-portability matrix builds the packaged JAR on Linux, macOS and Windows,
+then runs the native-path walkthrough on JDK 17 and 21. Each of the six jobs saves
+its JSON summary and command logs in a cli artifact named for the runner and JDK.

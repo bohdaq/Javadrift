@@ -424,3 +424,9 @@ The local macOS/JDK 17 run passes all scenarios. The Maven core and CLI build al
 passes 54 tests, including a new CLI regression for missing output directories.
 The command outcomes and packaged JAR checksum are recorded in
 validation/cli-portability-local.json.
+
+The build workflow runs this packaged CLI walkthrough in a six-job matrix: Linux,
+macOS and Windows, each on JDK 17 and 21. Each job builds core/CLI from the checkout
+and runs all 18 scenarios with the platform's Java, Git and filesystem behavior.
+The separate Maven verify jobs run unit tests. Matrix jobs run independently and
+upload JSON summaries and command logs after success or failure.
