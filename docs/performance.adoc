@@ -1,0 +1,29 @@
+= Performance validation
+
+The source-only benchmark builds deterministic synthetic repositories and scans
+them with the packaged CLI. Each case defaults to 5,000 public classes and 500
+documents. Fixture generation is outside the scan timer; JVM startup is included.
+The inputs contain no compiled class outputs or downloaded project dependencies.
+
+The java profile contains 5,000 Java classes and 500 Markdown guides. The mixed
+profile contains 2,500 Java classes, 2,500 Kotlin classes, 250 Markdown guides and
+250 AsciiDoc guides. Kotlin inputs exercise properties, default arguments and
+methods accepting Java types. The guides reference Java and Kotlin APIs. Each scan
+must index every class and document and produce zero findings.
+
+Build the CLI, then run both profiles on JDK 17:
+
+[source,shell]
+----
+mvn -B -DskipTests -pl javadrift-cli -am package
+python3 scripts/benchmark.py --profile all
+----
+
+Use --profile java or --profile mixed for one case. --classes and --documents
+change the sizes; --max-seconds enforces a local wall-time budget. Fixtures include
+a SHA-256 of their paths and content so comparison inputs can be identified.
+
+These workloads measure source indexing and reference checking on generated
+repositories. They do not measure dependency resolution, upstream project builds
+or optional snippet compilation. Corpus and Git history validation cover other
+repository shapes separately.

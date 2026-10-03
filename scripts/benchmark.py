@@ -1,40 +1,36 @@
 #!/usr/bin/env python3
-"""Reproducible 500-document / 5,000-class source-index benchmark."""
+"""Reproducible Java and mixed Java/Kotlin source-index benchmarks."""
 import argparse
 import json
 from pathlib import Path
 import subprocess
 import tempfile
 import time
+from benchmark_fixtures import generate
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--jar', type=Path, default=Path('javadrift-cli/target/javadrift.jar'))
 parser.add_argument('--java', default='java')
 parser.add_argument('--max-seconds', type=float)
+parser.add_argument('--profile', choices=('java', 'mixed', 'all'), default='java')
+parser.add_argument('--classes', type=int, default=5000)
+parser.add_argument('--documents', type=int, default=500)
 args = parser.parse_args()
 jar = args.jar.resolve()
 if not jar.is_file():
     parser.error('Build the CLI jar with mvn package first')
-with tempfile.TemporaryDirectory(prefix='javadrift-benchmark-') as directory:
-    root = Path(directory)
-    source = root / 'src/main/java/benchmark'
-    docs = root / 'docs'
-    source.mkdir(parents=True)
-    docs.mkdir()
-    for i in range(5000):
-        (source / f'Type{i}.java').write_text(
-            f'package benchmark; public class Type{i} {{ public void place() {{}} }}\n')
-    for i in range(500):
-        (docs / f'guide-{i}.md').write_text(f'`benchmark.Type{i}` `Type{i}#place`\n')
-    started = time.perf_counter()
-    result = subprocess.run([args.java, '-Xmx512m', '-jar', str(jar), 'check',
-                             '--root', str(root), '--format', 'json'],
-                            text=True, capture_output=True, check=True)
-    elapsed = time.perf_counter() - started
-    report = json.loads(result.stdout)
-    assert report['documents'] == 500 and report['types'] == 5000
-    assert report['findings'] == []
-    print(json.dumps({'documents': 500, 'classes': 5000,
-                      'wallSeconds': round(elapsed, 3), 'findings': 0}))
-    if args.max_seconds is not None and elapsed > args.max_seconds:
-        raise SystemExit(f'Budget exceeded: {elapsed:.3f}s > {args.max_seconds}s')
+for profile in (('java', 'mixed') if args.profile == 'all' else (args.profile,)):
+    with tempfile.TemporaryDirectory(prefix='javadrift-benchmark-') as directory:
+        root = Path(directory)
+        fixture = generate(root, profile, args.classes, args.documents)
+        started = time.perf_counter()
+        result = subprocess.run([args.java, '-Xmx512m', '-jar', str(jar), 'check',
+                                 '--root', str(root), '--format', 'json'],
+                                text=True, capture_output=True, check=True, timeout=120)
+        elapsed = time.perf_counter() - started
+        report = json.loads(result.stdout)
+        if report['documents'] != args.documents or report['types'] != args.classes or report['findings']:
+            raise RuntimeError(f'Unexpected fixture scan: {report}')
+        print(json.dumps({**fixture, 'wallSeconds': round(elapsed, 3), 'findings': 0}))
+        if args.max_seconds is not None and elapsed > args.max_seconds:
+            raise SystemExit(f'Budget exceeded: {elapsed:.3f}s > {args.max_seconds}s')

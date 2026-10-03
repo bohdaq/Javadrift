@@ -430,3 +430,15 @@ macOS and Windows, each on JDK 17 and 21. Each job builds core/CLI from the chec
 and runs all 18 scenarios with the platform's Java, Git and filesystem behavior.
 The separate Maven verify jobs run unit tests. Matrix jobs run independently and
 upload JSON summaries and command logs after success or failure.
+
+== Large mixed-language benchmark fixtures
+
+The source benchmark now has java and mixed profiles, each with 5,000 classes and
+500 documents by default. The mixed case splits classes equally between Java and
+Kotlin, and guides equally between Markdown and AsciiDoc. Both profiles index the
+expected 5,000 types and 500 documents with no findings. Initial local JDK 17 scans
+take 1.525 seconds for Java and 2.389 seconds for mixed input, including JVM startup
+and excluding fixture generation. These single runs establish correct fixture
+behavior; repeated timing and memory measurements follow separately.
+
+See link:performance.adoc[performance validation] for profiles and commands.
