@@ -1,0 +1,6 @@
+report:
+  title: Daily
+  retries: 3
+---
+report:
+  host: localhost

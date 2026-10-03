@@ -1,0 +1,10 @@
+docs:
+  include: ['docs/guide.md', 'docs/settings.adoc']
+checks:
+  JD008: error
+  JD009: error
+snippets:
+  imports: ['demo.ReportService', 'com.fasterxml.jackson.databind.ObjectMapper']
+  release: '17'
+# A vendor-owned setting is outside this application's declarations.
+ignore: ['vendor.trace']

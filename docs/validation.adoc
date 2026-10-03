@@ -463,3 +463,20 @@ build metadata. The performance workflow uses five paired runs per profile on JD
 17, compares against the appropriate PR/push reference, and uploads metrics and
 logs even after failures. Its summary reports both builds' median time and memory;
 substantial regressions fail the job under the documented ratio-plus-floor limits.
+
+== Optional checks application fixture
+
+examples/optional-checks is an independent Java 17 Maven sample using Jackson
+databind/core/annotations 2.18.3. Its five compiled Java blocks cover configured
+imports, statement/member fragments, a packaged compilation unit and a class with
+a failing static initializer that must not execute. One additional partial block
+is explicitly skipped. The AsciiDoc settings guide covers .properties, two YAML
+documents, Spring-format metadata and a production System.getProperty call.
+
+The sample builds and its enabled JD008/JD009 scan returns zero findings across
+two documents and one project type. Reviewed stale variants return exactly three
+errors: assigning JsonNode to String at docs/guide.md line 15, a misspelled metadata
+key at docs/settings.adoc line 8, and a test-only key at line 11. Exact locations,
+references, classifications, evidence and normalized fixture hashes are recorded
+in validation/optional-checks-triage.json. These authored application cases use a
+real dependency; they are separate from the source-only upstream corpus.

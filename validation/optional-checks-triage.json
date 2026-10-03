@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "fixture": "examples/optional-checks",
+  "dependencies": {
+    "jackson-databind": "2.18.3"
+  },
+  "fixtureHashes": {
+    "stale-guide.md": "7370f76cb02d07ccfa2b8e26091d5883125e93205d6070182e39a017d54ffa19",
+    "stale-settings.adoc": "ab708e34850d7615799f4179a395343e5ce62365ee45e49f681fb956b530b270"
+  },
+  "findings": [
+    {
+      "file": "docs/guide.md",
+      "line": 15,
+      "column": 31,
+      "checkId": "JD008",
+      "reference": "ObjectMapper mapper = new ObjectMapper();\nString title = mapper.readTree(\"{\\\"title\\\":\\\"Daily\\\"}\");",
+      "classification": "true-positive",
+      "evidence": "Jackson readTree returns JsonNode; assigning it to String is a compilation error."
+    },
+    {
+      "file": "docs/settings.adoc",
+      "line": 8,
+      "column": 1,
+      "checkId": "JD009",
+      "reference": "report.cache.enabeld",
+      "classification": "true-positive",
+      "evidence": "The declared metadata key is report.cache.enabled; enabeld is a spelling error."
+    },
+    {
+      "file": "docs/settings.adoc",
+      "line": 11,
+      "column": 1,
+      "checkId": "JD009",
+      "reference": "report.test-only",
+      "classification": "true-positive",
+      "evidence": "report.test-only is declared only under src/test/resources, outside production settings."
+    }
+  ]
+}

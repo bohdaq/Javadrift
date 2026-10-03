@@ -1,0 +1,34 @@
+= Optional checks sample
+
+This independent Java 17 Maven project uses Jackson databind 2.18.3. Its Markdown
+guide exercises statement fragments, class members, complete units with packages,
+configured imports and an explicit partial-block skip. The AsciiDoc guide documents
+keys declared by .properties, multi-document YAML, Spring-format metadata and
+System.getProperty in production Java. A test resource declares a key that should
+not be accepted as a production setting. vendor.trace is explicitly ignored.
+
+From the Javadrift checkout, build the CLI and the sample's classes/classpath:
+
+[source,shell]
+----
+mvn -B -DskipTests -pl javadrift-cli -am package
+mvn -B -f examples/optional-checks/pom.xml compile dependency:build-classpath -Dmdep.outputFile=target/dependency-classpath.txt
+----
+
+The dependency classpath file uses the native platform path separator and contains
+Jackson databind, core and annotations. Pass its contents as a single --classpath
+argument along with --root examples/optional-checks. The root configuration enables
+JD008 and JD009 as errors and includes only the two active guides. Compiled project
+classes in target/classes are discovered automatically. A JDK with javac is required.
+
+The variants directory has reviewed valid/stale copies for both guides. The stale
+Java example assigns Jackson's JsonNode result to a String, producing JD008. The
+stale settings misspell a metadata key and document a test-only key, producing two
+JD009 findings. The active guides start valid; check variants only by copying them
+over the active files in a temporary sample.
+
+Jackson API usage is based on its
+link:https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.18.3[2.18.3 API documentation].
+The metadata file follows the
+link:https://docs.spring.io/spring-boot/specification/configuration-metadata/format.html[Spring configuration metadata format].
+This is an authored sample with a real library dependency, not an upstream corpus result.

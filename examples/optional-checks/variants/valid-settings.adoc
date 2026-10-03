@@ -1,0 +1,20 @@
+= Report settings
+
+The application declares these keys in its production resources or Java source.
+
+[source,properties]
+----
+report.batch-size=10
+report.cache.enabled=true
+report.host=localhost
+report.output.dir=reports
+report.retries=3
+report.title=Daily
+----
+
+The vendor setting is explicitly ignored in this sample's configuration.
+
+[source,properties]
+----
+vendor.trace=true
+----
