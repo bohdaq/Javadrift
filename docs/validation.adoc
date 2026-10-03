@@ -397,3 +397,9 @@ language feature added after the parser's version.
 
 The selected Gradle/Kotlin combinations are within
 link:https://kotlinlang.org/docs/gradle-configure-project.html[Kotlin's documented Gradle compatibility ranges].
+
+The build workflow's kotlin-compatibility matrix repeats these checks from fresh
+GitHub checkouts on JDK 17. Versions run independently; one failure does not cancel
+the others. Each job uploads its report and command logs even after a check fails.
+The existing full adoption job continues to exercise CLI and Maven alongside the
+default Kotlin Gradle version.

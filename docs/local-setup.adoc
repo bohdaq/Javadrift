@@ -150,3 +150,9 @@ a fresh checkout. It uploads local-adoption-reports with the JSON results and ea
 command's logs, including after failures. Corpus/history gates remain separate and
 continue to protect reviewed upstream findings. No workflow in this setup publishes
 a registry artifact or creates a release.
+
+The kotlin-compatibility matrix separately runs the four Gradle scenarios with
+Kotlin plugins 2.2.21, 2.3.21 and 2.4.20 on JDK 17 and the pinned Gradle wrapper.
+Each job saves its JSON report and command logs in a kotlin-gradle artifact named
+for that version. These jobs build plugin/core from the checkout and need no local
+Maven installation step.
