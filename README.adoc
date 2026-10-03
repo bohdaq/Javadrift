@@ -7,7 +7,7 @@ project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
 == Download the CLI preview
 
 Download javadrift.jar and javadrift.jar.sha256 from
-https://github.com/bohdaq/Javadrift/releases/tag/v0.3.1[the v0.3.1 release].
+https://github.com/bohdaq/Javadrift/releases/tag/v0.4.0[the v0.4.0 release].
 Verify the checksum with sha256sum -c javadrift.jar.sha256 (or shasum -a 256 -c
 on macOS), then run java -jar javadrift.jar check --root /path/to/project.
 
@@ -16,7 +16,7 @@ both assets from the GitHub Release:
 
 [source,shell]
 ----
-JAVADRIFT_VERSION=v0.3.1
+JAVADRIFT_VERSION=v0.4.0
 BASE_URL="https://github.com/bohdaq/Javadrift/releases/download/${JAVADRIFT_VERSION}"
 curl --fail --location --output javadrift.jar "${BASE_URL}/javadrift.jar"
 curl --fail --location --output javadrift.jar.sha256 "${BASE_URL}/javadrift.jar.sha256"
@@ -43,12 +43,12 @@ Licensed under link:LICENSE[Apache-2.0].
 
 == Diagnose setup
 
-The current source checkout includes doctor (not yet in the 0.3.1 download):
+The 0.4.0 preview adds doctor. With the downloaded CLI, run:
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project
-java -jar javadrift-cli/target/javadrift.jar doctor --format json
+java -jar javadrift.jar doctor --root /path/to/project
+java -jar javadrift.jar doctor --format json
 ----
 
 It checks configuration, selected docs/sources, compiled outputs, dependency
@@ -143,15 +143,15 @@ Git tag for a snapshot (optional v prefix). It never looks up releases online.
 Without a release tag, snapshot projects skip JD006. Maven property placeholders
 are expanded only from that POM's properties; unresolved placeholders are skipped.
 
-Version 0.3.1 is available from Maven Central. Add this block to the reactor root
-POM; no custom repository or local installation is needed:
+Version 0.4.0 is prepared for Maven Central publication. After the registry
+workflow completes, use this block in the reactor root POM:
 
 [source,xml]
 ----
 <plugin>
   <groupId>io.github.bohdaq</groupId>
   <artifactId>javadrift-maven-plugin</artifactId>
-  <version>0.3.1</version>
+  <version>0.4.0</version>
   <inherited>false</inherited>
   <executions><execution><goals><goal>check</goal></goals></execution></executions>
 </plugin>
@@ -203,6 +203,9 @@ plugins { id("io.github.bohdaq.javadrift") version "0.3.1" }
 repositories { mavenCentral() }
 javadrift { warnOnly.set(true) }
 ----
+
+The 0.4.0 plugin update will follow first-publication approval. Until then, use
+the included source build below for current adapter changes.
 
 Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
 plugin release is published, add this repository as an included plugin build
@@ -262,8 +265,8 @@ baselines, Git refs and repository file changes are tracked as inputs.
 
 The composite action lives in javadrift-action/. It requires a release tag with
 the CLI jar and SHA-256 checksum. The release workflow produces those assets
-when a version tag is pushed. Version v0.3.1 includes baseline maintenance,
-isolated Gradle analysis and optional-check setup examples.
+when a version tag is pushed. Version v0.4.0 adds setup diagnostics to baseline
+maintenance, isolated Gradle analysis and optional-check setup examples.
 The runner needs JDK 17+; diff mode also needs a checkout with full history.
 
 [source,yaml]
@@ -276,9 +279,9 @@ steps:
     with:
       distribution: temurin
       java-version: '17'
-  - uses: bohdaq/Javadrift/javadrift-action@v0.3.1
+  - uses: bohdaq/Javadrift/javadrift-action@v0.4.0
     with:
-      version: v0.3.1
+      version: v0.4.0
       warn-only: 'true'
 ----
 
@@ -351,7 +354,7 @@ code, source/listing blocks and link/xref targets; it does not expand include
 macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
 
-The 0.3.1 preview implements all nine check IDs and build integrations.
+The 0.4.0 preview implements all nine check IDs and build integrations.
 The small corpus does not establish broad accuracy; adoption gates and the
 Gradle Plugin Portal's first-publication approval remain pending. Maven Central
 artifacts are published. See

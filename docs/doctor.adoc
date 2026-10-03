@@ -1,12 +1,12 @@
 = Diagnose project setup
 
-The doctor command is available in the current source checkout. It is not in
-the published 0.3.1 CLI; build the current source with mvn package first.
+The doctor command is included in the 0.4.0 preview. Download javadrift.jar
+from the GitHub release or build the current source with mvn package.
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project
-java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project --format json
+java -jar javadrift.jar doctor --root /path/to/project
+java -jar javadrift.jar doctor --root /path/to/project --format json
 ----
 
 Doctor checks the running Java version, project root and YAML configuration,
@@ -26,7 +26,7 @@ entries are rejected to avoid accidentally relying on the working directory.
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project \
+java -jar javadrift.jar doctor --root /path/to/project \
   --class-dir target/classes --classpath "/path/to/dependency.jar"
 ----
 

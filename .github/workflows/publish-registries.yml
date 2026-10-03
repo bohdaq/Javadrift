@@ -5,7 +5,7 @@ on:
       tag:
         description: Release tag to publish (must contain publishing configuration)
         required: true
-        default: v0.3.1
+        default: v0.4.0
       registry:
         description: Publish both registries, or resume one registry independently
         type: choice

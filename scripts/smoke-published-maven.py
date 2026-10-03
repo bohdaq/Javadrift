@@ -2,21 +2,31 @@
 """Verify the Maven Central plugin from an isolated consumer and empty local repository."""
 import argparse
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import xml.etree.ElementTree as ET
 
 PROJECT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--maven', default='mvn')
+parser.add_argument('--version', help='Published plugin version; defaults to the standalone sample POM')
 parser.add_argument('--output', type=Path, default=Path(tempfile.gettempdir()) / 'javadrift-published-maven/report.json')
 args = parser.parse_args()
+ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+sample_pom = ET.parse(PROJECT / 'examples/published-maven/pom.xml')
+sample_plugin = next(p for p in sample_pom.findall('m:build/m:plugins/m:plugin', ns)
+                     if p.findtext('m:artifactId', namespaces=ns) == 'javadrift-maven-plugin')
+version = args.version or sample_plugin.findtext('m:version', namespaces=ns)
+if not re.fullmatch(r'\d+\.\d+\.\d+', version):
+    parser.error('--version must be a published numeric version such as 0.4.0')
 output = args.output.resolve()
 output.parent.mkdir(parents=True, exist_ok=True)
 logs = output.parent / (output.stem + '-logs')
 logs.mkdir(exist_ok=True)
-summary = {'schemaVersion': 1, 'version': '0.3.1', 'scope': 'Maven Central plugin; temporary standalone consumer; initially empty local Maven repository',
+summary = {'schemaVersion': 1, 'version': version, 'scope': 'Maven Central plugin; temporary standalone consumer; initially empty local Maven repository',
            'runs': [], 'passed': False}
 
 
@@ -47,12 +57,16 @@ try:
         base = Path(directory)
         consumer, repository = base / 'consumer project', base / 'empty Maven repository'
         shutil.copytree(PROJECT / 'examples/published-maven', consumer, ignore=shutil.ignore_patterns('target', '.git'))
+        if args.version:
+            sample_plugin.find('m:version', ns).text = version
+            ET.register_namespace('', ns['m'])
+            sample_pom.write(consumer / 'pom.xml', encoding='utf-8', xml_declaration=True)
         repository.mkdir()
         if any(repository.iterdir()):
             raise RuntimeError('Consumer Maven repository must initially be empty')
         run('valid-strict', ['-Djavadrift.warnOnly=false'], 0, set())
         for artifact in ('javadrift', 'javadrift-core', 'javadrift-maven-plugin'):
-            pom = repository / 'io/github/bohdaq' / artifact / '0.3.1' / f'{artifact}-0.3.1.pom'
+            pom = repository / 'io/github/bohdaq' / artifact / version / f'{artifact}-{version}.pom'
             if not pom.is_file():
                 raise RuntimeError(f'Published artifact was not resolved: {artifact}')
             tracking = (pom.parent / '_remote.repositories').read_text(encoding='utf-8')

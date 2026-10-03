@@ -7,7 +7,7 @@ on:
       tag:
         description: Existing CLI release to verify without republishing
         required: true
-        default: v0.3.1
+        default: v0.4.0
 env:
   RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 permissions:
