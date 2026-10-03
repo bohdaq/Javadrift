@@ -36,6 +36,20 @@
         "passed": true,
         "cases": 2
       }
+    },
+    "history-cold-reconstructed.json": {
+      "jarSha256": "e38701b11b0054bee1aa6028b9bd6394b612ff579b889a4f6e90ebbd703d9ca1",
+      "summary": {
+        "passed": true,
+        "cases": 5
+      }
+    },
+    "history-cold-natural.json": {
+      "jarSha256": "e38701b11b0054bee1aa6028b9bd6394b612ff579b889a4f6e90ebbd703d9ca1",
+      "summary": {
+        "passed": true,
+        "cases": 2
+      }
     }
   }
 }

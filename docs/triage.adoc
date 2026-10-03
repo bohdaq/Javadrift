@@ -25,7 +25,10 @@ The reports record the CLI checksum and exact source commits. Configured corpus
 reports also record the applied exceptions and their configuration checksum.
 CI uploads pinned-validation-reports even when a validation step fails. Setup
 failures may occur before a report exists; inspect the job log in that case.
-Network/cache failures are input failures, not clean scans.
+Network/cache failures are input failures, not clean scans. Replay uses complete
+Git clones and materializes each pinned tree before the Java Git reader runs.
+Existing partial caches are hydrated during online setup; offline replay requires
+those historical objects to be present already.
 
 == Review a new finding
 

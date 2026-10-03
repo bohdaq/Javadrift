@@ -329,3 +329,9 @@ while resolved historical false positives need not recur. Source-pin changes and
 scoped exceptions therefore require deliberate review rather than silent baseline
 replacement. See link:triage.adoc[the review procedure] for local commands and evidence
 requirements. New releases and registry publication remain deferred.
+
+The first hosted run passed both corpus gates but exposed missing historical blobs
+in newly created partial clones. Local cached objects had hidden this setup issue.
+History replay now creates complete clones and materializes each pinned revision
+before giving the object database to JGit, including when reusing partial caches.
+Offline replay disables native Git lazy fetching during that materialization.

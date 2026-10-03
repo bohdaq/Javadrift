@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -38,7 +39,7 @@ for case in manifest['cases']:
     if not (cache / '.git').exists():
         if args.offline:
             raise RuntimeError(f'Missing history cache: {repo}')
-        subprocess.run(['git', 'clone', '--no-checkout', '--filter=blob:none',
+        subprocess.run(['git', 'clone', '--no-checkout',
                         f'https://github.com/{repo}.git', str(cache)], check=True,
                        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
     for commit in (case['base'], case['head'], case.get('fixedHead', case['head'])):
@@ -47,6 +48,12 @@ for case in manifest['cases']:
             if args.offline:
                 raise RuntimeError(f'Missing history commit: {commit}')
             git(cache, 'fetch', 'origin', commit)
+    # Native Git can hydrate partial-cache objects; JGit cannot lazily fetch them.
+    # Materialize every pinned tree before sharing its object database with the CLI.
+    for commit in dict.fromkeys((case['base'], case['head'], case.get('fixedHead', case['head']))):
+        subprocess.run(['git', '-C', str(cache), 'archive', '--format=tar', commit],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                       env={**os.environ, **({'GIT_NO_LAZY_FETCH': '1'} if args.offline else {})})
     with tempfile.TemporaryDirectory(prefix='javadrift-replay-') as directory:
         root = Path(directory) / 'checkout'
         subprocess.run(['git', 'clone', '--shared', '--no-checkout', '--no-tags', str(cache), str(root)],
