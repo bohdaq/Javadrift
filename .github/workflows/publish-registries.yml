@@ -5,7 +5,7 @@ on:
       tag:
         description: Release tag to publish (must contain publishing configuration)
         required: true
-        default: v0.3.0
+        default: v0.3.1
       registry:
         description: Publish both registries, or resume one registry independently
         type: choice
@@ -50,6 +50,18 @@ jobs:
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           version="$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
           test "$RELEASE_TAG" = "v$version"
+      - name: Verify module publication names
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          ns = {'m': 'http://maven.apache.org/POM/4.0.0'}
+          root = ET.parse('pom.xml').getroot()
+          poms = [Path('pom.xml')] + [Path(module.text) / 'pom.xml' for module in root.findall('m:modules/m:module', ns)]
+          for pom in poms:
+              name = ET.parse(pom).getroot().findtext('m:name', namespaces=ns)
+              assert name and name.strip(), f'{pom}: explicit project name required by Central'
+          PY
       - name: Publish signed Maven artifacts
         env:
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}

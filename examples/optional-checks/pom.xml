@@ -18,7 +18,7 @@
   <profiles><profile>
     <id>javadrift</id>
     <build><plugins><plugin>
-      <groupId>io.github.bohdaq</groupId><artifactId>javadrift-maven-plugin</artifactId><version>0.3.0</version>
+      <groupId>io.github.bohdaq</groupId><artifactId>javadrift-maven-plugin</artifactId><version>0.3.1</version>
       <executions><execution><goals><goal>check</goal></goals></execution></executions>
       <configuration><format>json</format><output>${project.build.directory}/javadrift.json</output></configuration>
     </plugin></plugins></build>

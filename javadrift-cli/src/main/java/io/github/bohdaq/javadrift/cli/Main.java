@@ -5,7 +5,7 @@ import picocli.CommandLine.*;
 import java.nio.file.*;
 import java.util.concurrent.Callable;
 
-@Command(name="javadrift",mixinStandardHelpOptions=true,version="Javadrift 0.3.0",
+@Command(name="javadrift",mixinStandardHelpOptions=true,version="Javadrift 0.3.1",
         description="Offline stale documentation detection for JVM projects",subcommands={Main.CheckCommand.class,Main.BaselineCommand.class,Main.Explain.class})
 public final class Main implements Runnable {
     public void run() {new CommandLine(this).usage(System.out);}

@@ -1,4 +1,4 @@
 <project><modelVersion>4.0.0</modelVersion><groupId>fixture</groupId><artifactId>stale</artifactId><version>1.0</version>
  <properties><maven.compiler.source>17</maven.compiler.source><maven.compiler.target>17</maven.compiler.target></properties>
- <build><plugins><plugin><groupId>io.github.bohdaq</groupId><artifactId>javadrift-maven-plugin</artifactId><version>0.3.0</version><executions><execution><goals><goal>check</goal></goals></execution></executions></plugin></plugins></build>
+ <build><plugins><plugin><groupId>io.github.bohdaq</groupId><artifactId>javadrift-maven-plugin</artifactId><version>0.3.1</version><executions><execution><goals><goal>check</goal></goals></execution></executions></plugin></plugins></build>
 </project>
