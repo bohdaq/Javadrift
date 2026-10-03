@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
- <parent><groupId>io.github.bohdaq</groupId><artifactId>javadrift</artifactId><version>0.2.0</version></parent>
+ <parent><groupId>io.github.bohdaq</groupId><artifactId>javadrift</artifactId><version>0.3.0</version></parent>
  <artifactId>javadrift-core</artifactId>
  <dependencies>
   <dependency><groupId>org.jetbrains.kotlin</groupId><artifactId>kotlin-compiler-embeddable</artifactId><version>2.2.21</version></dependency>

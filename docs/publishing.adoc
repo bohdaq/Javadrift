@@ -64,7 +64,7 @@ Secrets and variables > Actions], then choose New repository secret for each:
 |===
 
 After all six exist, open https://github.com/bohdaq/Javadrift/actions/workflows/publish-registries.yml[Actions > publish registries].
-Choose Run workflow on main and enter the release tag v0.2.0. The selected tag
+Choose Run workflow on main and enter the release tag v0.3.0. The selected tag
 must exist, contain the publishing configuration and match the project version.
 The workflow publishes Maven artifacts first, then checks that the core POM is
 available on Central before uploading the Gradle plugin.

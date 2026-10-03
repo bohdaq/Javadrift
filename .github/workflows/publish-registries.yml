@@ -5,7 +5,7 @@ on:
       tag:
         description: Release tag to publish (must contain publishing configuration)
         required: true
-        default: v0.2.0
+        default: v0.3.0
 permissions:
   contents: read
 concurrency:
