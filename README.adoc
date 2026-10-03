@@ -7,7 +7,7 @@ project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
 == Download the CLI preview
 
 Download javadrift.jar and javadrift.jar.sha256 from
-https://github.com/bohdaq/Javadrift/releases/tag/v0.3.0[the v0.3.0 release].
+https://github.com/bohdaq/Javadrift/releases/tag/v0.3.1[the v0.3.1 release].
 Verify the checksum with sha256sum -c javadrift.jar.sha256 (or shasum -a 256 -c
 on macOS), then run java -jar javadrift.jar check --root /path/to/project.
 
@@ -16,7 +16,7 @@ both assets from the GitHub Release:
 
 [source,shell]
 ----
-JAVADRIFT_VERSION=v0.3.0
+JAVADRIFT_VERSION=v0.3.1
 BASE_URL="https://github.com/bohdaq/Javadrift/releases/download/${JAVADRIFT_VERSION}"
 curl --fail --location --output javadrift.jar "${BASE_URL}/javadrift.jar"
 curl --fail --location --output javadrift.jar.sha256 "${BASE_URL}/javadrift.jar.sha256"
@@ -135,7 +135,7 @@ plugin. Add this block to the reactor root POM:
 <plugin>
   <groupId>io.github.bohdaq</groupId>
   <artifactId>javadrift-maven-plugin</artifactId>
-  <version>0.3.0</version>
+  <version>0.3.1</version>
   <inherited>false</inherited>
   <executions><execution><goals><goal>check</goal></goals></execution></executions>
 </plugin>
@@ -231,7 +231,7 @@ baselines, Git refs and repository file changes are tracked as inputs.
 
 The composite action lives in javadrift-action/. It requires a release tag with
 the CLI jar and SHA-256 checksum. The release workflow produces those assets
-when a version tag is pushed. Version v0.3.0 includes baseline maintenance,
+when a version tag is pushed. Version v0.3.1 includes baseline maintenance,
 isolated Gradle analysis and optional-check setup examples.
 The runner needs JDK 17+; diff mode also needs a checkout with full history.
 
@@ -245,9 +245,9 @@ steps:
     with:
       distribution: temurin
       java-version: '17'
-  - uses: bohdaq/Javadrift/javadrift-action@v0.3.0
+  - uses: bohdaq/Javadrift/javadrift-action@v0.3.1
     with:
-      version: v0.3.0
+      version: v0.3.1
       warn-only: 'true'
 ----
 
@@ -320,7 +320,7 @@ code, source/listing blocks and link/xref targets; it does not expand include
 macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
 
-The 0.3.0 preview implements all nine check IDs and build integrations.
+The 0.3.1 preview implements all nine check IDs and build integrations.
 The small corpus does not establish broad accuracy; adoption gates and registry
 publishing remain pending. See
 link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].

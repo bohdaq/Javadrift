@@ -2,10 +2,19 @@ name: release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing CLI release to verify without republishing
+        required: true
+        default: v0.3.1
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 permissions:
   contents: write
 jobs:
   cli:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +45,7 @@ jobs:
         run: gh release create "$RELEASE_TAG" release/javadrift.jar release/javadrift.jar.sha256 --verify-tag --prerelease --notes-file "docs/release-${RELEASE_TAG#v}.md"
   action-smoke:
     needs: cli
+    if: ${{ always() && (needs.cli.result == 'success' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -48,7 +58,7 @@ jobs:
       - name: Check this repository using published CLI
         uses: ./javadrift-action
         with:
-          version: ${{ github.ref_name }}
+          version: ${{ env.RELEASE_TAG }}
       - name: Prepare stale documentation
         run: |
           smoke_root="$RUNNER_TEMP/javadrift-smoke"
@@ -60,14 +70,14 @@ jobs:
       - name: Report stale documentation through action
         uses: ./javadrift-action
         with:
-          version: ${{ github.ref_name }}
+          version: ${{ env.RELEASE_TAG }}
           root: ${{ env.SMOKE_ROOT }}
           format: json
           output: ${{ runner.temp }}/javadrift-smoke.json
           warn-only: 'true'
       - name: Verify findings, CLI version and exit codes
         run: |
-          java -jar "$JAVADRIFT_JAR" --version | grep -Fx "Javadrift ${GITHUB_REF_NAME#v}"
+          java -jar "$JAVADRIFT_JAR" --version | grep -Fx "Javadrift ${RELEASE_TAG#v}"
           python3 - <<'PY'
           import json, os
           from pathlib import Path
