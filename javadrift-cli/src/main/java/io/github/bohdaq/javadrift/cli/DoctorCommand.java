@@ -24,10 +24,10 @@ public final class DoctorCommand implements Callable<Integer> {
     record Diagnostic(String check,String status,String message,String advice) {}
     record Result(int schemaVersion,String root,int exitCode,List<Diagnostic> diagnostics) {}
     private final int javaFeature;
-    private final JavaCompiler compiler;
+    private final java.util.function.Supplier<JavaCompiler> compilerProvider;
 
-    public DoctorCommand() {this(Runtime.version().feature(),ToolProvider.getSystemJavaCompiler());}
-    DoctorCommand(int javaFeature,JavaCompiler compiler) {this.javaFeature=javaFeature;this.compiler=compiler;}
+    public DoctorCommand() {this.javaFeature=Runtime.version().feature();this.compilerProvider=ToolProvider::getSystemJavaCompiler;}
+    DoctorCommand(int javaFeature,JavaCompiler compiler) {this.javaFeature=javaFeature;this.compilerProvider=()->compiler;}
 
     public Integer call() throws IOException {
         root=root.toAbsolutePath().normalize();
@@ -123,6 +123,7 @@ public final class DoctorCommand implements Callable<Integer> {
     }
 
     private void inspectCompiler(List<Diagnostic> rows,Config config) {
+        JavaCompiler compiler=compilerProvider.get();
         if(config.severity(Check.JD008)==Severity.OFF) {
             add(rows,"compiler","INFO",compiler==null?"javac is unavailable; JD008 is disabled":"javac is available; JD008 is disabled",null);return;
         }
