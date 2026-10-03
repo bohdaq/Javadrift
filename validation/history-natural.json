@@ -11,7 +11,24 @@
       "expectedRemovedNames": [
         "converter"
       ],
-      "methodology": "natural-stale-then-doc-fix"
+      "methodology": "natural-stale-then-doc-fix",
+      "expectedStaleFindings": [
+        {
+          "file": "retrofit-converters/README.md",
+          "line": 12,
+          "column": 6,
+          "checkId": "JD004",
+          "reference": "converter"
+        },
+        {
+          "file": "retrofit-converters/README.md",
+          "line": 12,
+          "column": 20,
+          "checkId": "JD004",
+          "reference": "ProtoConverter"
+        }
+      ],
+      "expectedFixedFindings": []
     },
     {
       "id": "commonmark-natural-heading",
@@ -23,7 +40,76 @@
       "expectedRemovedNames": [
         "HeaderIdExtension"
       ],
-      "methodology": "natural-stale-then-doc-fix"
+      "methodology": "natural-stale-then-doc-fix",
+      "expectedStaleFindings": [
+        {
+          "file": "README.md",
+          "line": 219,
+          "column": 12,
+          "checkId": "JD004",
+          "reference": "HeaderIdExtension"
+        }
+      ],
+      "expectedFixedFindings": []
+    },
+    {
+      "id": "kotlinpoet-natural-array",
+      "repository": "square/kotlinpoet",
+      "base": "64832aa51a10597e94327537a8d07541cc1cc71d",
+      "head": "cdba73dc96111ac5131317cf137ba24cb514f73e",
+      "fixedHead": "129ec2365f1cf8e2367ff2109a2667f2e2aaf43e",
+      "document": "README.md",
+      "expectedRemovedNames": [
+        "ArrayTypeName"
+      ],
+      "methodology": "natural-stale-then-doc-fix",
+      "expectedStaleFindings": [
+        {
+          "file": "README.md",
+          "line": 46,
+          "column": 23,
+          "checkId": "JD004",
+          "reference": "ArrayTypeName"
+        }
+      ],
+      "expectedFixedFindings": []
+    },
+    {
+      "id": "commonmark-natural-image-attributes",
+      "repository": "commonmark/commonmark-java",
+      "base": "b155133beab4b230d7cb9c86b613a8293ff77ed7",
+      "head": "ffdf6ef578e16f02d51426c98d494c2d5305b189",
+      "fixedHead": "8be430307ef2fe9c84518ab1fd902381217f254b",
+      "document": "README.md",
+      "expectedRemovedNames": [
+        "StylesExtension"
+      ],
+      "methodology": "natural-stale-then-doc-fix",
+      "expectedStaleFindings": [
+        {
+          "file": "README.md",
+          "line": 336,
+          "column": 12,
+          "checkId": "JD004",
+          "reference": "StylesExtension"
+        },
+        {
+          "file": "README.md",
+          "line": 338,
+          "column": 77,
+          "checkId": "JD004",
+          "reference": "StylesDelimiterProcessor"
+        }
+      ],
+      "expectedFixedFindings": [
+        {
+          "file": "README.md",
+          "line": 338,
+          "column": 77,
+          "checkId": "JD004",
+          "reference": "StylesDelimiterProcessor"
+        }
+      ]
     }
   ]
 }

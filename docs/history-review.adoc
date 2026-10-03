@@ -1,0 +1,51 @@
+= Natural history review
+
+Every case uses unchanged upstream source and documentation at three pinned
+revisions: base, stale head and later documentation fix. Only JD004 runs; no
+upstream build or example executes. The manifest records every reviewed stale
+and fixed finding, including its document position.
+
+== KotlinPoet array type
+
+https://github.com/square/kotlinpoet/commit/2a4d7c08c95a930b7807788f24020d073db1f4fb[The source change]
+deletes src/main/java/com/squareup/kotlinpoet/ArrayTypeName.kt and replaces array
+modeling with ParameterizedTypeName. The base is its parent. At stale head
+cdba73dc96111ac5131317cf137ba24cb514f73e, README.md:46 still calls
+ArrayTypeName.of(String::class); JD004 correctly reports ArrayTypeName.
+https://github.com/square/kotlinpoet/commit/129ec2365f1cf8e2367ff2109a2667f2e2aaf43e[The documentation fix]
+replaces that call with TypeName.get(Array<String>::class). The fixed scan is clean.
+
+== CommonMark image attributes
+
+https://github.com/commonmark/commonmark-java/commit/9d192978dc36ad26b23233fdf8570f21947632f2[The source change]
+renames the Styles classes to ImageAttributes classes and moves their package.
+The base is its parent. At stale head ffdf6ef578e16f02d51426c98d494c2d5305b189,
+README.md:336 names StylesExtension and line 338 names StylesDelimiterProcessor.
+Both are true positives: the replacement declarations are
+org.commonmark.ext.image.attributes.ImageAttributesExtension and
+org.commonmark.ext.image.attributes.internal.ImageAttributesDelimiterProcessor
+under commonmark-ext-image-attributes/src/main/java.
+https://github.com/commonmark/commonmark-java/commit/8be430307ef2fe9c84518ab1fd902381217f254b[The documentation fix]
+corrects only the extension name. The delimiter-processor reference remains
+stale at line 338 and must still be reported. A successful replay therefore
+does not imply every finding cleared at the documentation-fix revision.
+
+== Existing Java cases
+
+Retrofit's converter case reports converter and ProtoConverter at line 12 of
+retrofit-converters/README.md. Both are removed APIs; the actual fix replaces
+the construction with addConverterFactory(GsonConverterFactory.create()).
+CommonMark's heading case reports HeaderIdExtension at README.md:219;
+the actual fix uses HeadingAnchorExtension instead. Their pinned commits are
+retained in validation/history-natural.json. Both fixed scans are clean.
+
+== Reviewed candidate limitation
+
+KotlinPoet's fdd453a690cf9fa6ef91087505d8eae90e16c66d changes Kotlin factory syntax,
+and 0be8e6d68d38f25c0ff0d69b5b285cdca311cc4e later updates the README.
+The old ClassName.get syntax is unavailable to Kotlin, but @JvmName("get")
+preserves the Java API and the README block is labeled java. The source index
+retains JVM aliases and JD004 does not distinguish this language-specific change.
+This candidate is excluded from the removed-symbol gate; it is a known coverage
+limit, not evidence of a clean Kotlin example. No false positives were observed
+in the four included cases, and no analyzer change was needed.

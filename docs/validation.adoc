@@ -155,11 +155,19 @@ mentions in changelogs, example/test types and ambiguous snippet paths. Raw
 before/after results are in validation/corpus-expanded-before.json and
 validation/corpus-expanded-after.json. No upstream build or example was executed.
 
-Two naturally stale upstream revisions also pass JD004 replay: Retrofit's converter
-API and CommonMark's heading extension. Unlike the five reconstructed cases, the
+Four naturally stale upstream revisions pass JD004 replay: Retrofit's converter
+API, CommonMark's heading and image-attributes extensions, and KotlinPoet's removed
+ArrayTypeName. Unlike the five reconstructed cases, the
 stale documents are unchanged at the actual pinned source revision. Restoring the
 actual subsequent documentation-fix commit clears the targeted findings. See
 validation/history-natural.json and validation/history-natural-results.json.
+
+The image-attributes documentation fix is partial: it corrects StylesExtension
+but still documents the removed StylesDelimiterProcessor. Both findings are real;
+the remaining finding is recorded explicitly rather than treating that revision
+as a clean document. Detailed pinned source evidence is in
+link:history-review.adoc[history review]. These four selected cases establish
+regression coverage, not population precision or recall.
 
 [source,shell]
 ----
