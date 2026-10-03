@@ -1,0 +1,41 @@
+name: performance
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test measurement and regression guards
+        run: python3 -m unittest discover -s scripts/tests -p test_benchmark.py -v
+      - name: Compare current and reference builds
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before || 'HEAD^' }}
+        run: >-
+          python3 scripts/benchmark-ci.py --base-ref "$BASE_REF"
+          --repeats 5 --output validation-results/performance.json
+      - name: Save benchmark metrics and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javadrift-performance
+          path: validation-results/
+          if-no-files-found: warn

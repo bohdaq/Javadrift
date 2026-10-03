@@ -428,3 +428,8 @@ known error disappears or an unreviewed finding appears, and replays five recons
 and two naturally stale source-history cases. Reports are uploaded as the
 pinned-validation-reports artifact, including after validation failures.
 See link:docs/triage.adoc[reviewing findings and updating exceptions].
+
+The performance workflow compares large Java and mixed Java/Kotlin scans against
+the reference commit on the same runner. It records repeated scan times and peak
+RSS, flags substantial regressions, and uploads the javadrift-performance artifact.
+See link:docs/performance.adoc[benchmark commands, measurements and thresholds].

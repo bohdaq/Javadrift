@@ -67,3 +67,36 @@ CLI report or timeout also fails the benchmark and leaves a failed JSON report.
 The resource units follow the
 link:https://man7.org/linux/man-pages/man2/getrusage.2.html[Linux resource-usage manual]
 and link:https://github.com/apple/darwin-xnu/blob/main/bsd/man/man2/getrusage.2[Darwin resource-usage manual].
+
+== CI reports and regression gate
+
+The performance workflow runs on pushes, pull requests and manual dispatches on
+an Ubuntu runner with JDK 17 and Python 3.12. It builds both core/CLI versions
+without publishing them, then runs five scans per build for each profile with the
+same fixtures and 512 MiB heap limit. Reference and current scans alternate within
+each profile. The report pins both Git commits and JAR hashes.
+
+Pull requests compare against the target branch's base commit. Pushes compare
+against the branch's previous commit from the event, so a multi-commit push covers
+the entire pushed change. Manual runs and new-branch pushes use HEAD's parent.
+Missing references, failed builds and failed scans fail the job; the comparison
+does not silently omit a baseline. Performance thresholds use medians measured
+on that runner, not the historical local timings.
+
+The job summary shows current/reference time and peak RSS medians for both cases.
+The javadrift-performance artifact saves the full benchmark JSON, build metadata,
+individual CLI reports and stderr, build logs and comparison console log, including
+after failures. The JSON includes per-profile limits and any violated metrics.
+
+To reproduce the complete build-and-compare flow locally, select a commit:
+
+[source,shell]
+----
+python3 scripts/benchmark-ci.py --base-ref HEAD^ --output validation-results/performance.json
+----
+
+This requires Linux/macOS, JDK 17, Maven, Git and Python 3.12 or newer. It extracts
+the reference into a temporary directory and builds the current checkout's JAR.
+It does not change the checkout's branch or source files. The default is five runs;
+--repeats permits three or more. The suite is a repeatable guard for these workloads;
+real-world corpus behavior and other JDK/platform combinations have separate CI.

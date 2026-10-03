@@ -455,3 +455,11 @@ and local machine; CI compares builds on the same runner.
 Fifteen Python validation tests pass. Benchmark-specific guards cover substantial
 time/memory increases, small variations, invalid metrics, timeout termination,
 per-child peak memory and failed-report persistence.
+
+The build-and-compare helper passes locally against the CLI portability commit
+c99cda5, using fresh reference sources and the current CLI, with three paired runs
+per profile. A missing reference correctly fails before building and saves failed
+build metadata. The performance workflow uses five paired runs per profile on JDK
+17, compares against the appropriate PR/push reference, and uploads metrics and
+logs even after failures. Its summary reports both builds' median time and memory;
+substantial regressions fail the job under the documented ratio-plus-floor limits.
