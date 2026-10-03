@@ -6,6 +6,11 @@ on:
         description: Release tag to publish (must contain publishing configuration)
         required: true
         default: v0.3.0
+      registry:
+        description: Publish both registries, or resume one registry independently
+        type: choice
+        options: [both, central, gradle]
+        default: both
 permissions:
   contents: read
 concurrency:
@@ -13,6 +18,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   central:
+    if: inputs.registry != 'gradle'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,6 +58,7 @@ jobs:
         run: mvn -B -Pcentral-publish deploy
   gradle-portal:
     needs: central
+    if: ${{ always() && (inputs.registry == 'gradle' || (inputs.registry == 'both' && needs.central.result == 'success')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -1,0 +1,17 @@
+{
+  "version": "0.3.0",
+  "tag": "v0.3.0",
+  "commit": "08808708462f92d0736ba7657d111a29b017ffc8",
+  "releaseUrl": "https://github.com/bohdaq/Javadrift/releases/tag/v0.3.0",
+  "publishedAt": "2026-10-03T15:02:58Z",
+  "prerelease": true,
+  "releaseWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37131681710",
+  "releaseJobs": {
+    "cli": "success",
+    "actionSmoke": "success"
+  },
+  "publishedCliSha256": "13afbe2419a376e08d45528042e13f4860399d44e0df28cc6f78f2bfd0098511",
+  "publishedCliScenarios": 26,
+  "publishedCliSmokePassed": true,
+  "registryPublication": "pending verification"
+}

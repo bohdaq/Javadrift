@@ -69,6 +69,11 @@ must exist, contain the publishing configuration and match the project version.
 The workflow publishes Maven artifacts first, then checks that the core POM is
 available on Central before uploading the Gradle plugin.
 
+The registry selector defaults to both. Choose central to publish signed Maven
+artifacts independently, or gradle to publish only the Portal plugin after the
+matching core version is already available on Central. This supports completing
+one account's setup before the other without republishing an immutable version.
+
 If the Portal job fails after Central succeeds, rerun only failed jobs. Registry
 versions are immutable: never rebuild different code under an existing version.
 The plugin can remain pending review after a successful Portal upload.

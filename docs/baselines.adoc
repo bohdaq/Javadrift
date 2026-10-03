@@ -6,8 +6,8 @@ severity or location. Matching references with the same path/check are accepted
 together, including repeated occurrences. Baselines are reviewed exceptions;
 normal check runs still report findings whose fingerprints are not accepted.
 
-The maintenance options below are available in the current source build. Build
-the CLI before using them; older published previews do not include these options.
+The maintenance options below are available in the 0.3.0 preview and current
+source build. Earlier published previews do not include these options.
 
 [source,shell]
 ----
