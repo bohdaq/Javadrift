@@ -14,4 +14,11 @@ class CliTest {
         assertEquals(2,run("check","--root",root.toString(),"--config",root.resolve("missing.yml").toString()));
         assertEquals(2,run("explain","JD999"));assertEquals(0,run("explain","JD002"));
     }
+    @Test void createsMissingReportDirectoriesForPathsWithSpaces() throws Exception {
+        Path project=root.resolve("project files"),report=root.resolve("output files/nested reports/result.json");
+        Files.createDirectories(project);Files.writeString(project.resolve("README.md"),"[missing](gone.md)");
+        assertEquals(1,run("check","--root",project.toString(),"--format","json","--output",report.toString()));
+        assertTrue(Files.readString(report).contains("JD007"));
+        assertEquals(0,run("check","--root",project.toString(),"--format","json","--output",report.toString(),"--warn-only"));
+    }
 }

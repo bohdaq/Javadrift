@@ -403,3 +403,24 @@ GitHub checkouts on JDK 17. Versions run independently; one failure does not can
 the others. Each job uploads its report and command logs even after a check fails.
 The existing full adoption job continues to exercise CLI and Maven alongside the
 default Kotlin Gradle version.
+
+== CLI portability walkthrough
+
+scripts/smoke-cli.py runs the packaged JAR from outside a temporary project, using
+native paths with spaces for the tool, root, custom YAML config and output files.
+It checks absolute and relative output paths, missing report directories, a
+percent-encoded link to an asset with spaces, and normalized document locations in
+text, JSON, GitHub annotations and SARIF. SARIF paths encode spaces as %20 and use
+forward slashes; its fingerprints match the baseline on every platform.
+
+The fixture commits a public method, tags the base, then commits a rename while
+leaving the old documentation in place. History mode must emit JD004, fail in
+strict mode, preserve the finding in warn-only mode, accept the matching baseline
+and clear findings after the docs are corrected. Invalid Git refs and missing
+configuration must exit 2 even in warn-only mode; valid scans exit 0 and stale
+strict scans exit 1. The walkthrough exercises 18 CLI scenarios.
+
+The local macOS/JDK 17 run passes all scenarios. The Maven core and CLI build also
+passes 54 tests, including a new CLI regression for missing output directories.
+The command outcomes and packaged JAR checksum are recorded in
+validation/cli-portability-local.json.

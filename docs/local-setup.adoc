@@ -62,6 +62,29 @@ exit 2. Warn-only reports the same findings and exits zero, but still fails on i
 errors. Supply --classpath and --class-dir for dependencies or nonstandard outputs.
 See link:../README.adoc[the reference] for history mode, baselines and other checks.
 
+Quote filesystem paths containing spaces, for example:
+
+[source,shell]
+----
+java -jar "tool files/javadrift.jar" check --root "project files" --format json --output "reports/doc checks/result.json"
+----
+
+The CLI creates missing parent directories for report files. Relative output paths
+are relative to the current working directory; finding paths are relative to the
+project root and use forward slashes on every operating system.
+
+After building the JAR, run the CLI portability walkthrough with Python and Git:
+
+[source,shell]
+----
+python scripts/smoke-cli.py --output "validation-results/cli-portability.json"
+----
+
+On systems where Python is named python3, use that command instead. The walkthrough
+uses a temporary Git repository and tests spaces in JAR, project, configuration and
+report paths, text/JSON/GitHub/SARIF reports, Git removals, baselines and exit codes.
+It saves a JSON summary and command logs beside the selected output path.
+
 == Maven in your project
 
 After installing the tool from source, add the plugin under build/plugins in your

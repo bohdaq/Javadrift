@@ -32,7 +32,9 @@ public final class Main implements Runnable {
             if(classpath!=null)config.classpath.addAll(java.util.Arrays.asList(classpath.split(java.util.regex.Pattern.quote(java.io.File.pathSeparator))));
             Analyzer.Result result=new Analyzer().analyze(root,config,since,true);
             String report=Reporters.render(result,format);
-            if(output==null) {spec.commandLine().getOut().print(report);spec.commandLine().getOut().flush();} else Files.writeString(output,report);
+            if(output==null) {spec.commandLine().getOut().print(report);spec.commandLine().getOut().flush();} else {
+                Files.createDirectories(output.toAbsolutePath().getParent());Files.writeString(output,report);
+            }
             return !warnOnly && result.fails(config)?1:0;
         }
     }
