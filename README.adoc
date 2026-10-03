@@ -143,8 +143,8 @@ Git tag for a snapshot (optional v prefix). It never looks up releases online.
 Without a release tag, snapshot projects skip JD006. Maven property placeholders
 are expanded only from that POM's properties; unresolved placeholders are skipped.
 
-Version 0.4.0 is prepared for Maven Central publication. After the registry
-workflow completes, use this block in the reactor root POM:
+Version 0.4.0 is available from Maven Central. Use this block in the reactor
+root POM; no custom repository or local installation is needed:
 
 [source,xml]
 ----
@@ -166,7 +166,7 @@ For a development checkout, run mvn install before using its plugin version.
 See link:examples/published-maven/README.adoc[the published Maven CI sample]
 for a standalone POM, a copyable warn-only workflow and strict adoption. Its
 automated walkthrough starts with an empty local Maven repository and uses only
-published 0.3.1 artifacts, without installing this checkout.
+published 0.4.0 artifacts, without installing this checkout.
 
 === Maven from a custom repository
 

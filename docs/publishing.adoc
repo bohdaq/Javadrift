@@ -1,10 +1,11 @@
 = Registry publishing setup
 
-Version 0.3.1's CLI is distributed through GitHub releases and its Maven
-artifacts are available from Maven Central. The Gradle plugin was uploaded
-successfully and is pending first-publication approval. Both jobs in
-https://github.com/bohdaq/Javadrift/actions/runs/37132921053[the publishing run]
-succeeded. No additional credential setup is required for this release.
+Version 0.4.0's CLI is distributed through GitHub releases and its Maven
+artifacts are available from Maven Central. The Central job in
+https://github.com/bohdaq/Javadrift/actions/runs/37136330788[the 0.4.0 publishing run]
+succeeded. The 0.4.0 Gradle update is not uploaded: the initial 0.3.1 submission
+is still pending first-publication approval. No additional credential setup is
+required; publish the Gradle update after that review.
 Add credential values only as GitHub repository secrets; do not put them in
 source files or chat. The instructions below support future renewal.
 

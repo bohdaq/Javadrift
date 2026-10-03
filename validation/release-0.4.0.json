@@ -13,7 +13,22 @@
   "publishedCliSmokePassed": true,
   "registryWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37136330788",
   "registryPublication": {
-    "central": "validated; publishing",
+    "central": "published",
+    "centralJob": "success",
     "gradlePortal": "0.4.0 not uploaded; awaits approval of initial 0.3.1 submission"
+  },
+  "centralArtifactsVerified": ["javadrift", "javadrift-core", "javadrift-cli", "javadrift-maven-plugin"],
+  "coreSourcesAndJavadocAvailable": true,
+  "coreSignatureVerified": true,
+  "signingFingerprint": "678B06446F2C2ABE035E9E7E06FF030835DED463",
+  "centralOnlyMavenConsumer": {
+    "initiallyEmptyLocalRepository": true,
+    "artifactsResolvedFromCentral": ["javadrift", "javadrift-core", "javadrift-maven-plugin"],
+    "scenariosPassed": 5,
+    "validStrict": "success; zero findings",
+    "staleWarnOnly": "success; JD002 retained",
+    "staleStrict": "expected build failure; JD002",
+    "invalidConfigWarnOnly": "expected build failure; missing configuration",
+    "restoredStrict": "success; zero findings"
   }
 }

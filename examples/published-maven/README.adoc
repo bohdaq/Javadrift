@@ -1,6 +1,6 @@
 = Published Maven plugin in CI
 
-This standalone Java 17 sample resolves javadrift-maven-plugin 0.3.1 and its
+This standalone Java 17 sample resolves javadrift-maven-plugin 0.4.0 and its
 engine from Maven Central. It needs Maven 3.9+ and a JDK 17 or newer, with network
 access for the initial dependency download. It does not require building or
 installing Javadrift locally, additional repositories, or publishing credentials.
@@ -52,11 +52,11 @@ python3 scripts/smoke-published-maven.py --output validation-results/published-m
 ----
 
 To verify another published version without changing this sample, add
---version 0.4.0. The script changes only the temporary consumer's plugin version.
+--version 0.3.1. The script changes only the temporary consumer's plugin version.
 Without that option it uses the version pinned in this sample's POM.
 
 The script copies this sample into a temporary directory and starts with an empty
 local Maven repository. It verifies valid, stale strict/warn-only, invalid-config
 and restored cases, and saves JSON reports and Maven logs. It never runs mvn
-install on Javadrift or edits the tracked sample. This verifies published 0.3.1,
+install on Javadrift or edits the tracked sample. This verifies published 0.4.0,
 not newer engine changes in the current checkout.

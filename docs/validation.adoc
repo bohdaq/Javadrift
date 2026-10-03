@@ -624,3 +624,27 @@ for current results. Machine-readable evidence is in
 validation/published-maven-local.json. A dedicated CI job repeats these checks
 and saves reports and logs, including on failure. This validates the released
 0.3.1 artifacts rather than unreleased changes in the current checkout.
+
+== Published 0.4.0 preview
+
+The https://github.com/bohdaq/Javadrift/releases/tag/v0.4.0[0.4.0 CLI release]
+includes doctor. Both jobs in its
+https://github.com/bohdaq/Javadrift/actions/runs/37136301423[release workflow]
+passed. An independent download matched the SHA-256 checksum, reported version
+0.4.0 and passed all 33 packaged CLI scenarios on JDK 17. The doctor scenarios
+verify compiler probes and that project/working-directory files are unchanged.
+Javadrift's own CI Action is now pinned to 0.4.0.
+
+The https://github.com/bohdaq/Javadrift/actions/runs/37136330788[Central publishing]
+job succeeded. All four artifact POMs and the core jar, sources, Javadoc and
+detached signature were retrieved from repo.maven.apache.org. The signature
+verified against the documented signing fingerprint. The isolated Maven consumer
+resolved 0.4.0 from Central with an initially empty local repository and passed
+all five valid/stale/warn-only/input-error/restored scenarios. The sample is now
+pinned to 0.4.0; --version can verify an older published version by changing only
+the temporary consumer. Machine-readable results are in
+validation/release-0.4.0.json.
+
+The initial 0.3.1 Gradle Plugin Portal submission remains Pending Approval.
+The 0.4.0 Gradle update was not uploaded; its workflow job was deliberately
+skipped. Portal resolution and the 0.4.0 plugin upload await that review.
