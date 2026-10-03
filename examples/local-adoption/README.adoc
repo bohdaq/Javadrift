@@ -1,0 +1,69 @@
+= Local adoption sample
+
+This project contains a Java Greeter and Kotlin Welcomer. Both Maven and Gradle
+compile the same sources and check docs/guide.adoc. The checked-in guide is valid;
+variants/stale.adoc deliberately names one nonexistent member in each language.
+The stale variant is outside this project's configured documentation scope.
+
+Use JDK 17, Maven and the Gradle wrapper from the Javadrift repository root.
+Set JAVA_HOME to your JDK 17 installation and put its bin directory on PATH.
+Build and install the current tool first with mvn -B -DskipTests install at that root.
+No registry publication or release download is required.
+
+From the Javadrift repository root:
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --root examples/local-adoption --format json
+mvn -B -f examples/local-adoption/pom.xml verify
+./gradlew -p examples/local-adoption check --no-daemon
+----
+
+Each command should succeed with zero findings. Maven writes target/javadrift.json
+inside this sample. Gradle writes build/reports/javadrift/report.txt with JSON content.
+The CLI checks source declarations before compilation; later scans can also use
+existing class outputs. Maven resolves Javadrift from the local Maven repository;
+Gradle resolves the plugin from the repository's included build.
+
+To demonstrate a real failure, replace the guide with the stale variant and repeat
+the commands above. Each should fail and report two JD002 findings:
+
+[source,shell]
+----
+cp examples/local-adoption/variants/stale.adoc examples/local-adoption/docs/guide.adoc
+----
+
+Warn-only mode keeps both findings and lets the command succeed:
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --root examples/local-adoption --format json --warn-only
+mvn -B -f examples/local-adoption/pom.xml verify -Djavadrift.warnOnly=true
+./gradlew -p examples/local-adoption check --no-daemon -PwarnOnly=true
+----
+
+Restore the valid guide, then repeat the strict commands to confirm the fix:
+
+[source,shell]
+----
+cp examples/local-adoption/variants/valid.adoc examples/local-adoption/docs/guide.adoc
+----
+
+For an automated run that leaves this sample untouched:
+
+[source,shell]
+----
+python3 scripts/smoke-sample.py
+----
+
+The script builds and installs Javadrift, creates separate temporary consumers for
+CLI/Maven/Gradle, checks strict and warn-only behavior, and restores valid docs.
+It also requires both sample classes to compile in each build adapter. Reports and
+per-command logs are saved under the system temporary directory. --skip-build is
+available after building/installing the tool. Dependency downloads are needed on
+the first run; this script does not publish artifacts or create GitHub releases.
+
+The current Gradle adapter exposes the embedded Kotlin parser on the plugin
+classpath. Kotlin Gradle plugin 2.2.21 emits a compiler-classpath warning in this
+sample; the checks and compilation still pass. This sample verifies that version,
+without claiming compatibility with other Kotlin Gradle plugin versions.

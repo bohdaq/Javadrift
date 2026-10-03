@@ -1,0 +1,15 @@
+= Greeting APIs
+
+The Java type `demo.Greeter` exposes `Greeter#greet`.
+The Kotlin type `demo.Welcomer` exposes `Welcomer#welcome` and `Welcomer#language`.
+
+[source,java]
+----
+Greeter greeter = new Greeter();
+String message = greeter.greet("Ada");
+----
+
+[source,kotlin]
+----
+val message = Welcomer().welcome()
+----

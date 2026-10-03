@@ -1,0 +1,4 @@
+= Outdated greeting APIs
+
+The old Java reference is `demo.Greeter#salute`.
+The old Kotlin reference is `demo.Welcomer#hello`.
