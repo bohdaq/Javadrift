@@ -127,8 +127,8 @@ Git tag for a snapshot (optional v prefix). It never looks up releases online.
 Without a release tag, snapshot projects skip JD006. Maven property placeholders
 are expanded only from that POM's properties; unresolved placeholders are skipped.
 
-Build and install the tool locally with mvn install before using the development
-plugin. Add this block to the reactor root POM:
+Version 0.3.1 is available from Maven Central. Add this block to the reactor root
+POM; no custom repository or local installation is needed:
 
 [source,xml]
 ----
@@ -145,7 +145,7 @@ The aggregator checks root docs against all selected reactor modules. It forks
 the compile phase to make reactor class outputs available before root verify.
 The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
 javadrift.format, javadrift.output and javadrift.skip system properties.
-No artifacts have been published to Maven Central yet.
+For a development checkout, run mvn install before using its plugin version.
 
 === Maven from a custom repository
 
@@ -172,6 +172,16 @@ For an unpublished build use `mvn install` and the local Maven repository as
 described above.
 
 == Gradle
+
+Version 0.3.1 of io.github.bohdaq.javadrift has been submitted to the Gradle
+Plugin Portal and is pending first-publication approval. After approval, use:
+
+[source,kotlin]
+----
+plugins { id("io.github.bohdaq.javadrift") version "0.3.1" }
+repositories { mavenCentral() }
+javadrift { warnOnly.set(true) }
+----
 
 Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
 plugin release is published, add this repository as an included plugin build
@@ -321,8 +331,9 @@ macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
 
 The 0.3.1 preview implements all nine check IDs and build integrations.
-The small corpus does not establish broad accuracy; adoption gates and registry
-publishing remain pending. See
+The small corpus does not establish broad accuracy; adoption gates and the
+Gradle Plugin Portal's first-publication approval remain pending. Maven Central
+artifacts are published. See
 link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].
 
 == Corpus-driven precision rules

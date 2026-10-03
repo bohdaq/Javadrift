@@ -13,5 +13,5 @@
   "publishedCliSha256": "13afbe2419a376e08d45528042e13f4860399d44e0df28cc6f78f2bfd0098511",
   "publishedCliScenarios": 26,
   "publishedCliSmokePassed": true,
-  "registryPublication": "pending verification"
+  "registryPublication": "Central validation failed: child module names missing; superseded by 0.3.1"
 }

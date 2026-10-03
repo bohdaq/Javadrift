@@ -21,7 +21,9 @@ are replayed with parent documentation restored. The local 500-document/5,000-cl
 benchmark meets the five-second budget. See link:validation.adoc[validation evidence]
 for scope and limitations.
 
-Maven Central/Gradle Portal publishing and an external CI adopter remain pending.
+Version 0.3.1's Maven Central artifacts are published. The Gradle plugin upload
+succeeded and awaits first-publication Portal approval. An external CI adopter
+remains pending.
 Broader documentation coverage, more positive findings and naturally stale upstream
 history are needed before claiming broad accuracy. Kotlin source/history declaration indexing is implemented; full compiler type
 resolution and Kotlin snippet compilation remain future work.

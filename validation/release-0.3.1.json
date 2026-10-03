@@ -17,5 +17,26 @@
   "publishedCliSmokePassed": true,
   "registryWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37132921053",
   "centralDeploymentId": "ab6f0f57-526b-4286-97f6-54dc3610aec6",
-  "registryPublication": "validated; waiting for Central publication and Portal upload"
+  "registryPublication": {
+    "central": "published",
+    "centralJob": "success",
+    "gradlePortalUpload": "success",
+    "gradlePortalStatus": "pending approval",
+    "gradlePluginId": "io.github.bohdaq.javadrift"
+  },
+  "centralArtifactsVerified": ["javadrift", "javadrift-core", "javadrift-cli", "javadrift-maven-plugin"],
+  "coreSourcesAndJavadocAvailable": true,
+  "coreSignatureVerified": true,
+  "signingFingerprint": "678B06446F2C2ABE035E9E7E06FF030835DED463",
+  "centralOnlyMavenConsumer": {
+    "emptyLocalRepository": true,
+    "valid": "success; zero findings",
+    "strict": "expected build failure; JD002 for Widget#missing",
+    "warnOnly": "success; finding retained",
+    "invalidConfig": "expected build failure; missing configuration file"
+  },
+  "buildWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37133363341",
+  "buildJobsPassed": 22,
+  "centralTokenExpires": "2027-04-03",
+  "signingKeyExpires": "2028-10-02"
 }

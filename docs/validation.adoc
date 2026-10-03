@@ -134,8 +134,9 @@ TestKit tests and validatePlugins. The release-version corpus rerun still return
 findings. Machine-readable release metadata, published checksum and job evidence
 are saved in validation/release-0.1.0.json.
 
-Maven Central and the Gradle Plugin Portal remain unpublished; their adapters
-can be built locally. This first preview does not claim a 1.0 accuracy guarantee.
+At the 0.1.0 preview, Maven Central and the Gradle Plugin Portal were unpublished;
+their adapters were built locally. This first preview does not claim a 1.0
+accuracy guarantee. See the 0.3.1 registry evidence below for current status.
 
 == Expanded documentation and natural history
 
@@ -186,8 +187,9 @@ The original triaged corpus remains at 20 repositories, zero errors and the same
 three verified findings. With Kotlin parsing loaded lazily, the Java benchmark
 still meets its five-second budget: 2.468 seconds for 500 docs and 5,000 classes
 on this Mac/JDK 17. Parser dependency size increases the shaded CLI substantially.
-These are local results; signing, Central upload and Portal validation require the
-account setup in link:publishing.adoc[publishing instructions].
+These were local results before the account setup in
+link:publishing.adoc[publishing instructions]. Signing and uploads were verified
+later for 0.3.1 as described below.
 
 == Published 0.2.0 and continuous CI adoption
 
@@ -199,13 +201,13 @@ An independent download verifies the checksum and CLI version, scans this projec
 with zero findings and parses the corrected Kotlin consumer without findings.
 Published artifact metadata and job results are in validation/release-0.2.0.json.
 
-Javadrift's own CI now runs the published 0.2.0 Action in warn-only mode and saves
+Javadrift's own CI began running the published 0.2.0 Action in warn-only mode and saving
 its SARIF output. The initial
 https://github.com/bohdaq/Javadrift/actions/runs/37083398854[adoption run]
 passed with the javadrift-documentation-report artifact. This is self-adoption;
-no external repository was changed, as requested. Registry uploads remain pending
-user account credentials and a signing key; signing and Portal authentication
-have not been validated locally.
+no external repository was changed, as requested. At that stage registry uploads
+were pending account credentials and a signing key. Both uploads were later
+verified for 0.3.1; the current CI Action is also pinned to 0.3.1.
 
 == Path triage after the preview
 
@@ -553,3 +555,32 @@ Maven integration builds. Gradle check/validatePlugins passes all five TestKit
 cases. The 26-case packaged CLI summary is recorded in
 validation/baseline-maintenance-local.json; Javadrift's own 12 documents scan
 without findings.
+
+== Published 0.3.1 registries
+
+The https://github.com/bohdaq/Javadrift/releases/tag/v0.3.1[0.3.1 CLI preview]
+was downloaded independently, its SHA-256 checksum matched and all 26 CLI
+walkthrough scenarios passed on JDK 17. The original release Action job caught
+a stale README version example; that example was corrected on main. The
+https://github.com/bohdaq/Javadrift/actions/runs/37133239652[separate Action
+verification] passed against the existing published download without changing
+the tag or rebuilding its assets. Future releases check documentation before
+publishing. All 22 jobs in the subsequent build workflow passed.
+
+The https://github.com/bohdaq/Javadrift/actions/runs/37132921053[registry workflow]
+published the parent, core, CLI and Maven plugin at version 0.3.1. Each POM was
+retrieved from repo.maven.apache.org. Core sources and Javadoc jars were also
+retrieved, and its detached signature verified against the documented signing
+fingerprint. A standalone Maven consumer with an initially empty local repository
+resolved the published plugin without a local source install. Valid documentation
+passed, a missing member failed with JD002, warn-only retained the finding and
+succeeded, and a nonexistent configuration file failed.
+
+The same workflow successfully uploaded io.github.bohdaq.javadrift version 0.3.1
+to the Gradle Plugin Portal. The account profile confirms Pending Approval;
+the upload log says Gradle engineers will review it and contact the owner by
+email. This is submission evidence, not public plugin-resolution evidence.
+The Gradle consumer cannot be verified through the Portal until approval.
+
+Machine-readable results are in validation/release-0.3.1.json. Credential renewal
+dates and future publishing instructions are in link:publishing.adoc[publishing].

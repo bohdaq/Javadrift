@@ -1,9 +1,31 @@
 = Registry publishing setup
 
-The CLI is distributed through GitHub releases. Maven Central and the Gradle
-Plugin Portal require your accounts and credentials before the prepared
-publish-registries workflow can run. Add credential values only as GitHub
-repository secrets; do not put them in source files or chat.
+Version 0.3.1's CLI is distributed through GitHub releases and its Maven
+artifacts are available from Maven Central. The Gradle plugin was uploaded
+successfully and is pending first-publication approval. Both jobs in
+https://github.com/bohdaq/Javadrift/actions/runs/37132921053[the publishing run]
+succeeded. No additional credential setup is required for this release.
+Add credential values only as GitHub repository secrets; do not put them in
+source files or chat. The instructions below support future renewal.
+
+== Configured credentials
+
+All six repository secrets are configured as of October 3, 2026. The Central
+token named Javadrift GitHub Actions expires on April 3, 2027; replace both
+CENTRAL_USERNAME and CENTRAL_PASSWORD when renewing it. The Gradle publishing
+key is stored as GRADLE_PUBLISH_KEY and GRADLE_PUBLISH_SECRET.
+
+The RSA 3072-bit signing key for Bohdan Tsap expires on October 2, 2028. Its
+public fingerprint is 678B06446F2C2ABE035E9E7E06FF030835DED463, published through
+keyserver.ubuntu.com. The protected local key is in the owner's
+~/.gnupg-javadrift-publishing directory; temporary private exports and passphrase
+files were removed after the secrets were stored. GitHub cannot reveal stored
+secret values: renew or replace the signing key and both signing secrets before
+expiry. Keep any future recovery copy in a secure password manager.
+
+Version 0.3.0's Central upload failed validation because child module project
+names were missing. Version 0.3.1 adds those names and validates them before
+uploading. Published tags and release assets remain unchanged.
 
 == Maven Central
 
