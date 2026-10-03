@@ -1,8 +1,35 @@
 = Javadrift
 
-Javadrift detects stale references in Markdown and AsciiDoc documentation using
-Java sources and compiled JVM classes. Analysis is offline and never executes
-project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
+Javadrift finds documentation that has drifted away from your Java or Kotlin API:
+missing types and methods, outdated calls, broken repository links and more.
+It reads Markdown and AsciiDoc, compares references with source declarations or
+compiled JVM classes, and reports the document location to fix.
+
+The CLI needs JDK 17 or newer. Building Javadrift from source also needs Maven 3.9+.
+Analysis is offline and never executes project code or examples.
+
+Start here: <<_download_the_cli_preview,download>> ·
+<<_try_a_small_example,try an example>> · <<_diagnose_setup,check setup>> ·
+<<_compiled_projects_and_maven,Maven>> · <<_gradle,Gradle>> ·
+<<_github_actions_and_sarif,GitHub Actions>> · <<_current_limits,limitations>>.
+
+== How it works
+
+. *Read your docs.* By default, Javadrift scans the root README.md/README.adoc and
+  Markdown/AsciiDoc files under docs/. It extracts code references and local links;
+  ordinary prose is skipped.
+. *Index the API.* It reads Java/Kotlin declarations without requiring a build.
+  Available compiled classes add generated APIs and override source declarations.
+  Dependency classes can be supplied with --classpath.
+. *Compare and report.* A reference to a missing member produces a finding with
+  the document file, line, check ID and explanation. Add --since to compare APIs
+  with a Git revision and detect references to removed symbols.
+. *Review, then enforce.* Start with --warn-only, fix findings or review a baseline,
+  then let the CLI or build integration fail CI on new errors.
+
+Javadrift resolves recognizable API references conservatively; it cannot prove
+every example or prose claim correct. Java snippet compilation is an optional
+check that must be enabled explicitly. See <<_current_limits,current limits>>.
 
 == Download the CLI preview
 
@@ -30,6 +57,77 @@ Gradle repositories: build plugins still need Maven/Gradle publication, a custom
 Maven-compatible registry, or the local `mvn install`/`includeBuild` setup below.
 Start with --warn-only while reviewing findings for your project.
 
+== Try a small example
+
+After downloading javadrift.jar, run these commands in the same directory. They
+create a small Java project whose docs name a method that does not exist:
+
+[source,shell]
+----
+mkdir -p demo/src/main/java/com/acme
+cat > demo/src/main/java/com/acme/Greeter.java <<'JAVA'
+package com.acme;
+public class Greeter {
+  public String greet(String name) { return "Hello, " + name; }
+}
+JAVA
+cat > demo/README.md <<'DOC'
+Call `com.acme.Greeter#hello()` to greet someone.
+DOC
+java -jar javadrift.jar check --root demo --warn-only
+----
+
+The result points directly to the stale reference:
+
+[source,text]
+----
+README.md:1:7  error  JD002  com.acme.Greeter has no member `hello`
+Checked 1 documents, 1 types; 1 findings.
+----
+
+Correct the documentation to use the existing method and run a strict check:
+
+[source,shell]
+----
+cat > demo/README.md <<'DOC'
+Call `com.acme.Greeter#greet("Ada")` to greet someone.
+DOC
+java -jar javadrift.jar check --root demo
+----
+
+The result is zero findings. No build or configuration file is needed for this
+example. --warn-only returns success for findings so you can review them first;
+without it, this example's stale reference returns exit code 1.
+
+For your own project, replace demo with its root directory. To export findings:
+
+[source,shell]
+----
+java -jar javadrift.jar check --root /path/to/project --format json --output findings.json
+java -jar javadrift.jar explain JD002
+----
+
+== Checks at a glance
+
+[cols="1,3,1",options="header"]
+|===
+|ID |What it checks |Default
+|JD001 |Qualified project type no longer exists |Error
+|JD002 |Known project type has no documented member |Error
+|JD003 |Documented arguments match no public overload |Warning
+|JD004 |Removed API is still documented; requires --since |Error
+|JD005 |Documented API is deprecated for removal |Warning
+|JD006 |Documented project dependency version is outdated |Error
+|JD007 |Repository path or relative document link is missing |Error
+|JD008 |Java snippet fails to compile; requires compiler/classpath setup |Off
+|JD009 |Documented configuration key has no known declaration |Off
+|===
+
+Checks use available project inputs; for example, version checks need project
+coordinates and a release version, and dependency APIs need a supplied classpath.
+See <<_advanced_checks,advanced checks>> for optional checks and
+<<_check_documentation,configuration>> to change severity or scope.
+
 == Build
 
 [source,shell]
@@ -37,6 +135,9 @@ Start with --warn-only while reviewing findings for your project.
 mvn verify
 java -jar javadrift-cli/target/javadrift.jar --help
 ----
+
+For a source build, use javadrift-cli/target/javadrift.jar wherever the examples
+below use javadrift.jar.
 
 See link:docs/roadmap.adoc[the implementation roadmap].
 Licensed under link:LICENSE[Apache-2.0].
@@ -61,9 +162,9 @@ link:docs/doctor.adoc[setup diagnostics] for scope, compiler probes and classpat
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar check --root /path/to/project
-java -jar javadrift-cli/target/javadrift.jar check --warn-only
-java -jar javadrift-cli/target/javadrift.jar explain JD002
+java -jar javadrift.jar check --root /path/to/project
+java -jar javadrift.jar check --root /path/to/project --warn-only
+java -jar javadrift.jar explain JD002
 ----
 
 Full scans check qualified project types (JD001), unique type/member references
@@ -96,9 +197,9 @@ invalid input/configuration. --warn-only leaves input errors as exit 2.
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar check --since origin/main --format github
-java -jar javadrift-cli/target/javadrift.jar check --format json --output findings.json
-java -jar javadrift-cli/target/javadrift.jar baseline
+java -jar javadrift.jar check --since origin/main --format github
+java -jar javadrift.jar check --format json --output findings.json
+java -jar javadrift.jar baseline
 ----
 
 Fetch the base ref before diff mode. Source symbols are compared at the supplied
@@ -287,7 +388,7 @@ steps:
 
 [source,shell]
 ----
-java -jar javadrift-cli/target/javadrift.jar check --format sarif --output findings.sarif
+java -jar javadrift.jar check --format sarif --output findings.sarif
 ----
 
 SARIF 2.1.0 includes stable rule IDs, locations and baseline fingerprints. Use
@@ -349,7 +450,7 @@ mangling are not fully resolved. Non-final varargs are treated conservatively;
 Kotlin deprecation levels are not modeled as Java forRemoval. JD008 compiles Java
 snippets only. The embedded Kotlin parser adds roughly 60 MB to the CLI download.
 
- AsciiDoc support covers backtick
+AsciiDoc support covers backtick
 code, source/listing blocks and link/xref targets; it does not expand include
 macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
@@ -374,10 +475,10 @@ Use --class-dir for nonstandard build output layouts.
 
 == Publishing adapters
 
-Registry workflows and artifact metadata are prepared. Maven Central and Plugin
-Portal uploads need your publishing accounts, namespace and signing key. Follow
-link:docs/publishing.adoc[the publishing setup] to configure the six GitHub secrets
-and run the workflow. Until publication is confirmed, build adapters locally.
+The CLI and Maven Central artifacts for 0.4.0 are published. The initial Gradle
+Plugin Portal submission awaits approval; use the included source build described
+above until it is available. Maintainers can follow
+link:docs/publishing.adoc[the publishing setup] for credentials and release workflows.
 
 == Documentation path context
 
