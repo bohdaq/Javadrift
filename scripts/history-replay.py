@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""Replay real refactorings, restoring parent docs without inventing source history."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import tempfile
+
+PROJECT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument('--manifest', type=Path, default=PROJECT / 'validation/history.json')
+parser.add_argument('--jar', type=Path, default=PROJECT / 'javadrift-cli/target/javadrift.jar')
+parser.add_argument('--java', default='java')
+parser.add_argument('--cache', type=Path, default=Path(tempfile.gettempdir()) / 'javadrift-history-cache')
+parser.add_argument('--output', type=Path, default=PROJECT / 'validation/history-results.json')
+parser.add_argument('--offline', action='store_true')
+args = parser.parse_args()
+args.cache.mkdir(parents=True, exist_ok=True)
+jar = args.jar.resolve()
+manifest = json.loads(args.manifest.read_text())
+
+def git(checkout, *arguments):
+    return subprocess.check_output(['git', '-C', str(checkout), *arguments], stderr=subprocess.PIPE)
+
+def run(root, config, base):
+    command = [args.java, '-Xmx768m', '-jar', str(jar), 'check', '--root', str(root),
+               '--config', str(config), '--since', base, '--format', 'json']
+    process = subprocess.run(command, text=True, capture_output=True, timeout=120)
+    if process.returncode not in (0, 1) or not process.stdout.lstrip().startswith('{'):
+        raise RuntimeError(process.stderr or process.stdout)
+    return json.loads(process.stdout)
+
+rows = []
+for case in manifest['cases']:
+    repo = case['repository']
+    cache = args.cache / repo.replace('/', '--')
+    if not (cache / '.git').exists():
+        if args.offline:
+            raise RuntimeError(f'Missing history cache: {repo}')
+        subprocess.run(['git', 'clone', '--no-checkout', '--filter=blob:none',
+                        f'https://github.com/{repo}.git', str(cache)], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    for commit in (case['base'], case['head']):
+        if subprocess.run(['git', '-C', str(cache), 'cat-file', '-e', f'{commit}^{{commit}}'],
+                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
+            if args.offline:
+                raise RuntimeError(f'Missing history commit: {commit}')
+            git(cache, 'fetch', 'origin', commit)
+    with tempfile.TemporaryDirectory(prefix='javadrift-replay-') as directory:
+        root = Path(directory) / 'checkout'
+        subprocess.run(['git', 'clone', '--shared', '--no-checkout', '--no-tags', str(cache), str(root)],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+        git(root, 'checkout', '--detach', case['head'])
+        doc = root / case['document']
+        old = git(cache, 'show', f"{case['base']}:{case['document']}")
+        current = git(cache, 'show', f"{case['head']}:{case['document']}")
+        config = Path(directory) / 'replay.yml'
+        config.write_text('docs:\n  include: [' + json.dumps(case['document']) + ']\nchecks:\n' +
+                          ''.join(f'  JD{i:03}: off\n' for i in range(1, 10) if i != 4))
+        doc.write_bytes(old)
+        stale = run(root, config, case['base'])
+        targets = [f for f in stale['findings'] if any(name in f['reference'] or name in f['message']
+                                                     for name in case['expectedRemovedNames'])]
+        missing = [name for name in case['expectedRemovedNames'] if not any(
+            name in f['reference'] or name in f['message'] for f in targets)]
+        doc.write_bytes(current)
+        fixed = run(root, config, case['base'])
+        remaining = [f for f in fixed['findings'] if any(name in f['reference'] or name in f['message']
+                                                       for name in case['expectedRemovedNames'])]
+        row = dict(case, staleFindings=stale['findings'], fixedFindings=fixed['findings'],
+                   passed=not missing and not remaining, missingTargets=missing)
+        rows.append(row)
+        print(case['id'], 'PASS' if row['passed'] else 'FAIL', 'stale', len(stale['findings']),
+              'fixed', len(fixed['findings']), flush=True)
+report = {'schemaVersion': 1, 'jarSha256': hashlib.sha256(jar.read_bytes()).hexdigest(),
+          'methodology': 'Real upstream code refactoring commits with parent docs restored in a temporary checkout; then original updated docs restored. No synthetic commits or invented API examples.',
+          'runs': rows, 'passed': all(r['passed'] for r in rows)}
+args.output.write_text(json.dumps(report, indent=2) + '\n')
+if not report['passed']:
+    raise SystemExit(1)

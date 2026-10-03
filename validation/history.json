@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "retrofit-main-class",
+      "repository": "square/retrofit",
+      "base": "97af295dc8d9a8dfbf2d57de31d198d2381a573e",
+      "head": "580d31ae906ac28f608427d4c4d2318a0e8b658a",
+      "document": "retrofit-converters/README.md",
+      "expectedRemovedNames": [
+        "RestAdapter"
+      ],
+      "methodology": "refactoring-source-with-parent-docs",
+      "subject": "Rename main class to Retrofit."
+    },
+    {
+      "id": "retrofit-endpoint",
+      "repository": "square/retrofit",
+      "base": "144defa42cb9d5099a0264fcd574e9c0902e7523",
+      "head": "904bf94b7c4cad1bea96fb9e8481ee307e208f65",
+      "document": "retrofit-converters/README.md",
+      "expectedRemovedNames": [
+        "endpoint"
+      ],
+      "methodology": "refactoring-source-with-parent-docs",
+      "subject": "Rename 'Endpoint' to 'BaseUrl'."
+    },
+    {
+      "id": "commonmark-renderer-package",
+      "repository": "commonmark/commonmark-java",
+      "base": "43c7e28a7cd32d5fb5a4fb367f4bf7dd7371d627",
+      "head": "91827e2364f9f3bb162df22cf012d04f6c0980fb",
+      "document": "README.md",
+      "expectedRemovedNames": [
+        "org.commonmark.html.HtmlRenderer"
+      ],
+      "methodology": "refactoring-source-with-parent-docs",
+      "subject": "Move renderers into .renderer package (api break)"
+    },
+    {
+      "id": "commonmark-yaml-types",
+      "repository": "commonmark/commonmark-java",
+      "base": "2354c89df9d7b79b8e52d9e2eb2732c5c7159446",
+      "head": "7c3202a189b088d02d8369da437ae655044a2706",
+      "document": "README.md",
+      "expectedRemovedNames": [
+        "YAMLFrontMatterExtension",
+        "YAMLFrontMatterVisitor"
+      ],
+      "methodology": "refactoring-source-with-parent-docs",
+      "subject": "Rename base package and classes"
+    },
+    {
+      "id": "commonmark-alert-types",
+      "repository": "commonmark/commonmark-java",
+      "base": "4256dc7efe6979a94115cefd53e84ce3d679ab74",
+      "head": "d6657350ffaa8122894e1e9ae92bb352d08543ce",
+      "document": "commonmark-ext-gfm-alerts/README.md",
+      "expectedRemovedNames": [
+        "removeTypes"
+      ],
+      "methodology": "refactoring-source-with-parent-docs",
+      "subject": "Change removeTypes to setAllowedTypes"
+    }
+  ]
+}

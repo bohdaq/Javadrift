@@ -12,7 +12,7 @@ class HistoryTest {
     void write(String path,String text) throws Exception {Path p=root.resolve(path);Files.createDirectories(p.getParent());Files.writeString(p,text);}
     void commit(Git git) throws Exception {git.add().addFilepattern(".").call();git.commit().setMessage("fixture").setAuthor("Fixture","fixture@example.com").call();}
     @ParameterizedTest
-    @CsvSource({"Order#submit", "Order.submit()", "Order::submit", "submit()", "com.acme.Order#submit"})
+    @CsvSource({"Order#submit", "Order.submit()", "Order::submit", "submit()", "com.acme.Order#submit", ".submit()", "builder.submit(new Value())"})
     void replaysMemberRenameWithoutBuildingOldSources(String reference) throws Exception {
         try(Git git=Git.init().setDirectory(root.toFile()).call()) {
             write("src/main/java/com/acme/Order.java","package com.acme; public class Order { public void submit(){} }");
@@ -21,7 +21,7 @@ class HistoryTest {
             write("src/main/java/com/acme/Order.java","package com.acme; public class Order { public void place(){} }");commit(git);
             var result=new Analyzer().analyze(root,new Config(),base,true);
             assertEquals(1,result.findings().size());var f=result.findings().get(0);
-            assertEquals("JD004",f.checkId());assertEquals(1,f.line());assertEquals(2,f.column());
+            assertEquals("JD004",f.checkId());assertEquals(1,f.line());assertEquals(reference.startsWith(".")||reference.startsWith("builder.")?reference.indexOf("submit")+2:2,f.column());
             assertTrue(f.suggestion().contains("place()"));
             assertThrows(java.io.IOException.class,()->new Analyzer().analyze(root,new Config(),"invalid-ref",true));
         }

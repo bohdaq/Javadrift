@@ -47,7 +47,7 @@ public final class GitHistory {
                         result.add(new Removed(name+"#"+m.name(),Pattern.compile(regex),suggestion));
                     }
                     if(m.method() && after.types.values().stream().flatMap(t->after.members(t).stream()).noneMatch(n->n.name().equals(m.name())))
-                        result.add(new Removed(m.name(),Pattern.compile("(?<![\\w.$#])"+Pattern.quote(m.name())+"\\([^()]*\\)"),suggestion));
+                        result.add(new Removed(m.name(),Pattern.compile("(?<![\\w$#])"+Pattern.quote(m.name())+"(?=\\s*\\()"),suggestion));
                 }
             }
             return result;

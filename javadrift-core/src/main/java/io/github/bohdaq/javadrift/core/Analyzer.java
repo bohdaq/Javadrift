@@ -40,7 +40,13 @@ public final class Analyzer {
                         if(fragment.kind()==DocReader.Kind.LINK)continue;
                         for(GitHistory.Removed symbol:removed) {
                             Matcher m=symbol.pattern().matcher(fragment.text());
-                            while(m.find()) add(root,config,findings,doc,fragment,m.start(),Check.JD004,m.group(),"Removed symbol `"+symbol.token()+"` is still documented",symbol.suggestion());
+                            while(m.find()) {
+                                int line=fragment.lineAt(m.start()),column=fragment.columnAt(m.start());
+                                String fileName=relative(root,doc.path());
+                                boolean covered=findings.stream().anyMatch(f->f.checkId().equals("JD004") && f.file().equals(fileName)
+                                    && f.line()==line && f.column()<=column && f.column()+f.reference().length()>column);
+                                if(!covered)add(root,config,findings,doc,fragment,m.start(),Check.JD004,m.group(),"Removed symbol `"+symbol.token()+"` is still documented",symbol.suggestion());
+                            }
                         }
                     }
                 }
