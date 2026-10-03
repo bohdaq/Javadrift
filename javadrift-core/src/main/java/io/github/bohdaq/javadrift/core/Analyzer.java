@@ -86,7 +86,7 @@ public final class Analyzer {
                         if(!type.project)continue;
                         List<SymbolIndex.Member> matching=index.members(type).stream().filter(m->m.name().equals(name)).toList();
                         boolean known=!matching.isEmpty();
-                        if(known && call.isPresent() && matching.stream().anyMatch(SymbolIndex.Member::method) && matching.stream().noneMatch(m->CallArguments.matches(m,call.get().arguments(),index)))
+                        if(known && call.isPresent() && (fragment.kind()==DocReader.Kind.BLOCK || !call.get().arguments().isEmpty()) && matching.stream().anyMatch(SymbolIndex.Member::method) && matching.stream().noneMatch(m->CallArguments.matches(m,call.get().arguments(),index)))
                             add(root,config,findings,doc,fragment,members.start(),Check.JD003,fragment.text().substring(members.start(),call.get().end()),
                                 "No overload of `"+typeName+"#"+name+"` matches the documented arguments",null);
                         if(type.forRemoval || (!matching.isEmpty() && matching.stream().allMatch(SymbolIndex.Member::forRemoval)))
@@ -131,6 +131,9 @@ public final class Analyzer {
         try {
             if(link)path=URI.create(path).getPath();
             Path target=link?(path.startsWith("/")?root.resolve(path.substring(1)):doc.path().getParent().resolve(path)):root.resolve(path);
+            // Escaping links include GitHub sibling-repo and wiki navigation.
+            // They are outside the repository-file check's scope.
+            if(link && (path.startsWith("/") || !target.toAbsolutePath().normalize().startsWith(root.toAbsolutePath().normalize())))return;
             if(!Files.exists(target.normalize()))add(root,config,out,doc,f,offset,Check.JD007,value,"Missing repository path `"+path+"`",null);
         } catch(IllegalArgumentException e) { /* Not an unambiguous filesystem path. */ }
     }

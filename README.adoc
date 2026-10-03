@@ -193,3 +193,15 @@ not checked. Build class outputs before checking so they describe current source
 The development snapshot implements all nine check IDs and build integrations.
 Publishing and the design's external accuracy/adoption gates remain pending; see
 link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].
+
+== Corpus-driven precision rules
+
+An inline empty-parentheses reference such as JavaFile.writeTo() names a method;
+its arity is checked in fenced examples, or when inline arguments are supplied.
+Links escaping the checkout (including GitHub wiki and sibling repository links)
+are outside the repository-path check.
+
+Source indexing uses src trees and flat root Java files. Other Java templates
+are skipped. Source variants with the same qualified name contribute their API
+union, conservatively; compiled outputs replace that union with the selected API.
+Use --class-dir for nonstandard build output layouts.

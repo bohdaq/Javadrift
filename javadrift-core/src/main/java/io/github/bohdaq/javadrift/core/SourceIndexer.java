@@ -17,7 +17,7 @@ public final class SourceIndexer {
         return index;
     }
     public static boolean productionJava(String path) {
-        return path.endsWith(".java") && !path.matches("(?:.*?/)?(?:target|build|\\.git|node_modules|vendor)/.*")
+        return path.endsWith(".java") && (path.startsWith("src/") || path.contains("/src/") || !path.contains("/")) && !path.matches("(?:.*?/)?(?:target|build|\\.git|node_modules|vendor)/.*")
             && !path.matches("(?:.*?/)?src/(?:test|it|testFixtures)/.*");
     }
     public void add(SymbolIndex index,String source,String path) throws IOException {
@@ -58,7 +58,14 @@ public final class SourceIndexer {
             type.members.add(new SymbolIndex.Member("values",List.of(),true,false,false));
             type.members.add(new SymbolIndex.Member("valueOf",List.of("String"),true,false,false));
         }
-        if(index.types.putIfAbsent(type.name,type)!=null) throw new IllegalArgumentException("Duplicate public type: "+type.name);
+        SymbolIndex.Type variant=index.types.putIfAbsent(type.name,type);
+        if(variant!=null) {
+            // Multi-release, Android/JRE and starter variants share qualified names.
+            // Accept their public API union until compiled output supplies a precise variant.
+            for(SymbolIndex.Member member:type.members)if(!variant.members.contains(member))variant.members.add(member);
+            for(String parent:type.parents)if(!variant.parents.contains(parent))variant.parents.add(parent);
+            variant.generated|=type.generated;variant.forRemoval&=type.forRemoval;
+        }
     }
     private boolean removal(com.github.javaparser.ast.nodeTypes.NodeWithAnnotations<?> node) {
         return node.getAnnotations().stream().anyMatch(a->a.getName().getIdentifier().equals("Deprecated") && a instanceof NormalAnnotationExpr n

@@ -9,11 +9,11 @@ class AdvancedChecksTest {
     void write(String path,String text) throws Exception {Path f=root.resolve(path);Files.createDirectories(f.getParent());Files.writeString(f,text);}
     @Test void matchesOverloadsLiteralTypesVarargsAndNestedArgumentsConservatively() throws Exception {
         write("src/main/java/com/acme/Order.java","package com.acme; public class Order { public void place(String s){} public void count(long n){} public void tags(String... tags){} public void map(java.util.Map<String,Integer> m){} }");
-        write("README.md","`Order.place(1)`\n`Order.place(unknown)`\n`Order.place(\"a,b\")`\n`Order.count(1)`\n`Order.tags(\"a\", \"b\")`\n`Order.map(new java.util.HashMap<String, Integer>())`\n`Order.place()`\n`Order.gone(new Thing())`\n");
+        write("README.md","`Order.place(1)`\n`Order.place(unknown)`\n`Order.place(\"a,b\")`\n`Order.count(1)`\n`Order.tags(\"a\", \"b\")`\n`Order.map(new java.util.HashMap<String, Integer>())`\n```java\nOrder.place();\n```\n`Order.gone(new Thing())`\n");
         var result=new Analyzer().analyze(root,new Config());
         assertEquals(3,result.findings().size());
         assertEquals(java.util.List.of("JD003","JD003","JD002"),result.findings().stream().map(Finding::checkId).toList());
-        assertEquals(java.util.List.of(1,7,8),result.findings().stream().map(Finding::line).toList());
+        assertEquals(java.util.List.of(1,8,10),result.findings().stream().map(Finding::line).toList());
     }
     @Test void reportsOnlyDeprecationForRemoval() throws Exception {
         write("src/main/java/com/acme/Order.java","package com.acme; public class Order { @Deprecated(forRemoval=true) public void old(){} @Deprecated public void legacy(){} }");

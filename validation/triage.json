@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "method": "Manual comparison against documentation context and source at the pinned upstream commit. No upstream examples were executed.",
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 82,
+      "checkId": "JD003",
+      "reference": "JavaFile.writeTo()",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "false-positive",
+      "reason": "Inline empty parentheses name a method in prose rather than supplying a complete call example."
+    },
+    {
+      "file": "README.md",
+      "line": 493,
+      "checkId": "JD002",
+      "reference": "CodeBlock.add",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "true-positive",
+      "reason": "README names CodeBlock.add(), but add is a public member of CodeBlock.Builder, not CodeBlock.",
+      "replacement": "CodeBlock.Builder.add",
+      "source": "src/main/java/com/squareup/javapoet/CodeBlock.java:238"
+    },
+    {
+      "file": "README.md",
+      "line": 511,
+      "checkId": "JD002",
+      "reference": "CodeBlock.addNamed",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "true-positive",
+      "reason": "README names CodeBlock.addNamed(), but addNamed is declared on CodeBlock.Builder.",
+      "replacement": "CodeBlock.Builder.addNamed",
+      "source": "src/main/java/com/squareup/javapoet/CodeBlock.java:181"
+    },
+    {
+      "file": "README.md",
+      "line": 589,
+      "checkId": "JD003",
+      "reference": "ParameterSpec.builder()",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "false-positive",
+      "reason": "Inline empty parentheses name a method in prose rather than supplying a complete call example."
+    },
+    {
+      "file": "README.md",
+      "line": 762,
+      "checkId": "JD002",
+      "reference": "TypeSpec.anonymousInnerClass",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "true-positive",
+      "reason": "No anonymousInnerClass method exists. The adjacent working example and source both use anonymousClassBuilder.",
+      "replacement": "TypeSpec.anonymousClassBuilder",
+      "source": "src/main/java/com/squareup/javapoet/TypeSpec.java:151"
+    },
+    {
+      "file": "README.md",
+      "line": 827,
+      "checkId": "JD003",
+      "reference": "AnnotationSpec.builder()",
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "classification": "false-positive",
+      "reason": "Inline empty parentheses name a method in prose rather than supplying a complete call example."
+    },
+    {
+      "file": "README.md",
+      "line": 22,
+      "checkId": "JD007",
+      "reference": "../../../jackson-1",
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 61,
+      "checkId": "JD007",
+      "reference": "../../wiki",
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 213,
+      "checkId": "JD007",
+      "reference": "../../../jackson#participation-contributing",
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 241,
+      "checkId": "JD007",
+      "reference": "../../wiki",
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 4,
+      "checkId": "JD007",
+      "reference": "../../../jackson",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 5,
+      "checkId": "JD007",
+      "reference": "../../../jackson-core",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 6,
+      "checkId": "JD007",
+      "reference": "../../../jackson-annotations",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 51,
+      "checkId": "JD007",
+      "reference": "../../../jackson-bom",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 90,
+      "checkId": "JD007",
+      "reference": "../../../jackson-docs",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 90,
+      "checkId": "JD007",
+      "reference": "../../wiki",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 679,
+      "checkId": "JD007",
+      "reference": "../../../jackson-1",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 695,
+      "checkId": "JD007",
+      "reference": "../../../jackson#participation-contributing",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 708,
+      "checkId": "JD007",
+      "reference": "../../../jackson-docs",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 715,
+      "checkId": "JD007",
+      "reference": "../../../jackson",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    },
+    {
+      "file": "README.md",
+      "line": 716,
+      "checkId": "JD007",
+      "reference": "../../../jackson-docs",
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "classification": "false-positive",
+      "reason": "GitHub sibling-repository/wiki navigation escapes the checkout; it is not a local repository path."
+    }
+  ]
+}

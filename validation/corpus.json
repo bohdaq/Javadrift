@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "scope": "Default README.md/README.adoc and docs/**/*.md/docs/**/*.adoc; source index only",
+  "repositories": [
+    {
+      "repository": "commonmark/commonmark-java",
+      "commit": "b89e72fdb25948c1b9623d64baa29d35d49f8abf"
+    },
+    {
+      "repository": "apache/commons-lang",
+      "commit": "7fce4c843fcd758da9b3408aaf9435c2471ab218"
+    },
+    {
+      "repository": "apache/commons-io",
+      "commit": "05f968e913fb43f21ccecb44eba5d523999999f9"
+    },
+    {
+      "repository": "apache/commons-text",
+      "commit": "23428d0ba4fc23e8f080d1ec50aee17f72276f9d"
+    },
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b"
+    },
+    {
+      "repository": "apache/commons-codec",
+      "commit": "5444a15a34dada7b6d92f6f96c58bef74cee2817"
+    },
+    {
+      "repository": "apache/commons-compress",
+      "commit": "f4eea9e5cf73e38cf352c0d5f85376e5bbb630b9"
+    },
+    {
+      "repository": "apache/commons-csv",
+      "commit": "c6ac1bde5b6b9545a8b85b570f5f118930c2b50f"
+    },
+    {
+      "repository": "google/gson",
+      "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a"
+    },
+    {
+      "repository": "google/guava",
+      "commit": "72dd370d951967fe97756ecaaa938c7cb5bcbc28"
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0"
+    },
+    {
+      "repository": "square/retrofit",
+      "commit": "3724fffb6ce312bc0191a31e0e8c7fb0c5796d39"
+    },
+    {
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d"
+    },
+    {
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a"
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707"
+    },
+    {
+      "repository": "junit-team/junit5",
+      "commit": "2b484caa962ad9b0d9a6af5d2c25100b6a8f4ef6"
+    },
+    {
+      "repository": "qos-ch/slf4j",
+      "commit": "90658112710a99a6ff7dbb2db0c1d13f8fb456f8"
+    },
+    {
+      "repository": "jhy/jsoup",
+      "commit": "088614f4a1454232a1f03c63b7f80742f1f2a854"
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023"
+    },
+    {
+      "repository": "resilience4j/resilience4j",
+      "commit": "7e3ab5252ed380b596e25240f19376a4435570b8"
+    }
+  ]
+}

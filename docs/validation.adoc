@@ -58,3 +58,34 @@ project snippet classpaths, properties/YAML resources and literal source keys.
 Both JD008 and JD009 stay opt-in. The three pinned repository smoke scans
 remain clean under the implemented default checks; the 20-repository triaged
 accuracy corpus and five real history replays remain outstanding release gates.
+
+== Pinned 20-repository corpus
+
+The manifest in validation/corpus.json pins 20 popular Java repositories.
+scripts/corpus.py scans source archives at those exact commits, without upstream
+builds, generated classes or Git tags. Thus snapshot release selection, JD004,
+JD008 and JD009 are not measured by this full-scan corpus. It covers the default
+document scope: 22 documents. The manifest and raw before/after results are saved.
+
+The original pass emitted 21 findings: manual review identified 18 false positives
+(GitHub navigation and empty-parentheses method mentions) and three real API-owner
+or method-name errors in JavaPoet. Four repositories failed on duplicate source
+variants or a Java migration template. Regression tests now cover those cases.
+
+The corrected pass scans all 20 repositories with zero input errors and reports
+three findings, all manually verified against pinned JavaPoet sources. Observed
+false-positive fraction: 0/3. This small positive sample does not establish recall
+or guarantee precision on a broader document scope. Source variants are merged
+conservatively; compiled outputs still select the precise API.
+
+Reproduce after building the CLI:
+
+[source,shell]
+----
+python3 scripts/corpus.py --require-triage validation/triage.json
+----
+
+Use --java to select JDK 17+ and --offline after populating the cache. Every current
+finding must have a classification in triage.json; unknown findings or a false
+positive fraction at or above 5% fail the validation command. Upstream findings
+are recorded locally; no upstream issues or pull requests have been opened.

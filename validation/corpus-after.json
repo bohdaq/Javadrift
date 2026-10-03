@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "jarSha256": "fcd7e977896f9b89f608936b496e0e4e729237ea8c5dc2477309ba23545e8fc1",
+  "scope": "default-docs",
+  "mode": "full/source-only/no-Git-tags",
+  "runs": [
+    {
+      "repository": "commonmark/commonmark-java",
+      "commit": "b89e72fdb25948c1b9623d64baa29d35d49f8abf",
+      "exitCode": 0,
+      "seconds": 1.333,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 232
+      }
+    },
+    {
+      "repository": "apache/commons-lang",
+      "commit": "7fce4c843fcd758da9b3408aaf9435c2471ab218",
+      "exitCode": 0,
+      "seconds": 2.146,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 287
+      }
+    },
+    {
+      "repository": "apache/commons-io",
+      "commit": "05f968e913fb43f21ccecb44eba5d523999999f9",
+      "exitCode": 0,
+      "seconds": 1.623,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 300
+      }
+    },
+    {
+      "repository": "apache/commons-text",
+      "commit": "23428d0ba4fc23e8f080d1ec50aee17f72276f9d",
+      "exitCode": 0,
+      "seconds": 1.466,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 80
+      }
+    },
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
+      "exitCode": 0,
+      "seconds": 2.043,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 408
+      }
+    },
+    {
+      "repository": "apache/commons-codec",
+      "commit": "5444a15a34dada7b6d92f6f96c58bef74cee2817",
+      "exitCode": 0,
+      "seconds": 1.132,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 110
+      }
+    },
+    {
+      "repository": "apache/commons-compress",
+      "commit": "f4eea9e5cf73e38cf352c0d5f85376e5bbb630b9",
+      "exitCode": 0,
+      "seconds": 2.471,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 416
+      }
+    },
+    {
+      "repository": "apache/commons-csv",
+      "commit": "c6ac1bde5b6b9545a8b85b570f5f118930c2b50f",
+      "exitCode": 0,
+      "seconds": 0.844,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 10
+      }
+    },
+    {
+      "repository": "google/gson",
+      "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+      "exitCode": 0,
+      "seconds": 1.381,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 112
+      }
+    },
+    {
+      "repository": "google/guava",
+      "commit": "72dd370d951967fe97756ecaaa938c7cb5bcbc28",
+      "exitCode": 0,
+      "seconds": 7.877,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 812
+      }
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "exitCode": 1,
+      "seconds": 0.75,
+      "result": {
+        "findings": [
+          {
+            "file": "README.md",
+            "line": 493,
+            "column": 70,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "CodeBlock.add",
+            "message": "CodeBlock has no member `add`",
+            "suggestion": null
+          },
+          {
+            "file": "README.md",
+            "line": 511,
+            "column": 78,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "CodeBlock.addNamed",
+            "message": "CodeBlock has no member `addNamed`",
+            "suggestion": null
+          },
+          {
+            "file": "README.md",
+            "line": 762,
+            "column": 28,
+            "checkId": "JD002",
+            "severity": "ERROR",
+            "reference": "TypeSpec.anonymousInnerClass",
+            "message": "TypeSpec has no member `anonymousInnerClass`",
+            "suggestion": null
+          }
+        ],
+        "documents": 1,
+        "types": 22
+      }
+    },
+    {
+      "repository": "square/retrofit",
+      "commit": "3724fffb6ce312bc0191a31e0e8c7fb0c5796d39",
+      "exitCode": 0,
+      "seconds": 1.263,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 98
+      }
+    },
+    {
+      "repository": "FasterXML/jackson-core",
+      "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
+      "exitCode": 0,
+      "seconds": 2.269,
+      "result": {
+        "findings": [],
+        "documents": 2,
+        "types": 157
+      }
+    },
+    {
+      "repository": "FasterXML/jackson-databind",
+      "commit": "a37ac97fce60295212f510cc790af2b65785100a",
+      "exitCode": 0,
+      "seconds": 4.523,
+      "result": {
+        "findings": [],
+        "documents": 2,
+        "types": 697
+      }
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "exitCode": 0,
+      "seconds": 3.777,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 440
+      }
+    },
+    {
+      "repository": "junit-team/junit5",
+      "commit": "2b484caa962ad9b0d9a6af5d2c25100b6a8f4ef6",
+      "exitCode": 0,
+      "seconds": 3.557,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 608
+      }
+    },
+    {
+      "repository": "qos-ch/slf4j",
+      "commit": "90658112710a99a6ff7dbb2db0c1d13f8fb456f8",
+      "exitCode": 0,
+      "seconds": 1.536,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 156
+      }
+    },
+    {
+      "repository": "jhy/jsoup",
+      "commit": "088614f4a1454232a1f03c63b7f80742f1f2a854",
+      "exitCode": 0,
+      "seconds": 1.661,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 129
+      }
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "exitCode": 0,
+      "seconds": 4.056,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 1612
+      }
+    },
+    {
+      "repository": "resilience4j/resilience4j",
+      "commit": "7e3ab5252ed380b596e25240f19376a4435570b8",
+      "exitCode": 0,
+      "seconds": 1.857,
+      "result": {
+        "findings": [],
+        "documents": 1,
+        "types": 670
+      }
+    }
+  ],
+  "summary": {
+    "repositories": 20,
+    "errors": 0,
+    "documents": 22,
+    "findings": 3
+  }
+}
