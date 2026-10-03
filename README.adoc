@@ -123,6 +123,30 @@ The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
 javadrift.format, javadrift.output and javadrift.skip system properties.
 No artifacts have been published to Maven Central yet.
 
+=== Maven from a custom repository
+
+If your organization hosts the Maven plugin in Nexus, Artifactory, GitHub
+Packages or another Maven-compatible registry, add that registry to the
+`pluginRepositories` section of the consuming POM (or to a Maven settings
+profile):
+
+[source,xml]
+----
+<pluginRepositories>
+  <pluginRepository>
+    <id>company-releases</id>
+    <url>https://maven.example.com/repository/releases/</url>
+  </pluginRepository>
+</pluginRepositories>
+----
+
+Keep credentials in `~/.m2/settings.xml` or your CI secret store; do not commit
+them to the POM. The repository must contain the published Javadrift plugin,
+core and their POM metadata. A GitHub Release download URL is an asset store,
+not a Maven repository, so it cannot be used directly in `pluginRepositories`.
+For an unpublished build use `mvn install` and the local Maven repository as
+described above.
+
 == Gradle
 
 Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
@@ -141,6 +165,30 @@ Then apply it in build.gradle.kts:
 plugins { id("io.github.bohdaq.javadrift") }
 javadrift { warnOnly.set(true) }
 ----
+
+=== Gradle from a custom plugin repository
+
+For a Maven-compatible internal registry, add it to `pluginManagement` before
+the plugin is resolved:
+
+[source,kotlin]
+----
+pluginManagement {
+    repositories {
+        maven { url = uri("https://maven.example.com/repository/releases/") }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+----
+
+If the plugin is published through a repository that requires authentication,
+configure credentials through Gradle properties or the CI environment, for
+example `repoUser` and `repoPassword`; keep those values out of source control.
+The custom repository must expose Gradle plugin marker metadata and the
+`javadrift-core` Maven module. A GitHub Release asset cannot be used as a
+Gradle plugin repository. For a checkout without a published plugin, retain
+`includeBuild("/path/to/Javadrift")`.
 
 The javadriftCheck task joins check and compiles Java source sets in the project
 and its subprojects first. It writes a report under the build reports directory.
