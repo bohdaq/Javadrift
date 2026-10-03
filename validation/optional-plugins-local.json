@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "scope": "Authored Jackson application; locally built adapters",
+  "runs": [
+    {
+      "name": "maven-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "maven-snippet-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 1
+    },
+    {
+      "name": "maven-properties-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 2
+    },
+    {
+      "name": "maven-both-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 3
+    },
+    {
+      "name": "maven-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 3
+    },
+    {
+      "name": "maven-disabled",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "maven-warnings",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 3
+    },
+    {
+      "name": "maven-warning-fails",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 3
+    },
+    {
+      "name": "maven-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "maven-input-error-warn-only",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "maven-final-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "gradle-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 0
+    },
+    {
+      "name": "gradle-unchanged",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "UP-TO-DATE",
+      "findings": 0
+    },
+    {
+      "name": "gradle-snippet-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED",
+      "findings": 1
+    },
+    {
+      "name": "gradle-properties-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED",
+      "findings": 2
+    },
+    {
+      "name": "gradle-both-stale",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED",
+      "findings": 3
+    },
+    {
+      "name": "gradle-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 3
+    },
+    {
+      "name": "gradle-disabled",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 0
+    },
+    {
+      "name": "gradle-warnings",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 3
+    },
+    {
+      "name": "gradle-warning-fails",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED",
+      "findings": 3
+    },
+    {
+      "name": "gradle-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 0
+    },
+    {
+      "name": "gradle-resource-removed",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED",
+      "findings": 1
+    },
+    {
+      "name": "gradle-resource-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "EXECUTED",
+      "findings": 0
+    },
+    {
+      "name": "gradle-restored-unchanged",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "UP-TO-DATE",
+      "findings": 0
+    },
+    {
+      "name": "gradle-input-error-warn-only",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "taskOutcome": "FAILED"
+    },
+    {
+      "name": "gradle-final-valid",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "taskOutcome": "UP-TO-DATE",
+      "findings": 0
+    }
+  ],
+  "passed": true,
+  "triageSha256": "1b24ec39af4211e4f7db3528fc8930aeea6b24a16cb853260d5b3cc02ff26510"
+}
