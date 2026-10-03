@@ -188,3 +188,21 @@ still meets its five-second budget: 2.468 seconds for 500 docs and 5,000 classes
 on this Mac/JDK 17. Parser dependency size increases the shaded CLI substantially.
 These are local results; signing, Central upload and Portal validation require the
 account setup in link:publishing.adoc[publishing instructions].
+
+== Published 0.2.0 and continuous CI adoption
+
+The https://github.com/bohdaq/Javadrift/releases/tag/v0.2.0[0.2.0 preview]
+and its https://github.com/bohdaq/Javadrift/actions/runs/37084809909[release workflow]
+are successful. The hosted Action verifies downloaded checksums and reports
+both Java and Kotlin stale references, then verifies strict/input-error exit codes.
+An independent download verifies the checksum and CLI version, scans this project
+with zero findings and parses the corrected Kotlin consumer without findings.
+Published artifact metadata and job results are in validation/release-0.2.0.json.
+
+Javadrift's own CI now runs the published 0.2.0 Action in warn-only mode and saves
+its SARIF output. The initial
+https://github.com/bohdaq/Javadrift/actions/runs/37083398854[adoption run]
+passed with the javadrift-documentation-report artifact. This is self-adoption;
+no external repository was changed, as requested. Registry uploads remain pending
+user account credentials and a signing key; signing and Portal authentication
+have not been validated locally.

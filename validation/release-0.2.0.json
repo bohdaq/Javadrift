@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "release": "https://github.com/bohdaq/Javadrift/releases/tag/v0.2.0",
+  "tag": "v0.2.0",
+  "preview": true,
+  "sourceCommit": "ddc43fe2112b709a8bf8d68161b70851d49064af",
+  "publishedAt": "2026-10-03T01:07:56Z",
+  "workflow": "https://github.com/bohdaq/Javadrift/actions/runs/37084809909",
+  "workflowConclusion": "success",
+  "jobs": [
+    {
+      "name": "cli",
+      "url": "https://github.com/bohdaq/Javadrift/actions/runs/37084809909/job/111092757058",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify release version",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run mvn -B verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run ./gradlew check validatePlugins --no-daemon",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare CLI assets",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish CLI preview",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "action-smoke",
+      "url": "https://github.com/bohdaq/Javadrift/actions/runs/37084809909/job/111093040362",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check this repository using published CLI",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare stale documentation",
+          "conclusion": "success"
+        },
+        {
+          "name": "Report stale documentation through action",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify findings, CLI version and exit codes",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "jarSha256": "5bee2af4948442b35d083e0b8a1f4cbc46b2fd615ee497d0cc16b816934bba90",
+  "assets": [
+    {
+      "name": "javadrift.jar",
+      "url": "https://github.com/bohdaq/Javadrift/releases/download/v0.2.0/javadrift.jar",
+      "bytes": 72835351
+    },
+    {
+      "name": "javadrift.jar.sha256",
+      "url": "https://github.com/bohdaq/Javadrift/releases/download/v0.2.0/javadrift.jar.sha256",
+      "bytes": 80
+    }
+  ],
+  "independentDownloadedArtifact": {
+    "checksumVerified": true,
+    "jdk": "Temurin 17.0.20.1",
+    "version": "Javadrift 0.2.0",
+    "selfScan": {
+      "documents": 7,
+      "types": 39,
+      "findings": 0
+    },
+    "kotlinConsumerFindings": 0
+  },
+  "registryPublication": "pending user account credentials and signing key"
+}

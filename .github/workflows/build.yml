@@ -38,9 +38,9 @@ jobs:
           distribution: temurin
           java-version: '17'
       - name: Check docs with published Javadrift
-        uses: bohdaq/Javadrift/javadrift-action@v0.1.0
+        uses: bohdaq/Javadrift/javadrift-action@v0.2.0
         with:
-          version: v0.1.0
+          version: v0.2.0
           warn-only: 'true'
           format: sarif
           output: javadrift.sarif
