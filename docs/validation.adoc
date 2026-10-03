@@ -528,3 +528,28 @@ The build workflow repeats the adapter walkthrough on Ubuntu with JDK 17 and 21,
 and saves summaries, individual finding reports and command logs after success
 or failure. This remains authored application coverage rather than upstream
 optional-check precision evidence.
+
+== Baseline maintenance
+
+Four additional CLI regression cases verify auditing and pruning without accepting
+new findings, missing/invalid files and conflicting options, configured and explicit
+baseline paths, and optional snippet checks with repeated class directories and a
+native dependency classpath containing spaces. Audits preserve file bytes; pruning
+retains accepted fingerprints that still match, leaves new findings visible and
+can produce an empty baseline. Scan failures and no-op pruning preserve the file.
+
+The packaged CLI portability walkthrough adds eight maintenance scenarios to its
+previous 18, for 26 in total. A real removed-symbol history baseline is first
+audited while active, then made unused alongside a new missing-member finding.
+Pruning must remove the old acceptance without hiding the new finding. Conflicting
+options and nonexistent dependency paths must fail without changing the baseline;
+empty-baseline audits and no-op pruning must succeed. The existing six OS/JDK jobs
+run the expanded walkthrough and save its reports and logs.
+
+See link:baselines.adoc[baseline maintenance] for scope consistency, exit codes
+and CI enforcement of both new findings and unused accepted entries.
+Local JDK 17 Maven verification passes 52 core tests, six CLI tests and both
+Maven integration builds. Gradle check/validatePlugins passes all five TestKit
+cases. The 26-case packaged CLI summary is recorded in
+validation/baseline-maintenance-local.json; Javadrift's own 12 documents scan
+without findings.

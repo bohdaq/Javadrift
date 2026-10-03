@@ -1,0 +1,84 @@
+= Maintaining reviewed baselines
+
+A baseline accepts findings by document path, check ID and reference. Fingerprints
+remain stable when lines move. They do not contain the original reference text,
+severity or location. Matching references with the same path/check are accepted
+together, including repeated occurrences. Baselines are reviewed exceptions;
+normal check runs still report findings whose fingerprints are not accepted.
+
+The maintenance options below are available in the current source build. Build
+the CLI before using them; older published previews do not include these options.
+
+[source,shell]
+----
+mvn -B -DskipTests -pl javadrift-cli -am package
+java -jar javadrift-cli/target/javadrift.jar baseline --check
+java -jar javadrift-cli/target/javadrift.jar baseline --prune
+----
+
+== Audit and prune
+
+baseline --check rescans documentation without applying baseline suppression and
+compares the current fingerprints with the existing baseline. It reports unused
+accepted fingerprints, retained accepted fingerprints and current unaccepted
+fingerprints. Each unused SHA-256 fingerprint is printed for comparison with the
+baseline file. The command leaves the file unchanged, exits 1 when entries are
+unused, and exits 0 otherwise. New findings alone do not fail this audit; run check
+to enforce their configured severity threshold.
+
+baseline --prune writes only the intersection of existing accepted fingerprints
+and current findings. It removes unused entries without accepting new findings,
+and exits 0 on success. A no-op prune leaves the file bytes unchanged. An empty
+intersection produces a version-1 baseline with an empty fingerprints list.
+Replacing the file uses a temporary sibling file and an atomic move where the
+filesystem supports it. New findings remain visible to subsequent check runs.
+
+Both operations require an existing valid baseline. Missing files, invalid JSON,
+unsupported versions, invalid fingerprints and scan/configuration errors exit 2.
+They do not create a missing baseline or overwrite an invalid one. --check and
+--prune are mutually exclusive. A baseline command without either option retains
+the original behavior: it replaces the file with all current unsuppressed
+findings, explicitly accepting new fingerprints too.
+
+== Use the same scan inputs
+
+Unused means unmatched in this scan. Changing docs.include, disabling checks,
+adding suppressions or selecting a different Git comparison can make entries
+unused even when the documentation has not been corrected. Review those changes
+before pruning, and use the same scope, enabled checks, Git ref and classpath that
+were used to review the accepted findings. History baselines require --since
+when auditing or pruning the removed-symbol findings they accepted.
+
+--root and --config select the project and YAML configuration. The default
+baseline path comes from the configuration and is relative to the project root.
+--output overrides the baseline file being audited or pruned; relative override
+paths use the command's working directory, as they do when generating a baseline.
+It selects the existing file to maintain, rather than a separate report output.
+
+--class-dir is repeatable and --classpath takes the dependency classpath using
+the native platform separator. Configuration-provided classes and dependencies
+remain included. Both options apply to creation, auditing and pruning. Compile
+the application and provide its dependencies before maintaining JD008 snippet
+baselines. Missing dependencies can change compilation findings and therefore
+which entries match. See link:optional-checks.adoc[optional checks setup].
+
+== CI enforcement
+
+After building the current CLI, run both commands with the same configuration:
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar check --root .
+java -jar javadrift-cli/target/javadrift.jar baseline --root . --check
+----
+
+Configure CI to fail if either command returns nonzero. The first checks new
+findings; the second checks baseline hygiene. Run the audit only for projects
+with a reviewed baseline file. For history scans, fetch the comparison ref and
+pass the same --since argument to both commands. Supply the same --config,
+--class-dir and --classpath options where required.
+
+Prune locally, review the baseline diff and commit it. Regenerate a baseline only
+when deliberately accepting the current findings; pruning cannot replace that
+review. The scanner's existing inline suppressions and document exceptions still
+apply during maintenance.

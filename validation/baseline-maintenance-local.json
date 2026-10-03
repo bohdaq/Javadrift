@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "os": "Darwin",
+  "runs": [
+    {
+      "name": "java-version",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "git-init",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "git-add-base",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "git-commit-base",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "git-tag-base",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "valid-absolute-output",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "valid-stdout",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "stale-relative-output",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 2
+    },
+    {
+      "name": "stale-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 2
+    },
+    {
+      "name": "stale-sarif",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "stale-text",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "stale-github",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "missing-config",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "missing-config-warn-only",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "invalid-output",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "git-add-change",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "git-commit-change",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "history-strict",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 1
+    },
+    {
+      "name": "history-warn-only",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 1
+    },
+    {
+      "name": "history-sarif",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "invalid-git-ref",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "invalid-git-ref-warn-only",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "create-baseline",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "history-baseline",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "baseline-audit-active",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "baseline-audit-unused",
+      "exitCode": 1,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "baseline-prune",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "baseline-new-finding-retained",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "findings": 1
+    },
+    {
+      "name": "baseline-conflicting-options",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "baseline-missing-classpath",
+      "exitCode": 2,
+      "expectedExitCode": 2
+    },
+    {
+      "name": "history-restored",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "findings": 0
+    },
+    {
+      "name": "baseline-audit-empty",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "baseline-prune-noop",
+      "exitCode": 0,
+      "expectedExitCode": 0
+    }
+  ],
+  "passed": true,
+  "jarSha256": "965c1382e1c995592f64d138ea2d38ece6f4442248c44dab79c982d8bfd269da",
+  "javaVersion": "openjdk version \"17.0.20.1\" 2026-08-18\nOpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)\nOpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)",
+  "cliScenarios": 26
+}

@@ -99,6 +99,13 @@ so adding lines above a known finding does not invalidate it. Regenerating a
 baseline replaces it with all current unsuppressed findings. Review and commit
 the file; newly introduced references still fail.
 
+Use baseline --check to audit unused entries without writing, and baseline --prune
+to remove them without accepting new findings. These commands accept --class-dir
+and --classpath, just like check. Keep the scan scope and Git reference consistent
+with the baseline's original review. See link:docs/baselines.adoc[baseline maintenance]
+for exit codes, classpath setup and CI usage. These options require the current
+source build.
+
 == Try the current source
 
 Follow link:docs/local-setup.adoc[local CLI, Maven and Gradle setup] or run the

@@ -143,9 +143,31 @@ try:
         if json.loads(baseline.read_text(encoding='utf-8')) != {'version': 1, 'fingerprints': [fingerprint]}:
             raise RuntimeError('Unexpected baseline fingerprint')
         check_json('history-baseline', set(), options=history)
-        baseline.unlink()
+        maintenance = cli + ['baseline', '--root', str(root), '--config', str(config)] + history
+        original = baseline.read_bytes()
+        run('baseline-audit-active', maintenance + ['--check'], working)
+        if baseline.read_bytes() != original:
+            raise RuntimeError('Baseline audit changed the file')
+        guide.write_text(valid.replace('#greet', '#missing'), encoding='utf-8')
+        new_finding = {('JD002', 'demo.Greeter#missing')}
+        audit = run('baseline-audit-unused', maintenance + ['--check'], working, 1)
+        if '1 unused' not in audit.stdout or '1 current fingerprints remain unaccepted' not in audit.stdout or baseline.read_bytes() != original:
+            raise RuntimeError('Unused-entry audit must retain the baseline and distinguish new findings')
+        run('baseline-prune', maintenance + ['--prune'], working)
+        if json.loads(baseline.read_text(encoding='utf-8')) != {'version': 1, 'fingerprints': []}:
+            raise RuntimeError('Pruning accepted a new finding')
+        check_json('baseline-new-finding-retained', new_finding, 1, history)
+        pruned = baseline.read_bytes()
+        run('baseline-conflicting-options', maintenance + ['--check', '--prune'], working, 2)
+        run('baseline-missing-classpath', maintenance + ['--prune', '--classpath', str(base / 'missing.jar')], working, 2)
+        if baseline.read_bytes() != pruned:
+            raise RuntimeError('Input failures changed the baseline')
         guide.write_text(valid.replace('#greet', '#welcome'), encoding='utf-8')
         check_json('history-restored', set(), options=history)
+        run('baseline-audit-empty', maintenance + ['--check'], working)
+        run('baseline-prune-noop', maintenance + ['--prune'], working)
+        if baseline.read_bytes() != pruned:
+            raise RuntimeError('No-op prune rewrote the baseline')
     report['cliScenarios'] = sum(r['name'] != 'java-version' and not r['name'].startswith('git-') for r in report['runs'])
     report['passed'] = True
 except Exception as error:
