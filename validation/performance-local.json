@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "os": "Darwin",
+    "machine": "arm64",
+    "logicalCpus": 10,
+    "peakMemoryMethod": "wait4.ru_maxrss",
+    "javaVersion": "openjdk version \"17.0.20.1\" 2026-08-18\nOpenJDK Runtime Environment Temurin-17.0.20.1+1 (build 17.0.20.1+1)\nOpenJDK 64-Bit Server VM Temurin-17.0.20.1+1 (build 17.0.20.1+1, mixed mode, sharing)"
+  },
+  "heapMiB": 512,
+  "cases": [
+    {
+      "fixture": {
+        "profile": "java",
+        "classes": 5000,
+        "documents": 500,
+        "javaFiles": 5000,
+        "kotlinFiles": 0,
+        "markdownFiles": 500,
+        "asciidocFiles": 0,
+        "fixtureSha256": "6d23851117fc606b23128a9ba1bdaa30c895271e065d54867393694c01aaa0b8"
+      },
+      "runs": {
+        "current": [
+          {
+            "wallSeconds": 1.449452,
+            "peakRssMiB": 266.094,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 1.318155,
+            "peakRssMiB": 262.172,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 1.400407,
+            "peakRssMiB": 270.094,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          }
+        ],
+        "reference": [
+          {
+            "wallSeconds": 1.579702,
+            "peakRssMiB": 287.297,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 1.344867,
+            "peakRssMiB": 267.141,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 1.335006,
+            "peakRssMiB": 261.969,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          }
+        ]
+      },
+      "summary": {
+        "current": {
+          "repeats": 3,
+          "medianWallSeconds": 1.400407,
+          "minWallSeconds": 1.318155,
+          "maxWallSeconds": 1.449452,
+          "medianPeakRssMiB": 266.094,
+          "maxPeakRssMiB": 270.094
+        },
+        "reference": {
+          "repeats": 3,
+          "medianWallSeconds": 1.344867,
+          "minWallSeconds": 1.335006,
+          "maxWallSeconds": 1.579702,
+          "medianPeakRssMiB": 267.141,
+          "maxPeakRssMiB": 287.297
+        }
+      },
+      "failures": [],
+      "comparison": {
+        "limits": {
+          "medianWallSeconds": 2.094867,
+          "medianPeakRssMiB": 333.92625000000004
+        },
+        "failures": []
+      }
+    },
+    {
+      "fixture": {
+        "profile": "mixed",
+        "classes": 5000,
+        "documents": 500,
+        "javaFiles": 2500,
+        "kotlinFiles": 2500,
+        "markdownFiles": 250,
+        "asciidocFiles": 250,
+        "fixtureSha256": "e25b74232c574faee9bdfce9bcc3ee89f3787caab2b4ea329cea10cc8b804d79"
+      },
+      "runs": {
+        "current": [
+          {
+            "wallSeconds": 2.284249,
+            "peakRssMiB": 255.094,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 2.224282,
+            "peakRssMiB": 254.484,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 2.300259,
+            "peakRssMiB": 258.719,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          }
+        ],
+        "reference": [
+          {
+            "wallSeconds": 2.236139,
+            "peakRssMiB": 255.781,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 2.23853,
+            "peakRssMiB": 254.422,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          },
+          {
+            "wallSeconds": 2.209345,
+            "peakRssMiB": 252.781,
+            "exitCode": 0,
+            "documents": 500,
+            "types": 5000,
+            "findings": 0
+          }
+        ]
+      },
+      "summary": {
+        "current": {
+          "repeats": 3,
+          "medianWallSeconds": 2.284249,
+          "minWallSeconds": 2.224282,
+          "maxWallSeconds": 2.300259,
+          "medianPeakRssMiB": 255.094,
+          "maxPeakRssMiB": 258.719
+        },
+        "reference": {
+          "repeats": 3,
+          "medianWallSeconds": 2.236139,
+          "minWallSeconds": 2.209345,
+          "maxWallSeconds": 2.23853,
+          "medianPeakRssMiB": 254.422,
+          "maxPeakRssMiB": 255.781
+        }
+      },
+      "failures": [],
+      "comparison": {
+        "limits": {
+          "medianWallSeconds": 3.3542085000000004,
+          "medianPeakRssMiB": 318.0275
+        },
+        "failures": []
+      }
+    }
+  ],
+  "passed": true,
+  "thresholds": {
+    "timeRatio": 1.5,
+    "timeFloorSeconds": 0.75,
+    "memoryRatio": 1.25,
+    "memoryFloorMiB": 32
+  },
+  "jarSha256": {
+    "current": "da57ce1b3ce63937c60450b19004ed7c991c994e600fe1c52d445c9bd2429c40",
+    "reference": "da57ce1b3ce63937c60450b19004ed7c991c994e600fe1c52d445c9bd2429c40"
+  }
+}

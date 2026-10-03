@@ -16,14 +16,54 @@ Build the CLI, then run both profiles on JDK 17:
 [source,shell]
 ----
 mvn -B -DskipTests -pl javadrift-cli -am package
-python3 scripts/benchmark.py --profile all
+python3 scripts/benchmark.py --profile all --output validation-results/performance.json
 ----
 
 Use --profile java or --profile mixed for one case. --classes and --documents
-change the sizes; --max-seconds enforces a local wall-time budget. Fixtures include
+change the sizes; --max-seconds enforces a local median wall-time budget. Fixtures include
 a SHA-256 of their paths and content so comparison inputs can be identified.
 
 These workloads measure source indexing and reference checking on generated
 repositories. They do not measure dependency resolution, upstream project builds
 or optional snippet compilation. Corpus and Git history validation cover other
 repository shapes separately.
+
+== Repeated time and memory measurements
+
+The runner measures three scans per profile by default; --repeats changes that
+count. Every scan starts a fresh JVM with -Xmx512m; --heap-mib changes the maximum
+heap. Each run must return the expected class/document counts and zero findings.
+The JSON report records every time and peak memory value, timing min/median/max,
+median and maximum peak RSS, fixture hashes, JAR hashes and JVM/platform details.
+CLI JSON output and stderr are retained in a sibling report-logs directory.
+
+Peak RSS is the JVM process's maximum resident set size, including native memory
+and loaded code as well as heap. It can exceed -Xmx. The Linux/macOS runner reaps
+each JVM with wait4 and reads that child's ru_maxrss; peaks do not carry over from
+earlier runs. Linux reports KiB and macOS reports bytes, converted here to MiB.
+Measurement uses the OS peak rather than sampling. Fixture creation and result
+validation are outside the timed scan. Repeated runs reuse filesystem caches but
+do not reuse JVM state. --timeout bounds each JVM run.
+
+== Comparison thresholds
+
+Supply a reference JAR to compare both builds on identical inputs and the same
+runtime and machine:
+
+[source,shell]
+----
+python3 scripts/benchmark.py --profile all --reference-jar /path/to/reference.jar --output validation-results/performance.json
+----
+
+The runner interleaves current and reference scans and alternates their ordering.
+A profile fails when its current median scan time increases by both more than 50%
+and more than 0.75 seconds, or its median per-run peak RSS increases by both more
+than 25% and more than 32 MiB. These relative thresholds and absolute floors flag
+substantial changes while allowing small run-to-run variations. Override them
+with --time-ratio, --time-floor-seconds, --memory-ratio and --memory-floor-mib.
+The report includes the calculated limits and failures. Any failed scan, malformed
+CLI report or timeout also fails the benchmark and leaves a failed JSON report.
+
+The resource units follow the
+link:https://man7.org/linux/man-pages/man2/getrusage.2.html[Linux resource-usage manual]
+and link:https://github.com/apple/darwin-xnu/blob/main/bsd/man/man2/getrusage.2[Darwin resource-usage manual].

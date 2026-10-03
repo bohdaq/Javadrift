@@ -442,3 +442,16 @@ and excluding fixture generation. These single runs establish correct fixture
 behavior; repeated timing and memory measurements follow separately.
 
 See link:performance.adoc[performance validation] for profiles and commands.
+
+The repeated benchmark measures each JVM's peak RSS using wait4. Three current
+and three reference runs per profile, using the same JAR as a measurement-control
+check, pass all fixture assertions and regression limits. Current medians on this
+Mac/JDK 17 are 1.400 seconds and 266.1 MiB peak RSS for Java, and 2.284 seconds and
+255.1 MiB for mixed input. Every scan includes JVM startup with a 512 MiB maximum
+heap. Full runs, summaries, fixture/JAR hashes and environment details are in
+validation/performance-local.json. These values describe this generated workload
+and local machine; CI compares builds on the same runner.
+
+Fifteen Python validation tests pass. Benchmark-specific guards cover substantial
+time/memory increases, small variations, invalid metrics, timeout termination,
+per-child peak memory and failed-report persistence.
