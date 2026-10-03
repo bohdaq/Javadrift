@@ -38,6 +38,8 @@ def run(name, command, root, exit_code=0, json_file=None, stale=False):
     row = {'name': name, 'exitCode': process.returncode, 'expectedExitCode': exit_code,
            'seconds': round(time.perf_counter() - started, 3), 'log': log.name}
     report['runs'].append(row)
+    if name.startswith('gradle-') and 'kotlin-compiler-embeddable' in process.stdout + process.stderr:
+        raise RuntimeError(f'{name}: embedded compiler leaked into the build classpath; see {log}')
     if process.returncode != exit_code:
         raise RuntimeError(f'{name}: expected exit {exit_code}, got {process.returncode}; see {log}')
     if json_file is not None:

@@ -174,6 +174,7 @@ in the consuming project's settings script:
 [source,kotlin]
 ----
 pluginManagement { includeBuild("/path/to/Javadrift") }
+includeBuild("/path/to/Javadrift") // Resolve the analysis engine from source too.
 ----
 
 Then apply it in build.gradle.kts:
@@ -181,6 +182,7 @@ Then apply it in build.gradle.kts:
 [source,kotlin]
 ----
 plugins { id("io.github.bohdaq.javadrift") }
+repositories { mavenCentral() }
 javadrift { warnOnly.set(true) }
 ----
 
@@ -207,6 +209,11 @@ The custom repository must expose Gradle plugin marker metadata and the
 `javadrift-core` Maven module. A GitHub Release asset cannot be used as a
 Gradle plugin repository. For a checkout without a published plugin, retain
 `includeBuild("/path/to/Javadrift")`.
+
+The analysis engine uses the consumer's dependency repositories, separately from
+plugin resolution. Add the same custom Maven repository to `repositories` in
+build.gradle.kts, with `mavenCentral()` for third-party engine dependencies. With
+a source checkout, the second includeBuild above substitutes local core instead.
 
 The javadriftCheck task joins check and compiles Java source sets in the project
 and its subprojects first. It writes a report under the build reports directory.

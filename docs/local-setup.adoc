@@ -96,6 +96,7 @@ Add the Javadrift source checkout to your settings.gradle.kts:
 pluginManagement {
     includeBuild("/path/to/Javadrift")
 }
+includeBuild("/path/to/Javadrift")
 ----
 
 Apply the plugin alongside your normal Java or Kotlin JVM plugin:
@@ -106,6 +107,7 @@ plugins {
     java
     id("io.github.bohdaq.javadrift")
 }
+repositories { mavenCentral() }
 ----
 
 Run your Gradle check task. Javadrift registers javadriftCheck and depends on the
@@ -123,9 +125,11 @@ javadrift {
 Set warnOnly to false when enforcing findings. The sample additionally maps its
 -PwarnOnly=true property to this extension; that property is specific to the sample
 build script. An included build uses the current source checkout on each build.
-The sample pins Kotlin Gradle plugin 2.2.21, which currently emits an embedded
-compiler-classpath warning for Javadrift's parser dependency. Its compilation and
-checks pass; other Kotlin plugin versions are outside this sample's validation.
+The sample pins Kotlin Gradle plugin 2.2.21. Javadrift resolves its analysis engine
+through the separate javadriftRuntime configuration and runs it in an isolated
+worker. Add mavenCentral() to the consumer's repositories for engine dependencies;
+the included source build supplies Javadrift core. The embedded Kotlin parser stays
+off the build classpath used by the Kotlin Gradle plugin.
 
 == CI coverage
 

@@ -1,9 +1,21 @@
 plugins { id("com.gradle.plugin-publish") version "2.2.1" }
 dependencies {
-    implementation(project(":javadrift-core"))
+    compileOnly(project(":javadrift-core"))
+    implementation("org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r")
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+tasks.processResources {
+    inputs.property("engineVersion", project.version)
+    filesMatching("**/engine.properties") { expand("version" to project.version) }
+}
+val testEngine by configurations.creating
+dependencies { testEngine(project(":javadrift-core")) }
+tasks.test {
+    inputs.files(testEngine)
+    dependsOn(testEngine)
+    doFirst { systemProperty("javadrift.test.engine", testEngine.asPath) }
 }
 gradlePlugin {
     website.set("https://github.com/bohdaq/Javadrift")

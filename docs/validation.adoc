@@ -360,3 +360,21 @@ The build workflow now includes a sample-adoption job that runs the source-build
 and consumer walkthrough, then uploads the JSON report and per-command logs even
 after failure. Follow link:local-setup.adoc[local setup] and the sample README for
 commands. Registry uploads and new releases remain deferred.
+
+== Isolated Gradle analysis engine
+
+The source Gradle adapter now resolves core through javadriftRuntime and runs
+analysis with Gradle's classLoaderIsolation worker API. Core is a compile-only
+plugin dependency; the embedded Kotlin compiler is absent from the plugin's build
+classpath. Git input tracking uses JGit directly, including HEAD and refs.
+Consumer dependency repositories supply engine dependencies; source consumers
+include Javadrift both for plugin resolution and core dependency substitution.
+
+Four Gradle TestKit tests pass, covering input invalidation, subproject classes,
+Kotlin parsing while core/compiler classes are invisible to the build, and Git ref
+invalidation. Gradle check and validatePlugins pass. The full 12-scenario local
+adoption walkthrough passes with Kotlin Gradle plugin 2.2.21, and its Gradle logs
+contain no embedded compiler warning. The smoke script now rejects that warning.
+The earlier sample evidence above records behavior before this isolation change.
+
+The implementation follows link:https://docs.gradle.org/current/userguide/worker_api.html[Gradle's isolated worker guidance].

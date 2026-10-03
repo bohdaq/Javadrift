@@ -63,7 +63,7 @@ per-command logs are saved under the system temporary directory. --skip-build is
 available after building/installing the tool. Dependency downloads are needed on
 the first run; this script does not publish artifacts or create GitHub releases.
 
-The current Gradle adapter exposes the embedded Kotlin parser on the plugin
-classpath. Kotlin Gradle plugin 2.2.21 emits a compiler-classpath warning in this
-sample; the checks and compilation still pass. This sample verifies that version,
-without claiming compatibility with other Kotlin Gradle plugin versions.
+The Gradle adapter loads its analysis engine and embedded Kotlin parser in an
+isolated worker. The sample's Maven Central repository supplies engine dependencies;
+the included source build supplies Javadrift core. The parser stays off the build
+classpath used by the Kotlin Gradle plugin.
