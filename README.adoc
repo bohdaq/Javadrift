@@ -338,3 +338,12 @@ docs:
 
 Use exact file/reference patterns when possible. Exceptions express reviewed intent;
 they do not prove that the referenced third-party API or optional file is valid.
+
+== Continuous validation
+
+The pinned validation workflow runs on pushes and pull requests using the current
+source-built CLI. It checks both corpus scopes against active triage, fails when a
+known error disappears or an unreviewed finding appears, and replays five reconstructed
+and two naturally stale source-history cases. Reports are uploaded as the
+pinned-validation-reports artifact, including after validation failures.
+See link:docs/triage.adoc[reviewing findings and updating exceptions].

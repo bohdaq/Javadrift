@@ -1,0 +1,94 @@
+= Reviewing corpus findings
+
+The pinned validation workflow checks the current CLI against reviewed upstream
+source snapshots. A green run means those known errors remain detectable and all
+reported findings have review decisions. It does not establish recall or accuracy
+on other projects. No upstream build, annotation processor or example executes.
+
+== Run the gates locally
+
+Use JDK 17 and Python 3.12 or newer. Build the current CLI, test the validation
+scripts, then run the same four checks used by CI. The first run downloads pinned
+Git objects; later runs can add --offline to require cached objects.
+
+[source,shell]
+----
+mvn -B -DskipTests package
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -v
+python3 scripts/corpus.py --require-triage validation/triage.json --output /tmp/javadrift-validation-results/default-corpus.json
+python3 scripts/corpus.py --expanded --context-config validation/document-contexts.json --require-triage validation/context-triage.json --output /tmp/javadrift-validation-results/configured-corpus.json
+python3 scripts/history-replay.py --output /tmp/javadrift-validation-results/history-reconstructed.json
+python3 scripts/history-replay.py --manifest validation/history-natural.json --output /tmp/javadrift-validation-results/history-natural.json
+----
+
+The reports record the CLI checksum and exact source commits. Configured corpus
+reports also record the applied exceptions and their configuration checksum.
+CI uploads pinned-validation-reports even when a validation step fails. Setup
+failures may occur before a report exists; inspect the job log in that case.
+Network/cache failures are input failures, not clean scans.
+
+== Review a new finding
+
+Start with the repository, commit, document, line, column, check ID and reference
+in the report. Read the document's surrounding paragraph or code block at that
+exact commit, then inspect the owning source declaration or path. Check whether
+the reference describes the current project, another library, an older release,
+a diagram, or an optional consumer input. Record source paths and the evidence
+that supports the decision; do not classify by name alone.
+
+For a real error, add a true-positive record to the active triage file with that
+exact identity and evidence. Expanded triage includes columns; older default
+records omit them and match by line. Separate occurrences of the same reference
+must retain separate records. The gate rejects duplicate triage identities,
+unreviewed findings, missing repository runs and incorrect source pins.
+
+If a finding is false, prefer a general parser/resolution fix with a regression
+that also retains a real missing reference. Rebuild the CLI and rerun both corpus
+scopes. A reviewed false-positive record can document an unresolved report, but
+the gate still fails when the observed false-positive fraction reaches 5%.
+
+== Declare an intentional exception
+
+When the analyzer cannot infer intent safely, use a documented docs.exemptions
+entry. Limit it to the document, check, reference and fragment kind that need the
+exception, and explain why. Optional consumer links use kind LINK; historical
+inline names use kind CODE. Current code blocks and unrelated checks remain
+covered. See link:../README.adoc#_declared_document_exceptions[configuration syntax].
+
+For this validation corpus, put reviewed exceptions in the configuration for the
+specific repository/commit in validation/document-contexts.json. This file is
+opt-in: the unconfigured scan remains visible. The runner rejects contexts that
+refer to a different corpus pin. Confirm every known true-positive remains after
+adding an exception; the gate fails if an exception hides one.
+
+Do not silence an entire migration file or optional-files directory merely to
+reduce the count. Describe why each exception applies and add a regression for
+nearby references that must still be checked. A broad reference pattern needs an
+explicitly reviewed scope, such as inline old-namespace names in one document.
+
+== Investigate a disappeared known error
+
+A missing true-positive fails CI even if the report has no new findings. Check
+whether a check was disabled, an include scope changed, a new exception matched,
+or type ownership/resolution became too conservative. Restore detection and add
+a regression when the documented error still exists at the pinned source commit.
+
+If a deliberate change legitimately supersedes a finding, explain the old/new
+behavior with source evidence and update the corresponding review and regression.
+Do not delete a triage record merely to make the gate pass. Counts in the gate
+regression test must change only when the reviewed corpus changes deliberately.
+
+== Change source pins or add a history case
+
+Update validation/corpus.json deliberately and review the new snapshot. Refresh
+all active triage identities and matching document-context commits; old reviews
+cannot certify a new revision. Preserve useful historical evidence separately.
+Run both scopes and document which errors changed and why before committing.
+
+For a history case, identify the actual base/source-refactoring commits and
+expected removed names. The reconstructed suite restores the parent document at
+the source-refactoring revision. A natural case requires a revision whose unchanged
+document is stale and the actual later documentation-fix commit. Add it to the
+matching history manifest and verify that the stale document triggers the expected
+removed-symbol findings and the corrected document clears them. Keep those two
+methodologies distinct and leave upstream examples unexecuted.

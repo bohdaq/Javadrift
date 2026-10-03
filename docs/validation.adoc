@@ -306,3 +306,26 @@ no findings. New releases and registry uploads remain deferred.
 ----
 python3 scripts/corpus.py --offline --expanded --context-config validation/document-contexts.json --require-triage validation/context-triage.json --output validation/corpus-configured-after.json
 ----
+
+== CI regression gates
+
+The pinned validation workflow builds the current CLI on JDK 17 and runs the default
+and configured expanded corpus with required triage, followed by both history suites.
+Eight Python regression tests protect the gate itself: disappearing repeated
+references, unreviewed locations, missing/failed scans, duplicate or stale triage,
+false-positive limits, older columnless records and persisted input-error reports.
+
+Local reruns preserve all three default-scope errors and all 12 configured errors;
+both corpus scopes have zero input errors and no reported false positives. All five
+reconstructed and two natural history cases detect stale references and clear the
+corrected documents. CLI checksums and local summaries are in
+validation/ci-gates-local.json. Workflow reports go to a separate output directory,
+so CI does not overwrite checked-in evidence. Pinned Git objects are cached by source
+manifest checksums; upstream builds and examples remain unexecuted.
+
+The gate compares repository/commit, document, line, check and reference, plus column
+when the active review includes it. It requires every active true-positive to remain,
+while resolved historical false positives need not recur. Source-pin changes and
+scoped exceptions therefore require deliberate review rather than silent baseline
+replacement. See link:triage.adoc[the review procedure] for local commands and evidence
+requirements. New releases and registry publication remain deferred.
