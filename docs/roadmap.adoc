@@ -1,6 +1,6 @@
 = Implementation roadmap
 
-Each completed implementation piece below is tested, committed and pushed independently. All six implementation pieces are present in the 0.1.0 CLI preview.
+Each completed implementation piece below is tested, committed and pushed independently. All six implementation pieces are present in the 0.2.0 CLI preview.
 
 . Foundation: Java 17 Maven reactor, reusable core, packaged JVM CLI, CI and license.
 . Full scan: Java source index, Markdown/AsciiDoc extraction, JD001/JD002/JD007,
@@ -23,14 +23,15 @@ for scope and limitations.
 
 Maven Central/Gradle Portal publishing and an external CI adopter remain pending.
 Broader documentation coverage, more positive findings and naturally stale upstream
-history are needed before claiming broad accuracy. Kotlin source/history support
-is a later enhancement.
+history are needed before claiming broad accuracy. Kotlin source/history declaration indexing is implemented; full compiler type
+resolution and Kotlin snippet compilation remain future work.
 
 == Decisions
 
 * Apache-2.0 license.
 * Markdown and AsciiDoc docs.
 * JVM CLI only; no native binary.
-* Kotlin compiled classes use the same ASM index as Java. A source-only Kotlin
-  parser is a future enhancement; Kotlin history is not claimed as supported.
+* Kotlin compiled classes use the same ASM index as Java. Kotlin declaration
+  parsing and Git history use the embedded syntax parser; full type resolution
+  is outside the current implementation.
 * Diff matching stays inside code formatting to avoid noisy prose matches.

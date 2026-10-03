@@ -65,7 +65,15 @@ public final class BytecodeIndexer {
                 }
             },ClassReader.SKIP_CODE|ClassReader.SKIP_DEBUG|ClassReader.SKIP_FRAMES);
             if(visible[0]) {
-                if(project)index.types.put(type.name,type);else index.types.putIfAbsent(type.name,type);
+                if(project) {
+                    var source=index.types.get(type.name);
+                    // Kotlin callers use properties and default arguments absent from JVM signatures.
+                    if(source!=null && source.kotlinSource) {
+                        type.kotlinSource=true;
+                        for(var member:source.members)if(!type.members.contains(member))type.members.add(member);
+                    }
+                    index.types.put(type.name,type);
+                } else index.types.putIfAbsent(type.name,type);
             }
         } catch(IllegalArgumentException e) {throw new IOException("Unsupported or malformed class file",e);}
     }

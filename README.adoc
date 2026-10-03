@@ -7,7 +7,7 @@ project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
 == Download the CLI preview
 
 Download javadrift.jar and javadrift.jar.sha256 from
-https://github.com/bohdaq/Javadrift/releases/tag/v0.1.0[the v0.1.0 release].
+https://github.com/bohdaq/Javadrift/releases/tag/v0.2.0[the v0.2.0 release].
 Verify the checksum with sha256sum -c javadrift.jar.sha256 (or shasum -a 256 -c
 on macOS), then run java -jar javadrift.jar check --root /path/to/project.
 Start with --warn-only while reviewing findings for your project.
@@ -103,7 +103,7 @@ plugin. Add this block to the reactor root POM:
 <plugin>
   <groupId>io.github.bohdaq</groupId>
   <artifactId>javadrift-maven-plugin</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
   <inherited>false</inherited>
   <executions><execution><goals><goal>check</goal></goals></execution></executions>
 </plugin>
@@ -144,7 +144,7 @@ baselines, Git refs and repository file changes are tracked as inputs.
 
 The composite action lives in javadrift-action/. It requires a release tag with
 the CLI jar and SHA-256 checksum. The release workflow produces those assets
-when a version tag is pushed. Version v0.1.0 is the initial preview release.
+when a version tag is pushed. Version v0.2.0 adds Kotlin source parsing to the preview.
 The runner needs JDK 17+; diff mode also needs a checkout with full history.
 
 [source,yaml]
@@ -208,13 +208,26 @@ configuration APIs or every YAML example's intended schema.
 
 == Current limits
 
-Kotlin is supported through compiled JVM classes. Source-only Kotlin parsing
-and Kotlin Git history are not implemented. AsciiDoc support covers backtick
+Java and Kotlin sources are indexed without building upstream projects. Kotlin
+uses a syntax parser to index public/protected classes, interfaces, objects,
+companions, properties, functions, aliases and project extension functions.
+Private/internal declarations and test sources are excluded. Default arguments
+and trailing varargs contribute conservative signatures. Source properties and
+default argument signatures remain available alongside compiled JVM methods.
+Git diff mode compares both Java and Kotlin declarations.
+
+This is declaration indexing, without Kotlin compiler type resolution. Imported
+aliases, dependency extensions, Kotlin-specific compiler plugins and JVM name
+mangling are not fully resolved. Non-final varargs are treated conservatively;
+Kotlin deprecation levels are not modeled as Java forRemoval. JD008 compiles Java
+snippets only. The embedded Kotlin parser adds roughly 60 MB to the CLI download.
+
+ AsciiDoc support covers backtick
 code, source/listing blocks and link/xref targets; it does not expand include
 macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
 
-The 0.1.0 preview implements all nine check IDs and build integrations.
+The 0.2.0 preview implements all nine check IDs and build integrations.
 The small corpus does not establish broad accuracy; adoption gates and registry
 publishing remain pending. See
 link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].

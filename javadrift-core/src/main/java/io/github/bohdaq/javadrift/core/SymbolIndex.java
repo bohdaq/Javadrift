@@ -7,7 +7,7 @@ public final class SymbolIndex {
     public static final class Type {
         public final String name; public final List<Member> members=new ArrayList<>();
         public final List<String> parents=new ArrayList<>();
-        public boolean generated, compiled, forRemoval; public boolean project=true;
+        public boolean generated, compiled, forRemoval, kotlinSource; public boolean project=true;
         public Type(String name) {this.name=name;}
         public String simpleName() {return name.substring(name.lastIndexOf('.')+1);}
     }

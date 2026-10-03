@@ -1,5 +1,6 @@
 plugins { `java-library` }
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.2.21")
     api("org.commonmark:commonmark:0.24.0")
     implementation("com.github.javaparser:javaparser-core:3.28.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")

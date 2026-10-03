@@ -57,13 +57,14 @@ public final class GitHistory {
     private SymbolIndex index(Repository repo,String ref) throws IOException {
         ObjectId id=repo.resolve(ref+"^{commit}");if(id==null)throw new IOException("Unknown Git ref: "+ref+" (fetch history first)");
         SymbolIndex index=new SymbolIndex();SourceIndexer parser=new SourceIndexer();
-        try(RevWalk walk=new RevWalk(repo);TreeWalk tree=new TreeWalk(repo)) {
+        try(parser;RevWalk walk=new RevWalk(repo);TreeWalk tree=new TreeWalk(repo)) {
             tree.addTree(walk.parseCommit(id).getTree());tree.setRecursive(true);
             while(tree.next()) {
-                String path=tree.getPathString();if(!SourceIndexer.productionJava(path))continue;
+                String path=tree.getPathString();if(!SourceIndexer.productionSource(path))continue;
                 if(!tree.getFileMode(0).equals(FileMode.REGULAR_FILE) && !tree.getFileMode(0).equals(FileMode.EXECUTABLE_FILE))continue;
                 parser.add(index,new String(repo.open(tree.getObjectId(0)).getBytes(),StandardCharsets.UTF_8),ref+":"+path);
             }
+            parser.finish(index);
         }
         return index;
     }

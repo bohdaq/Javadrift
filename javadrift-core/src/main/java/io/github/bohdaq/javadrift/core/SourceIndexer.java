@@ -6,21 +6,29 @@ import com.github.javaparser.ast.expr.*;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
-public final class SourceIndexer {
+public final class SourceIndexer implements AutoCloseable {
+    private KotlinSourceIndexer kotlin;
     private final JavaParser parser=new JavaParser(new ParserConfiguration().setLanguageLevel(ParserConfiguration.LanguageLevel.BLEEDING_EDGE));
     public SymbolIndex index(Path root) throws IOException {
         SymbolIndex index=new SymbolIndex();
         try(var files=Files.walk(root)) {
-            for(Path file:files.filter(Files::isRegularFile).filter(p->productionJava(root.relativize(p).toString().replace('\\','/'))).sorted().toList())
+            for(Path file:files.filter(Files::isRegularFile).filter(p->productionSource(root.relativize(p).toString().replace('\\','/'))).sorted().toList())
                 add(index,Files.readString(file),root.relativize(file).toString());
-        }
+            finish(index);
+        } finally {close();}
         return index;
     }
+    public static boolean productionSource(String path) {
+        return productionJava(path) || path.endsWith(".kt") && productionJava(path.substring(0,path.length()-3)+".java");
+    }
+    public void finish(SymbolIndex index) {if(kotlin!=null)kotlin.finish(index);}
+    public void close() {if(kotlin!=null){kotlin.close();kotlin=null;}}
     public static boolean productionJava(String path) {
         return path.endsWith(".java") && (path.startsWith("src/") || path.contains("/src/") || !path.contains("/")) && !path.matches("(?:.*?/)?(?:target|build|\\.git|node_modules|vendor)/.*")
             && !path.matches("(?:.*?/)?src/(?:test|it|testFixtures)/.*");
     }
     public void add(SymbolIndex index,String source,String path) throws IOException {
+        if(path.endsWith(".kt")) {if(kotlin==null)kotlin=new KotlinSourceIndexer();kotlin.add(index,source,path);return;}
         ParseResult<CompilationUnit> result=parser.parse(source);
         if(!result.isSuccessful() || result.getResult().isEmpty()) throw new IOException("Cannot parse Java source "+path+": "+result.getProblems());
         CompilationUnit cu=result.getResult().get();
