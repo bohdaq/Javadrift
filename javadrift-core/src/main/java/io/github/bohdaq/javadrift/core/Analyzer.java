@@ -19,7 +19,7 @@ public final class Analyzer {
         try(var paths=Files.walk(root)) {
             for(Path dir:paths.filter(Files::isDirectory).sorted().toList()) {
                 String path=relative(root,dir);
-                if(path.matches("(?:.*/)?(?:target/classes|build/classes/(?:java|kotlin)/main)") && !path.matches(".*(?:target|build)/(?!classes(?:/|$)).*"))bytecode.add(index,dir,true);
+                if(BytecodeIndexer.automaticClasses(path))bytecode.add(index,dir,true);
             }
         }
         for(String dir:config.classes)bytecode.add(index,root.resolve(dir),true);
@@ -68,7 +68,7 @@ public final class Analyzer {
         try(var dirs=Files.walk(root)) {
             for(Path dir:dirs.filter(Files::isDirectory).toList()) {
                 String path=relative(root,dir);
-                if(path.matches("(?:.*/)?(?:target/classes|build/classes/(?:java|kotlin)/main)") && !path.matches(".*(?:target|build)/(?!classes(?:/|$)).*"))compilationClasspath.add(dir);
+                if(BytecodeIndexer.automaticClasses(path))compilationClasspath.add(dir);
             }
         }
         List<ProjectVersions.Coordinates> coordinates=new ProjectVersions().discover(root,config);

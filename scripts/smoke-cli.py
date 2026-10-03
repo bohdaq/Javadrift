@@ -79,6 +79,36 @@ try:
         cli = [args.java, '-jar', str(tool)]
         check = cli + ['check', '--root', str(root), '--config', str(config)]
 
+        def input_snapshot():
+            return {label + '/' + str(path.relative_to(folder)): path.read_bytes()
+                    for label, folder in [('root', root), ('working', working)]
+                    for path in folder.rglob('*') if path.is_file()}
+
+        doctor = cli + ['doctor', '--root', str(root), '--config', str(config)]
+        before_doctor = input_snapshot()
+        ready = json.loads(run('doctor-json', doctor + ['--format', 'json'], working).stdout)
+        if ready['exitCode'] != 0 or ready['schemaVersion'] != 1 or any(r['status'] == 'ERROR' for r in ready['diagnostics']):
+            raise RuntimeError(f'Unexpected doctor readiness report: {ready}')
+        if '[PASS]' not in run('doctor-text', doctor, working).stdout:
+            raise RuntimeError('Doctor text report lacks readiness checks')
+        invalid = json.loads(run('doctor-input-errors', doctor + ['--format', 'json', '--class-dir', 'missing classes',
+                            '--classpath', str(base / 'missing dependency.jar')], working, 2).stdout)
+        if sum(r['status'] == 'ERROR' for r in invalid['diagnostics']) != 2:
+            raise RuntimeError(f'Doctor must report both invalid input paths: {invalid}')
+        run('doctor-missing-config', cli + ['doctor', '--root', str(root), '--config', str(base / 'missing.yml')], working, 2)
+        empty = base / 'empty project'; empty.mkdir()
+        scope = json.loads(run('doctor-empty-scope', cli + ['doctor', '--root', str(empty), '--format', 'json'], working, 1).stdout)
+        if {r['check'] for r in scope['diagnostics'] if r['status'] == 'WARN'} != {'documents', 'sources'}:
+            raise RuntimeError(f'Doctor must explain empty scope: {scope}')
+        probe_config = base / 'doctor config.yml'
+        probe_yaml = config.read_text(encoding='utf-8') + "checks:\n  snippet-compile: warning\nsnippets:\n  release: '17'\n"
+        probe_config.write_text(probe_yaml, encoding='utf-8')
+        run('doctor-compiler-probe', cli + ['doctor', '--root', str(root), '--config', str(probe_config)], working)
+        probe_config.write_text(probe_yaml.replace("release: '17'", "release: '999'"), encoding='utf-8')
+        run('doctor-unsupported-release', cli + ['doctor', '--root', str(root), '--config', str(probe_config)], working, 2)
+        if input_snapshot() != before_doctor:
+            raise RuntimeError('Doctor changed project or working-directory files')
+
         def check_json(name, wanted, expected=0, options=(), relative=False):
             target = Path('output files/nested reports') / (name + '.json')
             actual_target = working / target

@@ -5,6 +5,10 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.jar.*;
 public final class BytecodeIndexer {
+    public static boolean automaticClasses(String path) {
+        return path.matches("(?:.*/)?(?:target/classes|build/classes/(?:java|kotlin)/main)")
+            && !path.matches(".*(?:target|build)/(?!classes(?:/|$)).*");
+    }
     public void add(SymbolIndex index,Path entry,boolean project) throws IOException {
         if(!Files.exists(entry))return;
         if(Files.isDirectory(entry)) {

@@ -41,6 +41,22 @@ java -jar javadrift-cli/target/javadrift.jar --help
 See link:docs/roadmap.adoc[the implementation roadmap].
 Licensed under link:LICENSE[Apache-2.0].
 
+== Diagnose setup
+
+The current source checkout includes doctor (not yet in the 0.3.1 download):
+
+[source,shell]
+----
+java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project
+java -jar javadrift-cli/target/javadrift.jar doctor --format json
+----
+
+It checks configuration, selected docs/sources, compiled outputs, dependency
+inputs, the baseline and Java/compiler availability, with advice for each issue.
+It does not analyze stale references or modify project files. Exit codes are 0
+for ready setup, 1 for warnings and 2 for invalid inputs. See
+link:docs/doctor.adoc[setup diagnostics] for scope, compiler probes and classpaths.
+
 == Check documentation
 
 [source,shell]

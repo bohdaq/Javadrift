@@ -584,3 +584,24 @@ The Gradle consumer cannot be verified through the Portal until approval.
 
 Machine-readable results are in validation/release-0.3.1.json. Credential renewal
 dates and future publishing instructions are in link:publishing.adoc[publishing].
+
+== Setup diagnostics in current source
+
+Six doctor regression tests cover setup success despite stale documentation,
+unchanged project contents and modification times, Java/Kotlin source selection,
+doc include/exclude rules, relative/configured and absolute CLI class inputs,
+all invalid inputs reported together, empty scopes/outputs, unavailable javac,
+supported/unsupported snippet releases, and invalid config/root/baseline inputs.
+Doctor performs an in-memory compiler probe only when JD008 is enabled.
+
+The packaged walkthrough adds seven doctor scenarios to its previous 26: text
+and JSON readiness, grouped input errors, missing configuration, an empty scope,
+a supported compiler probe and an unsupported release. Project and working
+directory file snapshots remain identical after all seven. The six OS/JDK
+portability jobs run this 33-scenario walkthrough.
+
+Local JDK 17 Maven verification passes 52 core tests, 12 CLI tests and both Maven
+integration builds; Gradle check/validatePlugins passes five TestKit cases.
+The source-built CLI passes all 33 packaged scenarios and scans this repository
+without findings. These results concern current source; doctor is not in the
+published 0.3.1 CLI. See link:doctor.adoc[doctor usage and limitations].
