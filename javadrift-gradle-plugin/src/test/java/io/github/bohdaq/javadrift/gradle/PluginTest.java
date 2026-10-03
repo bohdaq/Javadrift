@@ -64,4 +64,21 @@ class PluginTest {
             assertEquals(TaskOutcome.SUCCESS,runner().build().task(":javadriftCheck").getOutcome());
         }
     }
+    @Test void malformedOptionalResourceFailsEvenInWarnOnlyMode() throws Exception {
+        write("settings.gradle","rootProject.name='fixture'\n");
+        write("build.gradle","plugins { id 'java'; id 'io.github.bohdaq.javadrift' }\njavadrift { warnOnly = true }\n");
+        write("javadrift.yml","checks:\n  JD009: error\n");
+        write("README.md","Application settings.\n");
+        runner().build();
+        Path report=root.resolve("build/reports/javadrift/report.txt");
+        String previous=Files.readString(report);
+        write("src/main/resources/malformed.yml","report: [unclosed\n");
+        BuildResult result=runner().buildAndFail();
+        assertEquals(TaskOutcome.FAILED,result.task(":javadriftCheck").getOutcome());
+        assertTrue(result.getOutput().contains("Javadrift: while parsing a flow sequence"));
+        assertFalse(result.getOutput().contains("ClassNotFoundException"));
+        assertEquals(previous,Files.readString(report));
+        Files.delete(root.resolve("src/main/resources/malformed.yml"));
+        assertEquals(TaskOutcome.SUCCESS,runner().build().task(":javadriftCheck").getOutcome());
+    }
 }

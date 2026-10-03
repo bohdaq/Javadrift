@@ -37,6 +37,10 @@ public abstract class AnalyzeWork implements WorkAction<AnalyzeWork.Parameters> 
             Files.createDirectories(target.getParent());Files.writeString(target,report);
             Logging.getLogger(AnalyzeWork.class).lifecycle(report);
             if(!p.getWarnOnly().get() && result.fails(config))throw new GradleException("Javadrift found stale documentation");
-        } catch(GradleException e) {throw e;}catch(Exception e){throw new GradleException("Javadrift: "+e.getMessage(),e);}
+        } catch(GradleException e) {throw e;}catch(Exception e){
+            // Parser exceptions can contain engine-only classes that Gradle cannot
+            // deserialize outside this isolated worker. Transport the diagnostic only.
+            throw new GradleException("Javadrift: "+e.getMessage());
+        }
     }
 }
