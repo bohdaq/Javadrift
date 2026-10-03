@@ -1,0 +1,21 @@
+{
+  "version": "0.3.1",
+  "tag": "v0.3.1",
+  "commit": "c3c715956fe120decfcb92a31707ba1da7b94a98",
+  "releaseUrl": "https://github.com/bohdaq/Javadrift/releases/tag/v0.3.1",
+  "publishedAt": "2026-10-03T15:22:41Z",
+  "prerelease": true,
+  "releaseWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37132908215",
+  "releaseJobs": {
+    "cli": "success",
+    "actionSmoke": "failure: README still showed Maven plugin 0.3.0"
+  },
+  "actionVerificationWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37133239652",
+  "actionVerification": "success",
+  "publishedCliSha256": "240516755ee68fab50e94732724194a8f001f9c7a6e6d814254c614b36a042a4",
+  "publishedCliScenarios": 26,
+  "publishedCliSmokePassed": true,
+  "registryWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37132921053",
+  "centralDeploymentId": "ab6f0f57-526b-4286-97f6-54dc3610aec6",
+  "registryPublication": "validated; waiting for Central publication and Portal upload"
+}

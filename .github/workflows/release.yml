@@ -30,6 +30,8 @@ jobs:
           version="$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
           test "$RELEASE_TAG" = "v$version"
       - run: mvn -B verify
+      - name: Check release documentation before publishing
+        run: java -jar javadrift-cli/target/javadrift.jar check --root .
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew check validatePlugins --no-daemon
       - name: Prepare CLI assets
