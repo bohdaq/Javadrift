@@ -79,6 +79,7 @@ for case in manifest['cases']:
 report = {'schemaVersion': 1, 'jarSha256': hashlib.sha256(jar.read_bytes()).hexdigest(),
           'methodology': 'Case methodology distinguishes reconstructed parent docs from unchanged naturally stale upstream revisions followed by actual documentation-fix commits. No synthetic commits or invented API examples.',
           'runs': rows, 'passed': all(r['passed'] for r in rows)}
+args.output.parent.mkdir(parents=True, exist_ok=True)
 args.output.write_text(json.dumps(report, indent=2) + '\n')
 if not report['passed']:
     raise SystemExit(1)

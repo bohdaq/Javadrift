@@ -13,6 +13,7 @@ import subprocess
 import tarfile
 import tempfile
 import time
+from triage_gate import GateError, validate
 
 PROJECT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
@@ -44,7 +45,7 @@ if args.context_config:
 def git(checkout, *arguments):
     return subprocess.check_output(['git', '-C', str(checkout), *arguments], stderr=subprocess.PIPE)
 
-def scan(entry):
+def scan_snapshot(entry):
     repo, commit = entry['repository'], entry['commit']
     checkout = args.cache / repo.replace('/', '--')
     if not (checkout / '.git').exists():
@@ -87,6 +88,13 @@ def scan(entry):
             row['error'] = process.stderr.strip() or process.stdout.strip()
         return row
 
+def scan(entry):
+    try:
+        return scan_snapshot(entry)
+    except Exception as error:
+        return {'repository': entry['repository'], 'commit': entry['commit'],
+                'exitCode': 2, 'error': f'{type(error).__name__}: {error}'}
+
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as workers:
     rows = list(workers.map(scan, manifest['repositories']))
 findings = [(row, f) for row in rows for f in row.get('result', {}).get('findings', [])]
@@ -107,19 +115,10 @@ for r in errors:
 if errors:
     raise SystemExit(2)
 if args.require_triage:
-    triage = json.loads(args.require_triage.read_text())['findings']
-    decisions = {(d['repository'], d['commit'], d['file'], d['checkId'], d['reference']): d for d in triage}
-    unreviewed, false = [], 0
-    for row, f in findings:
-        key = (row['repository'], row['commit'], f['file'], f['checkId'], f['reference'])
-        decision = decisions.get(key)
-        if decision is None or decision['classification'] not in ('true-positive', 'false-positive'):
-            unreviewed.append(key)
-        elif decision['classification'] == 'false-positive':
-            false += 1
-    if unreviewed:
-        print('Unreviewed findings:', unreviewed)
+    try:
+        outcome = validate(report, json.loads(args.require_triage.read_text()), manifest)
+    except GateError as error:
+        print(error)
         raise SystemExit(2)
-    if findings and false / len(findings) >= 0.05:
-        raise SystemExit('False-positive fraction is not below 5%')
-    print(f'Triaged {len(findings)} findings; {false} false positives. This is observed precision, not recall.')
+    print(f'Triaged {outcome["findings"]} findings; {outcome["falsePositives"]} false positives; '
+          f'{outcome["knownErrorsPreserved"]} known errors preserved. This is observed precision, not recall.')

@@ -1,0 +1,70 @@
+name: pinned validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  corpus-and-history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test validation gates
+        run: python3 -m unittest discover -s scripts/tests -v
+      - name: Build current CLI
+        run: mvn -B -DskipTests package
+      - name: Cache pinned upstream objects
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.temp }}/javadrift-corpus-cache
+            ${{ runner.temp }}/javadrift-history-cache
+          key: ${{ runner.os }}-javadrift-snapshots-v1-${{ hashFiles('validation/corpus.json', 'validation/history.json', 'validation/history-natural.json') }}
+      - name: Check default corpus
+        run: >-
+          python3 scripts/corpus.py
+          --cache "$RUNNER_TEMP/javadrift-corpus-cache"
+          --require-triage validation/triage.json
+          --output validation-results/default-corpus.json
+      - name: Check configured expanded corpus
+        if: ${{ !cancelled() }}
+        run: >-
+          python3 scripts/corpus.py --expanded
+          --cache "$RUNNER_TEMP/javadrift-corpus-cache"
+          --context-config validation/document-contexts.json
+          --require-triage validation/context-triage.json
+          --output validation-results/configured-corpus.json
+      - name: Replay reconstructed history cases
+        if: ${{ !cancelled() }}
+        run: >-
+          python3 scripts/history-replay.py
+          --cache "$RUNNER_TEMP/javadrift-history-cache"
+          --output validation-results/history-reconstructed.json
+      - name: Replay naturally stale history cases
+        if: ${{ !cancelled() }}
+        run: >-
+          python3 scripts/history-replay.py
+          --cache "$RUNNER_TEMP/javadrift-history-cache"
+          --manifest validation/history-natural.json
+          --output validation-results/history-natural.json
+      - name: Save validation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinned-validation-reports
+          path: validation-results/*.json
+          if-no-files-found: warn
