@@ -37,9 +37,9 @@ class KotlinSourceTest {
             `Client#secret` `Client#internalCall` `demo.Hidden` `demo.Imaginary`
             """);
         var result=new Analyzer().analyze(root,new Config());
-        assertEquals(5,result.findings().size(),result.findings().toString());
+        assertEquals(4,result.findings().size(),result.findings().toString());
         assertEquals(1,result.findings().stream().filter(f->f.checkId().equals("JD003")).count());
-        assertEquals(2,result.findings().stream().filter(f->f.checkId().equals("JD001")).count());
+        assertEquals(1,result.findings().stream().filter(f->f.checkId().equals("JD001")).count());
         assertEquals(2,result.findings().stream().filter(f->f.checkId().equals("JD002")).count());
     }
     @Test void indexesFileFacadesAliasesAndExcludesTestSources() throws Exception {
@@ -53,9 +53,9 @@ class KotlinSourceTest {
         write("src/test/kotlin/demo/TestOnly.kt","package demo; class TestOnly");
         write("README.md","`Alias#run` `Helpers#helper` `Helpers#missing` `demo.TestOnly`");
         var result=new Analyzer().analyze(root,new Config());
-        assertEquals(2,result.findings().size(),result.findings().toString());
-        assertTrue(result.findings().stream().anyMatch(f->f.reference().equals("Helpers#missing")));
-        assertTrue(result.findings().stream().anyMatch(f->f.reference().equals("demo.TestOnly")));
+        assertEquals(1,result.findings().size(),result.findings().toString());
+        assertEquals("Helpers#missing",result.findings().get(0).reference());
+        assertEquals(3,result.types()); // Test helper names are hints, not public API types.
     }
     @Test void detectsKotlinMemberRenameInRealGitTrees() throws Exception {
         try(var git=Git.init().setDirectory(root.toFile()).call()) {

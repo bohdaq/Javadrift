@@ -34,6 +34,7 @@ final class KotlinSourceIndexer implements AutoCloseable {
         var errors=PsiTreeUtil.findChildrenOfType(file,PsiErrorElement.class);
         if(!errors.isEmpty())throw new IOException("Cannot parse Kotlin source "+path+": "+errors.iterator().next().getErrorDescription());
         String pkg=file.getPackageFqName().asString();String prefix=pkg.isEmpty()?"":pkg+".";
+        documentationNames(index,file.getDeclarations(),prefix);
         for(KtDeclaration declaration:file.getDeclarations())if(declaration instanceof KtClassOrObject type)addType(index,type,prefix);
         for(KtDeclaration declaration:file.getDeclarations())if(declaration instanceof KtTypeAlias alias && visible(alias)) {
             var type=new SymbolIndex.Type(prefix+alias.getName());
@@ -57,6 +58,18 @@ final class KotlinSourceIndexer implements AutoCloseable {
             }
         }
         if(!top.members.isEmpty())merge(index,top);
+    }
+    void addDocumentationTypes(SymbolIndex index,String source,String path) {
+        var file=factory.createFile(Path.of(path).getFileName().toString(),source);
+        if(!PsiTreeUtil.findChildrenOfType(file,PsiErrorElement.class).isEmpty())return;
+        String pkg=file.getPackageFqName().asString();
+        documentationNames(index,file.getDeclarations(),pkg.isEmpty()?"":pkg+".");
+    }
+    private void documentationNames(SymbolIndex index,List<KtDeclaration> declarations,String prefix) {
+        for(var declaration:declarations)if(declaration instanceof KtClassOrObject type && type.getName()!=null) {
+            String name=prefix+type.getName();index.documentationTypes.add(name);
+            documentationNames(index,type.getDeclarations(),name+".");
+        }
     }
     private boolean visible(KtModifierListOwner declaration) {
         return !declaration.hasModifier(KtTokens.PRIVATE_KEYWORD) && !declaration.hasModifier(KtTokens.INTERNAL_KEYWORD);

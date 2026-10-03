@@ -8,6 +8,7 @@ public final class Config {
     public static final class Docs {
         public List<String> include=new ArrayList<>(List.of("README.md","README.adoc","docs/**/*.md","docs/**/*.adoc"));
         public List<String> exclude=new ArrayList<>();
+        public List<String> historical=new ArrayList<>(List.of("**/CHANGELOG.*","**/CHANGES.*","**/HISTORY.*","**/changelog.*","**/changes.*","**/history.*","**/release-notes/**","**/release-notes.*"));
     }
     public static final class Sources { public List<String> basePackages=new ArrayList<>(); }
     public static final class Snippets { public List<String> imports=new ArrayList<>(); public String release="17"; }
@@ -27,17 +28,18 @@ public final class Config {
         }
         Config c=new ObjectMapper(new YAMLFactory()).readValue(file.toFile(),Config.class);
         if(c==null || c.snippets==null || c.snippets.imports==null || c.snippets.release==null || c.project==null || c.classes==null || c.classpath==null || c.docs==null || c.sources==null || c.checks==null || c.ignore==null || c.baseline==null
-           || c.docs.include==null || c.docs.exclude==null || c.sources.basePackages==null)
+           || c.docs.include==null || c.docs.exclude==null || c.docs.historical==null || c.sources.basePackages==null)
             throw new IllegalArgumentException("Configuration sections cannot be null");
         Severity failure=Severity.parse(c.failOn);
         if(failure==Severity.OFF) throw new IllegalArgumentException("failOn must be warning or error");
         c.checks.forEach((k,v)->{Check.from(k);Severity.parse(v);});
         if(!c.snippets.release.matches("[0-9]+"))throw new IllegalArgumentException("snippets.release must be a Java release number");
         for(String name:c.snippets.imports)if(name==null || !name.matches("(?:static )?[a-zA-Z_$][\\w$]*(?:\\.[\\w$*]+)+"))throw new IllegalArgumentException("Invalid snippet import: "+name);
-        for(List<String> list:List.of(c.docs.include,c.docs.exclude,c.sources.basePackages,c.ignore,c.classes,c.classpath))
+        for(List<String> list:List.of(c.docs.include,c.docs.exclude,c.docs.historical,c.sources.basePackages,c.ignore,c.classes,c.classpath))
             if(list.stream().anyMatch(Objects::isNull)) throw new IllegalArgumentException("Patterns cannot be null");
         return c;
     }
     public Severity severity(Check c) {return Severity.parse(checks.getOrDefault(c.name(),checks.getOrDefault(c.key,c.defaultSeverity.name())));}
+    public boolean historical(String path) {return docs.historical.stream().anyMatch(g->Glob.matches(g,path));}
     public boolean includes(String path) {return docs.include.stream().anyMatch(g->Glob.matches(g,path)) && docs.exclude.stream().noneMatch(g->Glob.matches(g,path));}
 }

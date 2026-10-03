@@ -34,7 +34,7 @@ public final class Analyzer {
             List<GitHistory.Removed> removed=new GitHistory().removed(root,since);
             try(var files=Files.walk(root)) {
                 for(Path file:files.filter(Files::isRegularFile).sorted().toList()) {
-                    if(!config.includes(relative(root,file)))continue;
+                    if(!config.includes(relative(root,file)) || config.historical(relative(root,file)))continue;
                     DocReader.Document doc=new DocReader().read(file);
                     for(DocReader.Fragment fragment:doc.fragments()) {
                         if(fragment.kind()==DocReader.Kind.LINK)continue;
@@ -73,6 +73,9 @@ public final class Analyzer {
         }
         List<ProjectVersions.Coordinates> coordinates=new ProjectVersions().discover(root,config);
         Set<String> packages=config.sources.basePackages.isEmpty()?index.packages():new TreeSet<>(config.sources.basePackages);
+        if(config.sources.basePackages.isEmpty() && packages.stream().anyMatch(p->!examplePackage(p))) {
+            packages=new TreeSet<>(packages);packages.removeIf(Analyzer::examplePackage);
+        }
         try(var files=Files.walk(root)) {
             for(Path file:files.filter(Files::isRegularFile).sorted().toList()) {
                 String relative=relative(root,file);
@@ -80,9 +83,11 @@ public final class Analyzer {
                 count++;DocReader.Document doc=new DocReader().read(file);
                 for(DocReader.Fragment fragment:doc.fragments()) {
                     if(fragment.kind()==DocReader.Kind.LINK) {path(root,config,findings,doc,fragment,fragment.text(),0,true);continue;}
+                    if(!config.historical(relative)) {
                     Matcher members=MEMBER.matcher(fragment.text());
                     while(members.find()) {
                         String typeName=members.group(1), name=members.group(3);
+                        if(members.group(2).equals("::") && name.equals("class"))continue; // Kotlin class literal.
                         // A dotted member requires call syntax; fields use # or ::.
                         Optional<CallArguments.Call> call=CallArguments.parse(fragment.text(),members.end());
                         if(members.group(2).equals(".") && call.isEmpty())continue;
@@ -102,18 +107,22 @@ public final class Analyzer {
                     }
                     Matcher qualified=QUALIFIED.matcher(fragment.text());
                     while(qualified.find()) {
-                        String name=qualified.group();
+                        String reference=qualified.group(),name=reference.replace('$','.');
                         SymbolIndex.Type mentioned=index.types.get(name);
                         if(mentioned!=null && mentioned.project && mentioned.forRemoval && findings.stream().noneMatch(f->f.checkId().equals("JD005") && f.file().equals(relative(root,doc.path())) && f.line()==fragment.lineAt(qualified.start()) && f.column()==fragment.columnAt(qualified.start())))
                             add(root,config,findings,doc,fragment,qualified.start(),Check.JD005,name,"Type `"+name+"` is deprecated for removal",null);
                         String parentName=name.contains(".")?name.substring(0,name.lastIndexOf('.')):"";
                         boolean accessibleField=index.resolve(parentName).map(t->index.members(t).stream().anyMatch(m->m.name().equals(name.substring(name.lastIndexOf('.')+1)))).orElse(false);
-                        if(packages.stream().anyMatch(p->name.startsWith(p+".")) && !index.types.containsKey(name) && !accessibleField)
-                            add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,name,"Unknown project type `"+name+"`",null);
+                        boolean owned=config.sources.basePackages.isEmpty()
+                            ? packages.contains(parentName) || index.types.containsKey(parentName)
+                            : config.sources.basePackages.stream().anyMatch(p->name.startsWith(p+"."));
+                        if(owned && !index.types.containsKey(name) && !index.documentationTypes.contains(name) && !accessibleField)
+                            add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,reference,"Unknown project type `"+reference+"`",null);
                     }
                     new ProjectVersions().check(root,config,findings,doc,fragment,coordinates);
                     new SnippetCompiler().check(root,config,findings,doc,fragment,compilationClasspath);
                     if(properties!=null)properties.check(root,config,findings,doc,fragment);
+                    }
                     Matcher paths=PATH.matcher(fragment.text());while(paths.find()) {
                         if(paths.end()<fragment.text().length() && "*{?".indexOf(fragment.text().charAt(paths.end()))>=0)continue;
                         path(root,config,findings,doc,fragment,paths.group(),paths.start(),false);
@@ -122,6 +131,9 @@ public final class Analyzer {
             }
         }
         return new Result(List.copyOf(findings),count,(int)index.types.values().stream().filter(t->t.project).count());
+    }
+    private static boolean examplePackage(String value) {
+        return Set.of("example","com.example","org.example").stream().anyMatch(p->value.equals(p)||value.startsWith(p+"."));
     }
     private String suggest(SymbolIndex index,SymbolIndex.Type type,String name) {
         return index.members(type).stream().map(SymbolIndex.Member::name).distinct().sorted(Comparator.comparingInt((String n)->distance(n,name)).thenComparing(n->n)).filter(n->distance(n,name)<=Math.max(2,name.length()/3)).findFirst().map(n->"Did you mean `"+n+"`?").orElse(null);

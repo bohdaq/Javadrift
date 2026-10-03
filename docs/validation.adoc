@@ -227,3 +227,32 @@ GitHub branch navigation and a multi-module contributor directory convention.
 validation/corpus-triage-before.json and validation/corpus-paths-after.json preserve
 the raw scans. Regression tests retain genuinely missing links/source files.
 The remaining false positives mean this is not a broad precision pass.
+
+== Historical and auxiliary API triage
+
+The same pins, 477 documents and source-only mode now emit 26 findings, with zero
+input errors, after historical-document scope, auxiliary type-name hints, nested
+JVM name normalization and conservative namespace inference. Raw results are in
+validation/corpus-scopes-after.json; reviewed examples and all 26 remaining
+findings are in validation/api-triage.json. No upstream build or example executes.
+
+The remaining reports include ten verified documentation/API or path errors and
+16 false positives: legacy comparison tables, PlantUML method labels, third-party
+short class names, and the four path conventions described above. Examples of real
+errors include BitMapExtractor.processBitmapPairs (actual processBitMapPairs),
+BitMap (actual BitMaps), AsyncLoadingCache.refresh (available through synchronous()),
+and ThreadContext.clear (actual clearAll). The three JavaPoet errors and two Gson
+benchmark paths remain detected.
+
+The smaller report count is not a recall claim. In particular, conservative inferred
+packages also suppress Caffeine's stale CacheSubject import in a nonexistent testing
+subpackage; the actual fixture is in the cache package. Set sources.basePackages
+for namespace-wide enforcement. Historical references are intentionally outside
+current-API scope rather than individually certified as correct historical APIs.
+
+The original default-scope corpus still reports the same three verified findings
+across 20 repositories and 22 documents. Maven verify passes 45 core tests, one CLI
+test and two integration builds; Gradle check/validatePlugins and both TestKit tests
+pass. The nine new regression tests preserve missing-page/source detection,
+missing members and nested types, explicit namespace enforcement, changelog path
+checks and historical-scope overrides. Publishing and new releases remain deferred.

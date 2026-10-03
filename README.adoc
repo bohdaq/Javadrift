@@ -38,7 +38,7 @@ public/protected declarations, records, enums and project inheritance are indexe
 Unknown inherited APIs and source-only Lombok members are skipped conservatively.
 
 Default inputs are the root README.md/README.adoc and Markdown/AsciiDoc files
-under docs/. Source files under build outputs and src/test are excluded.
+under docs/. Build outputs are excluded; test sources contribute type-name hints only.
 Java parser failures are reported as errors rather than silently dropping types.
 
 [source,yaml]
@@ -211,7 +211,8 @@ configuration APIs or every YAML example's intended schema.
 Java and Kotlin sources are indexed without building upstream projects. Kotlin
 uses a syntax parser to index public/protected classes, interfaces, objects,
 companions, properties, functions, aliases and project extension functions.
-Private/internal declarations and test sources are excluded. Default arguments
+Private/internal declarations and test sources are excluded from the public API.
+Their existing type names can resolve documentation references without exposing members. Default arguments
 and trailing varargs contribute conservative signatures. Source properties and
 default argument signatures remain available alongside compiled JVM methods.
 Git diff mode compares both Java and Kotlin declarations.
@@ -265,3 +266,29 @@ or module POM. This checks source-backed paths without building a site; it does 
 validate generated nested-class pages or anchors. Extensionless AsciiDoc xrefs are
 same-document anchors. Symlinked documentation resolves links from its actual source
 directory. GitHub contribution-template links can use the repository root context.
+
+== Historical documentation and type ownership
+
+Changelogs, CHANGES/HISTORY files and release-notes documents describe older APIs.
+By default their API, version, property and snippet checks are skipped in both
+full and diff scans; repository links and paths are still checked. Override
+this scope with docs.historical (an empty list checks every included document):
+
+[source,yaml]
+----
+docs:
+  historical: []
+----
+
+Existing test, test-fixture and Maven site example declarations provide type-name
+hints, without contributing public APIs or member checks. Malformed auxiliary
+sources are ignored; malformed production sources remain input errors. JVM nested
+names such as Outer$Inner resolve to source names, and Kotlin ::class is a class literal.
+
+Without sources.basePackages, unknown-type checks use packages actually represented
+in the public index and known outer types. Mixed library/example projects skip
+conventional example, com.example and org.example namespaces. This avoids claiming
+ownership of optional dependencies and consumer placeholders, but can miss a stale
+type in a removed or mistyped subpackage. Configure sources.basePackages with your
+project namespace roots to enforce checks across all their subpackages, including
+example namespaces. Existing APIs and member references remain checked.

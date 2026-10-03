@@ -11,6 +11,7 @@ public final class SymbolIndex {
         public Type(String name) {this.name=name;}
         public String simpleName() {return name.substring(name.lastIndexOf('.')+1);}
     }
+    public final Set<String> documentationTypes=new HashSet<>();
     public final Map<String,Type> types=new TreeMap<>();
     public Optional<Type> resolve(String name) {
         Type exact=types.get(name);if(exact!=null)return Optional.of(exact);

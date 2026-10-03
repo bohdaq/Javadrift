@@ -12,11 +12,36 @@ public final class SourceIndexer implements AutoCloseable {
     public SymbolIndex index(Path root) throws IOException {
         SymbolIndex index=new SymbolIndex();
         try(var files=Files.walk(root)) {
-            for(Path file:files.filter(Files::isRegularFile).filter(p->productionSource(root.relativize(p).toString().replace('\\','/'))).sorted().toList())
-                add(index,Files.readString(file),root.relativize(file).toString());
+            for(Path file:files.filter(Files::isRegularFile).filter(p->productionSource(root.relativize(p).toString().replace('\\','/')) || documentationSource(root.relativize(p).toString().replace('\\','/'))).sorted().toList())
+                if(productionSource(root.relativize(file).toString().replace('\\','/')))add(index,Files.readString(file),root.relativize(file).toString());
+                else addDocumentationTypes(index,Files.readString(file),root.relativize(file).toString());
             finish(index);
         } finally {close();}
         return index;
+    }
+    private static boolean documentationSource(String path) {
+        return (path.matches("(?:.*?/)?src/(?:test|it|testFixtures)/.*") && productionSource(path.replaceAll("(^|/)src/(test|it|testFixtures)/", "$1src/main/")))
+            || (path.endsWith(".java") && path.matches("(?:.*?/)?src/site/.*?/examples/.*") && !path.matches("(?:.*?/)?(?:target|build|\\.git)/.*"));
+    }
+    private void addDocumentationTypes(SymbolIndex index,String source,String path) {
+        if(path.endsWith(".kt")) {
+            if(kotlin==null)kotlin=new KotlinSourceIndexer();kotlin.addDocumentationTypes(index,source,path);return;
+        }
+        var result=parser.parse(source);
+        if(!result.isSuccessful() || result.getResult().isEmpty())return;
+        var cu=result.getResult().get();
+        documentationNames(index,cu);
+    }
+    private void documentationNames(SymbolIndex index,CompilationUnit cu) {
+        String prefix=cu.getPackageDeclaration().map(p->p.getNameAsString()+".").orElse("");
+        for(TypeDeclaration<?> declaration:cu.findAll(TypeDeclaration.class)) {
+            String name=declaration.getNameAsString();Node parent=declaration.getParentNode().orElse(null);
+            while(parent!=null) {
+                if(parent instanceof TypeDeclaration<?> enclosing)name=enclosing.getNameAsString()+"."+name;
+                parent=parent.getParentNode().orElse(null);
+            }
+            index.documentationTypes.add(prefix+name);
+        }
     }
     public static boolean productionSource(String path) {
         return productionJava(path) || path.endsWith(".kt") && productionJava(path.substring(0,path.length()-3)+".java");
@@ -32,6 +57,7 @@ public final class SourceIndexer implements AutoCloseable {
         ParseResult<CompilationUnit> result=parser.parse(source);
         if(!result.isSuccessful() || result.getResult().isEmpty()) throw new IOException("Cannot parse Java source "+path+": "+result.getProblems());
         CompilationUnit cu=result.getResult().get();
+        documentationNames(index,cu);
         String pkg=cu.getPackageDeclaration().map(p->p.getNameAsString()+".").orElse("");
         for(TypeDeclaration<?> t:cu.getTypes()) addType(index,t,pkg,true);
     }
