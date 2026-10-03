@@ -84,6 +84,44 @@ jobs:
             validation-results/optional-checks-logs/
           if-no-files-found: warn
 
+  optional-plugins:
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['17', '21']
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the sample compilation toolchain
+        if: matrix.java == '21'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Check optional rules through Maven and Gradle
+        run: python scripts/smoke-optional-plugins.py --output validation-results/optional-plugins.json
+      - name: Save optional adapter reports and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: optional-plugins-java-${{ matrix.java }}
+          path: |
+            validation-results/optional-plugins.json
+            validation-results/optional-plugins-logs/
+          if-no-files-found: warn
+
   gradle:
     runs-on: ubuntu-latest
     steps:

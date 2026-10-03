@@ -499,3 +499,32 @@ dependency JARs copied into paths containing spaces. Each job verifies the revie
 locations and native classpath handling, then uploads its summary and individual
 reports/logs even after failure. Coverage remains scoped to the authored application
 fixture and does not change the upstream corpus classifications or optional defaults.
+
+== Optional checks through build adapters
+
+The Jackson application also supports a Maven javadrift profile and a Gradle
+included build. scripts/smoke-optional-plugins.py exercises 11 Maven and 15 Gradle
+scenarios in temporary consumers with spaces in their paths. Both adapters compile
+the application and provide Jackson dependencies without manual classpath flags.
+Their findings must match the same three reviewed identities as the CLI suite.
+
+Coverage includes strict failures, warn-only retention, disabled checks, warning
+severity and thresholds, corrected guides and malformed resources in warn-only
+mode. Gradle unchanged scans must be UP-TO-DATE; documentation, configuration and
+production resource changes must execute the task and update the findings.
+Removing the batch-size declaration produces a JD009 at settings line 7;
+restoring it clears the report and permits another unchanged scan to be skipped.
+
+The malformed YAML case exposed an isolated-worker exception transport failure:
+Gradle printed BUILD FAILED but exited zero when it could not deserialize an
+engine-only parser class. The worker now transports the diagnostic without the
+parser cause. A Gradle TestKit regression requires build failure in warn-only
+mode, preservation of the previous report and recovery after correcting the input.
+The Gradle suite now has five TestKit cases, and check/validatePlugins pass on
+JDK 17. The 26 adapter walkthrough scenarios and the existing 22 CLI scenarios
+pass locally; adapter evidence is in validation/optional-plugins-local.json.
+
+The build workflow repeats the adapter walkthrough on Ubuntu with JDK 17 and 21,
+and saves summaries, individual finding reports and command logs after success
+or failure. This remains authored application coverage rather than upstream
+optional-check precision evidence.

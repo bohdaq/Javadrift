@@ -1,6 +1,6 @@
 = Optional checks sample
 
-This independent Java 17 Maven project uses Jackson databind 2.18.3. Its Markdown
+This independent Java 17 Maven/Gradle project uses Jackson databind 2.18.3. Its Markdown
 guide exercises statement fragments, class members, complete units with packages,
 configured imports and an explicit partial-block skip. The AsciiDoc guide documents
 keys declared by .properties, multi-document YAML, Spring-format metadata and
@@ -44,3 +44,29 @@ link:https://github.com/FasterXML/jackson-databind/tree/jackson-databind-2.18.3[
 The metadata file follows the
 link:https://docs.spring.io/spring-boot/specification/configuration-metadata/format.html[Spring configuration metadata format].
 This is an authored sample with a real library dependency, not an upstream corpus result.
+
+== Maven and Gradle adapters
+
+Install the Maven adapter locally, then enable the sample's javadrift profile:
+
+[source,shell]
+----
+mvn -B -DskipTests -pl javadrift-maven-plugin -am install
+mvn -B -f examples/optional-checks/pom.xml -Pjavadrift verify
+./gradlew -p examples/optional-checks check --no-daemon
+----
+
+Both adapters compile the application and supply its main classes and dependency
+classpath automatically. Maven writes target/javadrift.json; Gradle writes JSON to
+build/reports/javadrift/report.txt. The Gradle sample includes the local Javadrift
+source build for both plugin resolution and the isolated analysis engine. On
+Windows use gradlew.bat. See the setup guide for warn-only controls.
+
+[source,shell]
+----
+python scripts/smoke-optional-plugins.py --output validation-results/optional-plugins.json
+----
+
+The adapter walkthrough creates temporary consumers, verifies the same reviewed
+findings and exercises Gradle input invalidation. --skip-build reuses the locally
+installed Maven adapter; the Gradle adapter still comes from the source build.

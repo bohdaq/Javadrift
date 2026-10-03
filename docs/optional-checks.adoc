@@ -113,3 +113,41 @@ and 21. Each job builds the current CLI, compiles a fresh sample, copies depende
 JARs into paths with spaces, and checks native classpath separators and exact
 reviewed locations. Summary JSON, individual reports and command logs are saved
 in an optional-checks artifact named for the runner and JDK, including on failure.
+
+== Maven and Gradle integration
+
+The adapters supply compiled main classes and compile dependencies to JD008.
+Keep checks and snippet imports in javadrift.yml; no manual dependency classpath
+is needed. Use a JDK with javac and configure application compilation normally.
+The runnable sample supports both adapters directly from a source checkout:
+
+[source,shell]
+----
+mvn -B -DskipTests -pl javadrift-maven-plugin -am install
+mvn -B -f examples/optional-checks/pom.xml -Pjavadrift verify
+./gradlew -p examples/optional-checks check --no-daemon
+----
+
+The Maven profile binds the check to verify and writes target/javadrift.json.
+The Gradle sample includes the source plugin and analysis engine, and writes JSON
+to build/reports/javadrift/report.txt. Use gradlew.bat on Windows.
+For Maven findings without build failure, add -Djavadrift.warnOnly=true.
+For this Gradle sample, add -PwarnOnly=true; its build maps that property to
+javadrift.warnOnly. Warning severity and failOn thresholds apply to both adapters.
+Malformed enabled resources still fail builds in warn-only mode. Build adapters
+report build failure rather than the CLI's separate input-error exit code.
+
+[source,shell]
+----
+python scripts/smoke-optional-plugins.py --output validation-results/optional-plugins.json
+----
+
+The walkthrough installs the Maven adapter locally and uses the Gradle included
+build. --skip-build skips Maven installation. Both temporary consumers use paths
+with spaces and validate exact reviewed findings, strict/warn-only behavior,
+disabled checks, warnings and their failure threshold, restored guides and input
+errors. Gradle additionally verifies unchanged runs are UP-TO-DATE and that guide,
+configuration and production resource changes execute the check again. Reports
+and command logs are saved alongside the summary, including after failure.
+The build workflow runs these 26 adapter scenarios on Ubuntu with JDK 17 and 21;
+the Java 17 sample compilation toolchain is installed for both runtime versions.
