@@ -10,6 +10,24 @@ Download javadrift.jar and javadrift.jar.sha256 from
 https://github.com/bohdaq/Javadrift/releases/tag/v0.2.0[the v0.2.0 release].
 Verify the checksum with sha256sum -c javadrift.jar.sha256 (or shasum -a 256 -c
 on macOS), then run java -jar javadrift.jar check --root /path/to/project.
+
+To fetch the CLI directly in a bootstrap script, pin the release tag and download
+both assets from the GitHub Release:
+
+[source,shell]
+----
+JAVADRIFT_VERSION=v0.2.0
+BASE_URL="https://github.com/bohdaq/Javadrift/releases/download/${JAVADRIFT_VERSION}"
+curl --fail --location --output javadrift.jar "${BASE_URL}/javadrift.jar"
+curl --fail --location --output javadrift.jar.sha256 "${BASE_URL}/javadrift.jar.sha256"
+sha256sum --check javadrift.jar.sha256       # Linux
+# shasum -a 256 --check javadrift.jar.sha256 # macOS
+java -jar javadrift.jar check --root /path/to/project
+----
+
+Release assets are suitable for the standalone JVM CLI. They are not Maven or
+Gradle repositories: build plugins still need Maven/Gradle publication, a custom
+Maven-compatible registry, or the local `mvn install`/`includeBuild` setup below.
 Start with --warn-only while reviewing findings for your project.
 
 == Build
