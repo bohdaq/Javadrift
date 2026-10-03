@@ -1,0 +1,19 @@
+{
+  "version": "0.4.0",
+  "tag": "v0.4.0",
+  "commit": "817f19d9697887d1d1c69e57801734077688beb3",
+  "releaseUrl": "https://github.com/bohdaq/Javadrift/releases/tag/v0.4.0",
+  "publishedAt": "2026-10-03T16:19:46Z",
+  "prerelease": true,
+  "releaseWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37136301423",
+  "releaseJobs": {"cli": "success", "actionSmoke": "success"},
+  "publishedCliSha256": "bd9e8e8a1ccd35bdd20d162316229616c8dd3eaa63523b8b554f1633863dbd0b",
+  "publishedCliSizeBytes": 72863274,
+  "publishedCliScenarios": 33,
+  "publishedCliSmokePassed": true,
+  "registryWorkflow": "https://github.com/bohdaq/Javadrift/actions/runs/37136330788",
+  "registryPublication": {
+    "central": "validated; publishing",
+    "gradlePortal": "0.4.0 not uploaded; awaits approval of initial 0.3.1 submission"
+  }
+}
