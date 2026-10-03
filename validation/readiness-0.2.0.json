@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "version": "0.2.0",
+  "jdk": "Temurin 17.0.20.1",
+  "coreTests": 36,
+  "cliTests": 1,
+  "mavenIntegrationBuilds": 2,
+  "gradleTestKitTests": 2,
+  "gradleValidatePlugins": "passed",
+  "mavenPublicationPackaging": {
+    "sourceJars": 3,
+    "javadocJars": 3,
+    "signing": "skipped: user credentials and signing key not configured"
+  },
+  "gradleLocalPublication": "implementation and plugin marker published; standalone Kotlin consumer detects stale reference and clears after docs fix",
+  "centralUpload": "not attempted: user credentials unavailable",
+  "portalValidation": "requires publishing keys, unavailable",
+  "portalUpload": "not attempted",
+  "javaBenchmark": {
+    "documents": 500,
+    "types": 5000,
+    "seconds": 2.468,
+    "budgetSeconds": 5
+  },
+  "corpus": {
+    "repositories": 20,
+    "errors": 0,
+    "documents": 22,
+    "findings": 3
+  },
+  "expandedStress": {
+    "repositories": 20,
+    "errors": 0,
+    "documents": 477,
+    "findings": 580
+  },
+  "expandedTriage": "remaining 580 findings not fully reviewed",
+  "ownCiAdoption": "https://github.com/bohdaq/Javadrift/actions/runs/37083398854",
+  "externalCiAdopter": "none: user chose Javadrift only"
+}

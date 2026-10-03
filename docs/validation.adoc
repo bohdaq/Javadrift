@@ -165,3 +165,26 @@ validation/history-natural.json and validation/history-natural-results.json.
 python3 scripts/corpus.py --expanded --output validation/corpus-expanded-after.json
 python3 scripts/history-replay.py --manifest validation/history-natural.json --output validation/history-natural-results.json
 ----
+
+== Kotlin declaration and packaging checks
+
+Kotlin fixtures verify source-only public API checks, private/internal exclusion,
+properties, nested classes, companions, defaults, varargs, aliases, file JVM names,
+project extension functions, malformed source errors and removed members in Git
+history. A compiled JVM API fixture confirms source properties and defaults remain
+available alongside generated getter/method signatures.
+
+The Maven publishing profile builds source and Javadoc jars with signing skipped
+for this local credential-free check. Gradle check/validatePlugins and local
+implementation/marker publication pass. A separate consumer resolves the plugin by
+ID/version from the local repository, detects a stale Kotlin reference, and clears
+it after updating the documentation. The shaded CLI also parses the Kotlin fixture. The final JDK 17 build passes
+36 core tests, one CLI test, two Maven integration builds and both Gradle
+TestKit tests.
+
+The original triaged corpus remains at 20 repositories, zero errors and the same
+three verified findings. With Kotlin parsing loaded lazily, the Java benchmark
+still meets its five-second budget: 2.468 seconds for 500 docs and 5,000 classes
+on this Mac/JDK 17. Parser dependency size increases the shaded CLI substantially.
+These are local results; signing, Central upload and Portal validation require the
+account setup in link:publishing.adoc[publishing instructions].

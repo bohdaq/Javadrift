@@ -1,0 +1,77 @@
+name: publish registries
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (must contain publishing configuration)
+        required: true
+        default: v0.2.0
+permissions:
+  contents: read
+concurrency:
+  group: publish-registries
+  cancel-in-progress: false
+jobs:
+  central:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - name: Check Central credentials
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          for name in CENTRAL_USERNAME CENTRAL_PASSWORD GPG_PRIVATE_KEY MAVEN_GPG_PASSPHRASE; do
+            test -n "${!name}" || { echo "Missing publishing secret: $name"; exit 2; }
+          done
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          server-id: central
+          server-username: CENTRAL_USERNAME
+          server-password: CENTRAL_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Verify release tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          version="$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
+          test "$RELEASE_TAG" = "v$version"
+      - name: Publish signed Maven artifacts
+        env:
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: mvn -B -Pcentral-publish deploy
+  gradle-portal:
+    needs: central
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Verify Central dependency is available
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          curl --fail --silent --show-error --retry 12 --retry-delay 10 --retry-all-errors "https://repo.maven.apache.org/maven2/io/github/bohdaq/javadrift-core/$version/javadrift-core-$version.pom" -o "$RUNNER_TEMP/core.pom"
+      - name: Verify and publish Gradle plugin
+        env:
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: |
+          test -n "$GRADLE_PUBLISH_KEY" && test -n "$GRADLE_PUBLISH_SECRET"
+          ./gradlew check validatePlugins :javadrift-gradle-plugin:publishPlugins --no-daemon

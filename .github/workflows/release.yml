@@ -33,7 +33,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" release/javadrift.jar release/javadrift.jar.sha256 --verify-tag --prerelease --notes-file docs/release-0.1.0.md
+        run: gh release create "$RELEASE_TAG" release/javadrift.jar release/javadrift.jar.sha256 --verify-tag --prerelease --notes-file "docs/release-${RELEASE_TAG#v}.md"
   action-smoke:
     needs: cli
     runs-on: ubuntu-latest
@@ -52,9 +52,10 @@ jobs:
       - name: Prepare stale documentation
         run: |
           smoke_root="$RUNNER_TEMP/javadrift-smoke"
-          mkdir -p "$smoke_root/src/main/java/example"
+          mkdir -p "$smoke_root/src/main/java/example" "$smoke_root/src/main/kotlin/example"
           echo 'package example; public class Widget { public void present() {} }' > "$smoke_root/src/main/java/example/Widget.java"
-          echo 'Use `Widget#missing`.' > "$smoke_root/README.md"
+          echo 'package example; class KotlinApi { fun present() {} }' > "$smoke_root/src/main/kotlin/example/KotlinApi.kt"
+          printf '%s\n' 'Use `Widget#missing`.' 'Use `KotlinApi#missing`.' > "$smoke_root/README.md"
           echo "SMOKE_ROOT=$smoke_root" >> "$GITHUB_ENV"
       - name: Report stale documentation through action
         uses: ./javadrift-action
@@ -71,7 +72,8 @@ jobs:
           import json, os
           from pathlib import Path
           report = json.loads((Path(os.environ['RUNNER_TEMP']) / 'javadrift-smoke.json').read_text())
-          assert any(f['checkId'] == 'JD002' and f['reference'] == 'Widget#missing' for f in report['findings']), report
+          for reference in ('Widget#missing', 'KotlinApi#missing'):
+              assert any(f['checkId'] == 'JD002' and f['reference'] == reference for f in report['findings']), report
           PY
           set +e
           java -jar "$JAVADRIFT_JAR" check --root "$SMOKE_ROOT" > "$RUNNER_TEMP/strict.txt" 2>&1

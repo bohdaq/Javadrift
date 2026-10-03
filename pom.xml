@@ -4,7 +4,7 @@
   <name>Javadrift</name><description>Offline stale documentation detection for JVM projects</description>
   <url>https://github.com/bohdaq/Javadrift</url>
   <licenses><license><name>Apache License, Version 2.0</name><url>https://www.apache.org/licenses/LICENSE-2.0.txt</url></license></licenses>
-  <scm><connection>scm:git:https://github.com/bohdaq/Javadrift.git</connection><url>https://github.com/bohdaq/Javadrift</url></scm>
+  <scm><developerConnection>scm:git:ssh://git@github.com/bohdaq/Javadrift.git</developerConnection><connection>scm:git:https://github.com/bohdaq/Javadrift.git</connection><url>https://github.com/bohdaq/Javadrift</url></scm>
   <developers><developer><id>bohdaq</id><name>Bohdan Tsap</name></developer></developers>
   <modules><module>javadrift-core</module><module>javadrift-cli</module><module>javadrift-maven-plugin</module></modules>
   <properties><maven.compiler.release>17</maven.compiler.release><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
@@ -15,4 +15,30 @@
     <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version></plugin>
     <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.2</version></plugin>
   </plugins></pluginManagement></build>
+  <profiles>
+    <profile>
+      <id>central-publish</id>
+      <build><plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId><artifactId>maven-source-plugin</artifactId><version>3.3.1</version>
+          <executions><execution><id>sources</id><goals><goal>jar-no-fork</goal></goals></execution></executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId><version>3.11.2</version>
+          <configuration><doclint>none</doclint></configuration>
+          <executions><execution><id>javadoc</id><goals><goal>jar</goal></goals></execution></executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId><artifactId>maven-gpg-plugin</artifactId><version>3.2.8</version>
+          <configuration><bestPractices>true</bestPractices></configuration>
+          <executions><execution><id>sign</id><phase>verify</phase><goals><goal>sign</goal></goals></execution></executions>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.central</groupId><artifactId>central-publishing-maven-plugin</artifactId><version>0.11.0</version>
+          <extensions>true</extensions>
+          <configuration><publishingServerId>central</publishingServerId><autoPublish>true</autoPublish><waitUntil>published</waitUntil></configuration>
+        </plugin>
+      </plugins></build>
+    </profile>
+  </profiles>
 </project>

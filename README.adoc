@@ -243,3 +243,10 @@ Source indexing uses src trees and flat root Java files. Other Java templates
 are skipped. Source variants with the same qualified name contribute their API
 union, conservatively; compiled outputs replace that union with the selected API.
 Use --class-dir for nonstandard build output layouts.
+
+== Publishing adapters
+
+Registry workflows and artifact metadata are prepared. Maven Central and Plugin
+Portal uploads need your publishing accounts, namespace and signing key. Follow
+link:docs/publishing.adoc[the publishing setup] to configure the six GitHub secrets
+and run the workflow. Until publication is confirmed, build adapters locally.

@@ -1,4 +1,4 @@
-plugins { `java-library` }
+plugins { `java-library`; `maven-publish` }
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:2.2.21")
     api("org.commonmark:commonmark:0.24.0")
@@ -11,4 +11,9 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+java { withSourcesJar(); withJavadocJar() }
+publishing {
+    publications { create<MavenPublication>("core") { from(components["java"]) } }
 }
