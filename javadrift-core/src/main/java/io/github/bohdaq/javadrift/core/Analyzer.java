@@ -37,7 +37,7 @@ public final class Analyzer {
                     if(!config.includes(relative(root,file)) || config.historical(relative(root,file)))continue;
                     DocReader.Document doc=new DocReader().read(file);
                     for(DocReader.Fragment fragment:doc.fragments()) {
-                        if(fragment.kind()==DocReader.Kind.LINK)continue;
+                        if(!DocReader.apiFragment(fragment))continue;
                         for(GitHistory.Removed symbol:removed) {
                             Matcher m=symbol.pattern().matcher(fragment.text());
                             while(m.find()) {
@@ -83,7 +83,7 @@ public final class Analyzer {
                 count++;DocReader.Document doc=new DocReader().read(file);
                 for(DocReader.Fragment fragment:doc.fragments()) {
                     if(fragment.kind()==DocReader.Kind.LINK) {path(root,config,findings,doc,fragment,fragment.text(),0,true);continue;}
-                    if(!config.historical(relative)) {
+                    if(!config.historical(relative) && DocReader.apiFragment(fragment)) {
                     Matcher members=MEMBER.matcher(fragment.text());
                     while(members.find()) {
                         String typeName=members.group(1), name=members.group(3);
@@ -91,7 +91,10 @@ public final class Analyzer {
                         // A dotted member requires call syntax; fields use # or ::.
                         Optional<CallArguments.Call> call=CallArguments.parse(fragment.text(),members.end());
                         if(members.group(2).equals(".") && call.isEmpty())continue;
-                        Optional<SymbolIndex.Type> resolved=index.resolve(typeName);
+                        String owner=fragment.language().startsWith("owner:")?fragment.language().substring(6):typeName;
+                        Optional<SymbolIndex.Type> resolved=fragment.language().startsWith("owner:")
+                            ? index.types.values().stream().filter(t->owner.equals(t.name)||owner.endsWith("."+t.name)).max(Comparator.comparingInt(t->t.name.length()))
+                            : index.resolve(owner);
                         if(resolved.isEmpty())continue;
                         SymbolIndex.Type type=resolved.get();
                         if(!type.project)continue;
@@ -114,7 +117,7 @@ public final class Analyzer {
                         String parentName=name.contains(".")?name.substring(0,name.lastIndexOf('.')):"";
                         boolean accessibleField=index.resolve(parentName).map(t->index.members(t).stream().anyMatch(m->m.name().equals(name.substring(name.lastIndexOf('.')+1)))).orElse(false);
                         boolean owned=config.sources.basePackages.isEmpty()
-                            ? packages.contains(parentName) || index.types.containsKey(parentName)
+                            ? packages.contains(parentName) || index.types.containsKey(parentName) || misplacedKnownType(index,name)
                             : config.sources.basePackages.stream().anyMatch(p->name.startsWith(p+"."));
                         if(owned && !index.types.containsKey(name) && !index.documentationTypes.contains(name) && !accessibleField)
                             add(root,config,findings,doc,fragment,qualified.start(),Check.JD001,reference,"Unknown project type `"+reference+"`",null);
@@ -131,6 +134,16 @@ public final class Analyzer {
             }
         }
         return new Result(List.copyOf(findings),count,(int)index.types.values().stream().filter(t->t.project).count());
+    }
+    private static boolean misplacedKnownType(SymbolIndex index,String name) {
+        if(examplePackage(name))return false;
+        String[] parts=name.split("\\.");if(parts.length<4)return false;
+        return java.util.stream.Stream.concat(index.types.keySet().stream(),index.documentationTypes.stream()).anyMatch(known->{
+            if(!known.endsWith("."+parts[parts.length-1]))return false;
+            String[] candidate=known.split("\\.");int shared=0;
+            while(shared<Math.min(parts.length-1,candidate.length-1) && parts[shared].equals(candidate[shared]))shared++;
+            return shared>=3;
+        });
     }
     private static boolean examplePackage(String value) {
         return Set.of("example","com.example","org.example").stream().anyMatch(p->value.equals(p)||value.startsWith(p+"."));

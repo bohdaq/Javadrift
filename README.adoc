@@ -292,3 +292,21 @@ ownership of optional dependencies and consumer placeholders, but can miss a sta
 type in a removed or mistyped subpackage. Configure sources.basePackages with your
 project namespace roots to enforce checks across all their subpackages, including
 example namespaces. Existing APIs and member references remain checked.
+
+== Reference context
+
+PlantUML, Mermaid, DOT and Graphviz blocks do not undergo Java API checks;
+ordinary Java blocks still do. Javadoc links supply the owner of short member
+labels, so a linked java.time.Clock method is not checked against a local Clock.
+External API validity requires a configured classpath; external URLs are not fetched.
+
+GitHub tree/HEAD and blob/HEAD links resolve against repository files, including
+multiline Markdown links. Inline src/main, src/test and src/testFixtures directory
+conventions can resolve to an existing module directory; explicit file links remain
+relative to their document. No module source filename is inferred from another module.
+
+An unknown qualified type can also be checked when its simple name matches a known
+project or helper declaration sharing at least three namespace components. This
+recovers mistyped packages while keeping unknown optional dependency namespaces
+outside inferred ownership. Configure sources.basePackages for complete namespace
+coverage; duplicate simple names and cross-project naming can still be ambiguous.

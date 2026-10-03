@@ -256,3 +256,21 @@ test and two integration builds; Gradle check/validatePlugins and both TestKit t
 pass. The nine new regression tests preserve missing-page/source detection,
 missing members and nested types, explicit namespace enforcement, changelog path
 checks and historical-scope overrides. Publishing and new releases remain deferred.
+
+== Context resolution and misplaced imports
+
+The next unconfigured expanded scan emits 24 findings across the unchanged 477
+documents and 20 pins, with zero errors (validation/corpus-contexts-after.json).
+Five reviewed false positives clear: two PlantUML labels, an external java.time.Clock
+link label, GitHub HEAD navigation and a real module source-directory convention.
+The ten previously verified errors remain. Known-name namespace checking recovers
+the stale Caffeine CacheSubject import and finds a stale Log4j ListAppender import:
+the actual source package is org.apache.logging.log4j.core.test.appender. It also
+reports another intentional old component in the Log4j migration list, so defaults
+still contain 12 known false positives. This report count is not a precision claim.
+
+Four new regressions preserve Java call checking, missing explicit links and HEAD
+link targets, local/project Javadoc labels and unknown dependency namespaces.
+Maven verify passes 49 core tests, the CLI test and both Maven integration builds.
+Gradle check/validatePlugins and both TestKit tests pass. Declared document context
+is the next step for legacy lists and optional consumer files.

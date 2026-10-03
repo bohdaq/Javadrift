@@ -13,6 +13,18 @@ final class RepositoryPaths {
     }
     static boolean exists(Path root,Path document,Path target,String path,boolean link) {
         if(Files.exists(target.normalize()))return true;
+        // GitHub branch navigation targets repository files, including multiline Markdown links.
+        var branch=java.util.regex.Pattern.compile("^(?:\\.\\./)+(?:tree|blob)/HEAD/(.+)$").matcher(path);
+        if(link && branch.matches()) {
+            Path file=root.resolve(branch.group(1)).normalize();return file.startsWith(root) && Files.exists(file);
+        }
+        // Module-wide source-directory conventions require a real matching module directory.
+        if(!link && fragmentDirectory(path)) {
+            try(var files=Files.walk(root)) {
+                if(files.filter(Files::isDirectory).anyMatch(p->root.relativize(p).toString().replace('\\','/').endsWith("/"+path)
+                    && !root.relativize(p).toString().matches("(?:.*[/\\\\])?(?:target|build|\\.git)(?:[/\\\\].*)?")))return true;
+            } catch(java.io.IOException ignored) { /* Fall through to the ordinary missing-path check. */ }
+        }
         String relative=root.relativize(document).toString().replace('\\','/');
         if(!link) {
             // Inline paths can be relative to the document's module or documentation workspace.
@@ -47,6 +59,9 @@ final class RepositoryPaths {
         String name=file.getFileName().toString().replaceFirst("\\.html$","").split("\\.")[0];
         Path source=module.resolve("src/main/java/"+folder+name+".java").normalize();
         return source.startsWith(root) && Files.isRegularFile(source);
+    }
+    private static boolean fragmentDirectory(String path) {
+        return Set.of("src/main","src/test","src/testFixtures").contains(path);
     }
     static boolean ambiguousInline(Path root,Path document,DocReader.Fragment fragment,String path) {
         if(fragment.kind()!=DocReader.Kind.CODE || document.getParent().equals(root))return false;
