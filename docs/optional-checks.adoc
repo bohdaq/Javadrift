@@ -107,3 +107,9 @@ and malformed property resources. Compiled class files must remain unchanged.
 This validates an authored application with pinned real dependencies and reviewed
 errors. It does not establish a false-positive rate for optional checks across the
 upstream source-only corpus.
+
+The build workflow runs all 22 scenarios on Linux, macOS and Windows with JDK 17
+and 21. Each job builds the current CLI, compiles a fresh sample, copies dependency
+JARs into paths with spaces, and checks native classpath separators and exact
+reviewed locations. Summary JSON, individual reports and command logs are saved
+in an optional-checks artifact named for the runner and JDK, including on failure.

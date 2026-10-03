@@ -492,3 +492,10 @@ the guides clears all findings. Evidence is in validation/optional-checks-local.
 
 See link:optional-checks.adoc[optional checks setup] for shell and PowerShell
 classpath commands, property scopes, severity controls and current limitations.
+
+The build workflow's optional-checks matrix repeats all 22 scenarios on Linux,
+macOS and Windows, each on JDK 17 and 21, with fresh compiled sample classes and
+dependency JARs copied into paths containing spaces. Each job verifies the reviewed
+locations and native classpath handling, then uploads its summary and individual
+reports/logs even after failure. Coverage remains scoped to the authored application
+fixture and does not change the upstream corpus classifications or optional defaults.
