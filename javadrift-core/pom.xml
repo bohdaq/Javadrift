@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
- <parent><groupId>io.github.bohdaq</groupId><artifactId>javadrift</artifactId><version>0.1.0-SNAPSHOT</version></parent>
+ <parent><groupId>io.github.bohdaq</groupId><artifactId>javadrift</artifactId><version>0.1.0</version></parent>
  <artifactId>javadrift-core</artifactId>
  <dependencies>
   <dependency><groupId>org.commonmark</groupId><artifactId>commonmark</artifactId><version>0.24.0</version></dependency>

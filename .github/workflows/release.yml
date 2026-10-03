@@ -14,14 +14,70 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: maven
+      - name: Verify release version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          version="$(mvn -q help:evaluate -Dexpression=project.version -DforceStdout)"
+          test "$RELEASE_TAG" = "v$version"
       - run: mvn -B verify
-      - run: |
+      - uses: gradle/actions/setup-gradle@v4
+      - run: ./gradlew check validatePlugins --no-daemon
+      - name: Prepare CLI assets
+        run: |
           mkdir -p release
           cp javadrift-cli/target/javadrift.jar release/
           cd release
           sha256sum javadrift.jar > javadrift.jar.sha256
-      - name: Publish CLI assets
+      - name: Publish CLI preview
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" release/javadrift.jar release/javadrift.jar.sha256 --verify-tag --generate-notes
+        run: gh release create "$RELEASE_TAG" release/javadrift.jar release/javadrift.jar.sha256 --verify-tag --prerelease --notes-file docs/release-0.1.0.md
+  action-smoke:
+    needs: cli
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Check this repository using published CLI
+        uses: ./javadrift-action
+        with:
+          version: ${{ github.ref_name }}
+      - name: Prepare stale documentation
+        run: |
+          smoke_root="$RUNNER_TEMP/javadrift-smoke"
+          mkdir -p "$smoke_root/src/main/java/example"
+          echo 'package example; public class Widget { public void present() {} }' > "$smoke_root/src/main/java/example/Widget.java"
+          echo 'Use `Widget#missing`.' > "$smoke_root/README.md"
+          echo "SMOKE_ROOT=$smoke_root" >> "$GITHUB_ENV"
+      - name: Report stale documentation through action
+        uses: ./javadrift-action
+        with:
+          version: ${{ github.ref_name }}
+          root: ${{ env.SMOKE_ROOT }}
+          format: json
+          output: ${{ runner.temp }}/javadrift-smoke.json
+          warn-only: 'true'
+      - name: Verify findings, CLI version and exit codes
+        run: |
+          java -jar "$JAVADRIFT_JAR" --version | grep -Fx "Javadrift ${GITHUB_REF_NAME#v}"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          report = json.loads((Path(os.environ['RUNNER_TEMP']) / 'javadrift-smoke.json').read_text())
+          assert any(f['checkId'] == 'JD002' and f['reference'] == 'Widget#missing' for f in report['findings']), report
+          PY
+          set +e
+          java -jar "$JAVADRIFT_JAR" check --root "$SMOKE_ROOT" > "$RUNNER_TEMP/strict.txt" 2>&1
+          strict_status=$?
+          java -jar "$JAVADRIFT_JAR" check --root "$SMOKE_ROOT/absent" > "$RUNNER_TEMP/invalid.txt" 2>&1
+          invalid_status=$?
+          set -e
+          test "$strict_status" -eq 1
+          test "$invalid_status" -eq 2

@@ -2,7 +2,7 @@ name: Javadrift
 description: Detect stale documentation using the JVM CLI
 inputs:
   version:
-    description: Published GitHub release tag (required until the first release exists)
+    description: Published GitHub release tag, for example v0.1.0
     required: true
   since:
     description: Optional base Git ref for diff mode

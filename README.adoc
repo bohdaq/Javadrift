@@ -4,6 +4,14 @@ Javadrift detects stale references in Markdown and AsciiDoc documentation using
 Java sources and compiled JVM classes. Analysis is offline and never executes
 project code or examples. Requires a JDK 17 or newer and Maven 3.9+ to build.
 
+== Download the CLI preview
+
+Download javadrift.jar and javadrift.jar.sha256 from
+https://github.com/bohdaq/Javadrift/releases/tag/v0.1.0[the v0.1.0 release].
+Verify the checksum with sha256sum -c javadrift.jar.sha256 (or shasum -a 256 -c
+on macOS), then run java -jar javadrift.jar check --root /path/to/project.
+Start with --warn-only while reviewing findings for your project.
+
 == Build
 
 [source,shell]
@@ -95,7 +103,7 @@ plugin. Add this block to the reactor root POM:
 <plugin>
   <groupId>io.github.bohdaq</groupId>
   <artifactId>javadrift-maven-plugin</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <inherited>false</inherited>
   <executions><execution><goals><goal>check</goal></goals></execution></executions>
 </plugin>
@@ -136,8 +144,24 @@ baselines, Git refs and repository file changes are tracked as inputs.
 
 The composite action lives in javadrift-action/. It requires a release tag with
 the CLI jar and SHA-256 checksum. The release workflow produces those assets
-when a version tag is pushed. Until the first release, build the CLI in CI.
+when a version tag is pushed. Version v0.1.0 is the initial preview release.
 The runner needs JDK 17+; diff mode also needs a checkout with full history.
+
+[source,yaml]
+----
+steps:
+  - uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+  - uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
+  - uses: bohdaq/Javadrift/javadrift-action@v0.1.0
+    with:
+      version: v0.1.0
+      warn-only: 'true'
+----
 
 [source,shell]
 ----
@@ -190,8 +214,9 @@ code, source/listing blocks and link/xref targets; it does not expand include
 macros, attributes or resolve anchors. Markdown anchors and external URLs are
 not checked. Build class outputs before checking so they describe current sources.
 
-The development snapshot implements all nine check IDs and build integrations.
-Publishing and the design's external accuracy/adoption gates remain pending; see
+The 0.1.0 preview implements all nine check IDs and build integrations.
+The small corpus does not establish broad accuracy; adoption gates and registry
+publishing remain pending. See
 link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].
 
 == Corpus-driven precision rules
