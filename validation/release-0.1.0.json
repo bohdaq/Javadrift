@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "release": "https://github.com/bohdaq/Javadrift/releases/tag/v0.1.0",
+  "tag": "v0.1.0",
+  "preview": true,
+  "sourceCommit": "f792158ca4756e0b6581ec6b8695de0507781781",
+  "publishedAt": "2026-10-03T00:41:17Z",
+  "workflow": "https://github.com/bohdaq/Javadrift/actions/runs/37083009143",
+  "workflowConclusion": "success",
+  "jobs": [
+    {
+      "name": "cli",
+      "url": "https://github.com/bohdaq/Javadrift/actions/runs/37083009143/job/111087411362",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify release version",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run mvn -B verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run ./gradlew check validatePlugins --no-daemon",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare CLI assets",
+          "conclusion": "success"
+        },
+        {
+          "name": "Publish CLI preview",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run gradle/actions/setup-gradle@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "action-smoke",
+      "url": "https://github.com/bohdaq/Javadrift/actions/runs/37083009143/job/111087683784",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Check this repository using published CLI",
+          "conclusion": "success"
+        },
+        {
+          "name": "Prepare stale documentation",
+          "conclusion": "success"
+        },
+        {
+          "name": "Report stale documentation through action",
+          "conclusion": "success"
+        },
+        {
+          "name": "Verify findings, CLI version and exit codes",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "jarSha256": "55676a4d54ab48e83d167c025af8f28ad424a5b53ecea46d9c30e6c7d120d300",
+  "assets": [
+    {
+      "name": "javadrift.jar",
+      "url": "https://github.com/bohdaq/Javadrift/releases/download/v0.1.0/javadrift.jar",
+      "bytes": 8694659
+    },
+    {
+      "name": "javadrift.jar.sha256",
+      "url": "https://github.com/bohdaq/Javadrift/releases/download/v0.1.0/javadrift.jar.sha256",
+      "bytes": 80
+    }
+  ],
+  "localDownloadedArtifact": {
+    "checksumVerified": true,
+    "jdk": "Temurin 17.0.20.1",
+    "version": "Javadrift 0.1.0",
+    "selfScan": {
+      "documents": 5,
+      "types": 39,
+      "findings": 0
+    }
+  },
+  "localBuildVerification": {
+    "coreTests": 27,
+    "cliTests": 1,
+    "mavenIntegrationBuilds": 2,
+    "gradleTestKitTests": 2,
+    "gradleValidatePlugins": "passed"
+  },
+  "corpus": {
+    "repositories": 20,
+    "errors": 0,
+    "documents": 22,
+    "findings": 3
+  }
+}

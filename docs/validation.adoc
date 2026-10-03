@@ -115,3 +115,24 @@ Use --java for JDK 17+ and --offline with a populated cache. This checks targete
 removed references; it does not establish recall across all historical changes.
 Naturally stale revisions fixed in a later upstream commit remain a useful
 extension to this reconstructed refactoring suite.
+
+== Published 0.1.0 preview
+
+The https://github.com/bohdaq/Javadrift/releases/tag/v0.1.0[0.1.0 preview]
+is published with a shaded CLI jar and SHA-256 checksum. Its
+https://github.com/bohdaq/Javadrift/actions/runs/37083009143[release workflow]
+passed Maven and Gradle verification on JDK 17, then tested the composite action
+using the published assets. The action checked its checksum, scanned this project
+cleanly, emitted the expected JD002 for a stale fixture in warn-only mode, and
+verified CLI version and strict/input-error exit codes 1 and 2.
+
+An independent local download also passed checksum verification, reported version
+0.1.0 and scanned this repository with zero findings on JDK 17. The current local
+suite passes 27 core tests, one CLI test, two Maven integration builds, two Gradle
+TestKit tests and validatePlugins. The release-version corpus rerun still returns
+20 repositories, zero input errors, 22 documents and the same three verified
+findings. Machine-readable release metadata, published checksum and job evidence
+are saved in validation/release-0.1.0.json.
+
+Maven Central and the Gradle Plugin Portal remain unpublished; their adapters
+can be built locally. This first preview does not claim a 1.0 accuracy guarantee.
