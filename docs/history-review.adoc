@@ -5,6 +5,13 @@ revisions: base, stale head and later documentation fix. Only JD004 runs; no
 upstream build or example executes. The manifest records every reviewed stale
 and fixed finding, including its document position.
 
+The gate compares complete reviewed finding identities at both revisions, rejects
+unreviewed findings and missing reviewed errors, and requires each removed target
+to clear. All four natural cases and five reconstructed cases pass locally on
+JDK 17. The 21 validation-script tests include six history-gate regressions;
+the repository documentation scan reports no findings. The natural report records
+six stale findings and one intentionally retained, reviewed true positive.
+
 == KotlinPoet array type
 
 https://github.com/square/kotlinpoet/commit/2a4d7c08c95a930b7807788f24020d073db1f4fb[The source change]

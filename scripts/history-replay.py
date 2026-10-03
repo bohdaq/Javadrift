@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Replay real refactorings, restoring parent docs without inventing source history."""
+"""Replay reconstructed or unchanged naturally stale upstream documentation."""
 import argparse
 import hashlib
 import json
@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+from history_gate import validate
 
 PROJECT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
@@ -61,25 +62,29 @@ for case in manifest['cases']:
         git(root, 'checkout', '--detach', case['head'])
         doc = root / case['document']
         natural = case['methodology'] == 'natural-stale-then-doc-fix'
+        if natural:
+            for earlier, later in ((case['base'], case['head']), (case['head'], case['fixedHead'])):
+                subprocess.run(['git', '-C', str(cache), 'merge-base', '--is-ancestor', earlier, later],
+                               check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         old = git(cache, 'show', f"{case['head'] if natural else case['base']}:{case['document']}")
         current = git(cache, 'show', f"{case.get('fixedHead', case['head'])}:{case['document']}")
         config = Path(directory) / 'replay.yml'
         config.write_text('docs:\n  include: [' + json.dumps(case['document']) + ']\nchecks:\n' +
                           ''.join(f'  JD{i:03}: off\n' for i in range(1, 10) if i != 4))
-        doc.write_bytes(old)
+        if natural:
+            if old == current:
+                raise ValueError(f"Natural history case has no documentation change: {case['id']}")
+        else:
+            doc.write_bytes(old)
         stale = run(root, config, case['base'])
-        targets = [f for f in stale['findings'] if any(name in f['reference'] or name in f['message']
-                                                     for name in case['expectedRemovedNames'])]
-        missing = [name for name in case['expectedRemovedNames'] if not any(
-            name in f['reference'] or name in f['message'] for f in targets)]
         if natural:
             git(root, 'checkout', '--detach', '--force', case['fixedHead'])
-        doc.write_bytes(current)
+        else:
+            doc.write_bytes(current)
         fixed = run(root, config, case['base'])
-        remaining = [f for f in fixed['findings'] if any(name in f['reference'] or name in f['message']
-                                                       for name in case['expectedRemovedNames'])]
+        missing, problems = validate(case, stale['findings'], fixed['findings'])
         row = dict(case, staleFindings=stale['findings'], fixedFindings=fixed['findings'],
-                   passed=not missing and not remaining, missingTargets=missing)
+                   passed=not problems, missingTargets=missing, reviewProblems=problems)
         rows.append(row)
         print(case['id'], 'PASS' if row['passed'] else 'FAIL', 'stale', len(stale['findings']),
               'fixed', len(fixed['findings']), flush=True)

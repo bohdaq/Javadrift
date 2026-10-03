@@ -95,3 +95,12 @@ document is stale and the actual later documentation-fix commit. Add it to the
 matching history manifest and verify that the stale document triggers the expected
 removed-symbol findings and the corrected document clears them. Keep those two
 methodologies distinct and leave upstream examples unexecuted.
+
+Natural cases must also list expectedStaleFindings and expectedFixedFindings,
+using exact file, line, column, checkId and reference identities. Review every
+finding at both revisions. A partial documentation fix can retain an explicitly
+reviewed non-target error; the gate rejects unreviewed additions and disappeared
+reviewed errors. Removed targets must be present before the fix and absent after
+it. The runner checks commit ancestry and reads natural documents directly from
+their checkouts without replacing their contents. See
+link:history-review.adoc[pinned Java/Kotlin evidence and coverage limits].

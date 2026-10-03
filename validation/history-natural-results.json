@@ -55,7 +55,8 @@
       ],
       "fixedFindings": [],
       "passed": true,
-      "missingTargets": []
+      "missingTargets": [],
+      "reviewProblems": []
     },
     {
       "id": "commonmark-natural-heading",
@@ -92,7 +93,8 @@
       ],
       "fixedFindings": [],
       "passed": true,
-      "missingTargets": []
+      "missingTargets": [],
+      "reviewProblems": []
     },
     {
       "id": "kotlinpoet-natural-array",
@@ -129,7 +131,8 @@
       ],
       "fixedFindings": [],
       "passed": true,
-      "missingTargets": []
+      "missingTargets": [],
+      "reviewProblems": []
     },
     {
       "id": "commonmark-natural-image-attributes",
@@ -202,7 +205,8 @@
         }
       ],
       "passed": true,
-      "missingTargets": []
+      "missingTargets": [],
+      "reviewProblems": []
     }
   ],
   "passed": true
