@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "scope": "Configured expanded source-only scan with explicit reviewed document context; no recall or general precision claim",
+  "configuration": "document-contexts.json",
+  "before": "corpus-contexts-after.json",
+  "after": "corpus-configured-after.json",
+  "summary": {
+    "findings": 12,
+    "verifiedErrorsPreserved": 10,
+    "additionalVerifiedErrors": 2,
+    "falsePositivesExempted": 12
+  },
+  "findings": [
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
+      "file": "src/site/markdown/bloomFilters/advanced.md",
+      "line": 27,
+      "column": 302,
+      "checkId": "JD002",
+      "reference": "BitMapExtractor.processBitmapPairs",
+      "classification": "true-positive",
+      "evidence": "Pinned bloomfilter source declares processBitMapPairs with capital M and BitMaps, while advanced.md spells processBitmapPairs and imports BitMap."
+    },
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
+      "file": "src/site/markdown/bloomFilters/advanced.md",
+      "line": 29,
+      "column": 130,
+      "checkId": "JD002",
+      "reference": "BitMapExtractor.processBitmapPairs",
+      "classification": "true-positive",
+      "evidence": "Pinned bloomfilter source declares processBitMapPairs with capital M and BitMaps, while advanced.md spells processBitmapPairs and imports BitMap."
+    },
+    {
+      "repository": "apache/commons-collections",
+      "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
+      "file": "src/site/markdown/bloomFilters/advanced.md",
+      "line": 32,
+      "column": 8,
+      "checkId": "JD001",
+      "reference": "org.apache.commons.collections4.bloomfilter.BitMap",
+      "classification": "true-positive",
+      "evidence": "Pinned bloomfilter source declares processBitMapPairs with capital M and BitMaps, while advanced.md spells processBitmapPairs and imports BitMap."
+    },
+    {
+      "repository": "google/gson",
+      "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+      "file": "ReleaseProcess.md",
+      "line": 108,
+      "column": 75,
+      "checkId": "JD007",
+      "reference": "gson/src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+      "classification": "true-positive",
+      "evidence": "Benchmark source exists under metrics/src/main/java/com/google/gson/metrics, not the documented gson/src path."
+    },
+    {
+      "repository": "google/gson",
+      "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+      "file": "ReleaseProcess.md",
+      "line": 116,
+      "column": 5,
+      "checkId": "JD007",
+      "reference": "src/main/java/com/google/gson/metrics/CollectionsDeserializationBenchmark.java",
+      "classification": "true-positive",
+      "evidence": "Benchmark source exists under metrics/src/main/java/com/google/gson/metrics, not the documented gson/src path."
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "file": "README.md",
+      "line": 493,
+      "column": 70,
+      "checkId": "JD002",
+      "reference": "CodeBlock.add",
+      "classification": "true-positive",
+      "evidence": "Verified in validation/triage.json: add/addNamed belong to CodeBlock.Builder; TypeSpec exposes anonymousClassBuilder."
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "file": "README.md",
+      "line": 511,
+      "column": 78,
+      "checkId": "JD002",
+      "reference": "CodeBlock.addNamed",
+      "classification": "true-positive",
+      "evidence": "Verified in validation/triage.json: add/addNamed belong to CodeBlock.Builder; TypeSpec exposes anonymousClassBuilder."
+    },
+    {
+      "repository": "square/javapoet",
+      "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
+      "file": "README.md",
+      "line": 762,
+      "column": 28,
+      "checkId": "JD002",
+      "reference": "TypeSpec.anonymousInnerClass",
+      "classification": "true-positive",
+      "evidence": "Verified in validation/triage.json: add/addNamed belong to CodeBlock.Builder; TypeSpec exposes anonymousClassBuilder."
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".claude/docs/testing.md",
+      "line": 93,
+      "column": 15,
+      "checkId": "JD001",
+      "reference": "com.github.benmanes.caffeine.testing.CacheSubject",
+      "classification": "true-positive",
+      "evidence": "Pinned test fixture declares com.github.benmanes.caffeine.cache.CacheSubject; the documented testing subpackage is incorrect."
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".claude/skills/audit-sibling-divergence/SKILL.md",
+      "line": 41,
+      "column": 37,
+      "checkId": "JD002",
+      "reference": "AsyncLoadingCache.refresh",
+      "classification": "true-positive",
+      "evidence": "Pinned AsyncLoadingCache declares get/getAll/synchronous but no refresh; refresh belongs to its synchronous LoadingCache view and the private implementation."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "log4j-core-test/src/test/resources/README.md",
+      "line": 30,
+      "column": 2,
+      "checkId": "JD001",
+      "reference": "org.apache.logging.log4j.test.appender.ListAppender",
+      "classification": "true-positive",
+      "evidence": "Pinned log4j-core-test/src/main/java source declares org.apache.logging.log4j.core.test.appender.ListAppender; the documented package omits core."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/manual/thread-context.adoc",
+      "line": 54,
+      "column": 1,
+      "checkId": "JD002",
+      "reference": "ThreadContext.clear",
+      "classification": "true-positive",
+      "evidence": "Pinned public ThreadContext exposes clearMap/clearStack/clearAll; clear is only a method of an internal implementation. The fenced Java example calls ThreadContext.clear()."
+    }
+  ],
+  "exemptedFindings": [
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".claude/docs/ruled-out.md",
+      "line": 57,
+      "column": 38,
+      "checkId": "JD002",
+      "reference": "Cache.unwrap",
+      "classification": "false-positive",
+      "evidence": "Surrounding text explicitly discusses the JCache specification; short Cache was resolved to the local Caffeine API."
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".claude/docs/ruled-out.md",
+      "line": 637,
+      "column": 35,
+      "checkId": "JD003",
+      "reference": "Cache.get(Callable)",
+      "classification": "false-positive",
+      "evidence": "Surrounding text explicitly discusses Guava Cache; short Cache was resolved to the local Caffeine API."
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".github/actions/spelling/README.md",
+      "line": 5,
+      "column": 2,
+      "checkId": "JD007",
+      "reference": "dictionary.txt",
+      "classification": "false-positive",
+      "evidence": "Known path convention reviewed in validation/path-triage.json: optional consumer spelling files, a GitHub branch route, or a module-relative src/main convention."
+    },
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "file": ".github/actions/spelling/README.md",
+      "line": 9,
+      "column": 2,
+      "checkId": "JD007",
+      "reference": "only.txt",
+      "classification": "false-positive",
+      "evidence": "Known path convention reviewed in validation/path-triage.json: optional consumer spelling files, a GitHub branch route, or a module-relative src/main convention."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 540,
+      "column": 126,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.AsyncAppender",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 542,
+      "column": 137,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.DailyRollingFileAppender",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 547,
+      "column": 128,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.rewrite.RewriteAppender",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 548,
+      "column": 140,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.rolling.RollingFileAppender",
+      "classification": "false-positive",
+      "evidence": "Inline RollingFileAppender is an intentional old component in the Log4j 1 compatibility list, alongside its current Builder mapping."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 558,
+      "column": 121,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.HTMLLayout",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 559,
+      "column": 162,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.EnhancedPatternLayout",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 561,
+      "column": 121,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.TTCCLayout",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+      "line": 562,
+      "column": 120,
+      "checkId": "JD001",
+      "reference": "org.apache.log4j.xml.XMLLayout",
+      "classification": "false-positive",
+      "evidence": "Migration comparison table names the old Log4j 1 API alongside replacements. An absent old type is intentional historical context."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "scope": "Explicit reviewed document context; opt-in, tied to source pins, never changed upstream",
+  "repositories": [
+    {
+      "repository": "ben-manes/caffeine",
+      "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
+      "config": {
+        "docs": {
+          "exemptions": [
+            {
+              "file": ".claude/docs/ruled-out.md",
+              "check": "JD002",
+              "reference": "Cache.unwrap",
+              "kind": "CODE",
+              "reason": "The paragraph explicitly refers to javax.cache.Cache (JCache), not the project Cache."
+            },
+            {
+              "file": ".claude/docs/ruled-out.md",
+              "check": "JD003",
+              "reference": "Cache.get(Callable)",
+              "kind": "CODE",
+              "reason": "The paragraph explicitly identifies Guava Cache; the short name is outside the project API."
+            },
+            {
+              "file": ".github/actions/spelling/README.md",
+              "check": "JD007",
+              "reference": "dictionary.txt",
+              "kind": "LINK",
+              "reason": "The table describes a replacement dictionary that users may create to override the default; it is optional."
+            },
+            {
+              "file": ".github/actions/spelling/README.md",
+              "check": "JD007",
+              "reference": "only.txt",
+              "kind": "LINK",
+              "reason": "This is an optional consumer check-spelling configuration input, not a committed required file."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "repository": "apache/logging-log4j2",
+      "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
+      "config": {
+        "docs": {
+          "exemptions": [
+            {
+              "file": "src/site/antora/modules/ROOT/pages/migrate-from-log4j1.adoc",
+              "check": "JD001",
+              "reference": "org.apache.log4j.*",
+              "kind": "CODE",
+              "reason": "Inline old component names describe Log4j 1 configuration compatibility. Current Java code blocks and other namespaces remain checked."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

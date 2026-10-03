@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "jarSha256": "7991a8904ecbb0024088cd4be19c23db7c8ce0d1009e03e7c2887c889d58433b",
+  "jarSha256": "e38701b11b0054bee1aa6028b9bd6394b612ff579b889a4f6e90ebbd703d9ca1",
   "scope": "default-docs",
   "mode": "full/source-only/no-Git-tags",
   "runs": [
@@ -8,7 +8,7 @@
       "repository": "commonmark/commonmark-java",
       "commit": "b89e72fdb25948c1b9623d64baa29d35d49f8abf",
       "exitCode": 0,
-      "seconds": 4.283,
+      "seconds": 3.981,
       "result": {
         "findings": [],
         "documents": 1,
@@ -19,7 +19,7 @@
       "repository": "apache/commons-lang",
       "commit": "7fce4c843fcd758da9b3408aaf9435c2471ab218",
       "exitCode": 0,
-      "seconds": 12.154,
+      "seconds": 13.509,
       "result": {
         "findings": [],
         "documents": 1,
@@ -30,7 +30,7 @@
       "repository": "apache/commons-io",
       "commit": "05f968e913fb43f21ccecb44eba5d523999999f9",
       "exitCode": 0,
-      "seconds": 7.779,
+      "seconds": 8.678,
       "result": {
         "findings": [],
         "documents": 1,
@@ -41,7 +41,7 @@
       "repository": "apache/commons-text",
       "commit": "23428d0ba4fc23e8f080d1ec50aee17f72276f9d",
       "exitCode": 0,
-      "seconds": 5.378,
+      "seconds": 4.418,
       "result": {
         "findings": [],
         "documents": 1,
@@ -52,7 +52,7 @@
       "repository": "apache/commons-collections",
       "commit": "c71d621909dc616d5709e5d3b703392d0786224b",
       "exitCode": 0,
-      "seconds": 8.154,
+      "seconds": 9.328,
       "result": {
         "findings": [],
         "documents": 1,
@@ -63,7 +63,7 @@
       "repository": "apache/commons-codec",
       "commit": "5444a15a34dada7b6d92f6f96c58bef74cee2817",
       "exitCode": 0,
-      "seconds": 5.32,
+      "seconds": 6.274,
       "result": {
         "findings": [],
         "documents": 1,
@@ -74,7 +74,7 @@
       "repository": "apache/commons-compress",
       "commit": "f4eea9e5cf73e38cf352c0d5f85376e5bbb630b9",
       "exitCode": 0,
-      "seconds": 8.263,
+      "seconds": 10.002,
       "result": {
         "findings": [],
         "documents": 1,
@@ -85,7 +85,7 @@
       "repository": "apache/commons-csv",
       "commit": "c6ac1bde5b6b9545a8b85b570f5f118930c2b50f",
       "exitCode": 0,
-      "seconds": 3.424,
+      "seconds": 4.148,
       "result": {
         "findings": [],
         "documents": 1,
@@ -96,7 +96,7 @@
       "repository": "google/gson",
       "commit": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
       "exitCode": 0,
-      "seconds": 4.409,
+      "seconds": 6.037,
       "result": {
         "findings": [],
         "documents": 1,
@@ -107,7 +107,7 @@
       "repository": "google/guava",
       "commit": "72dd370d951967fe97756ecaaa938c7cb5bcbc28",
       "exitCode": 0,
-      "seconds": 15.403,
+      "seconds": 22.697,
       "result": {
         "findings": [],
         "documents": 1,
@@ -118,7 +118,7 @@
       "repository": "square/javapoet",
       "commit": "b9017a9503b76e11b4ad4c1a9f050e2d29112cb0",
       "exitCode": 1,
-      "seconds": 1.835,
+      "seconds": 3.682,
       "result": {
         "findings": [
           {
@@ -160,7 +160,7 @@
       "repository": "square/retrofit",
       "commit": "3724fffb6ce312bc0191a31e0e8c7fb0c5796d39",
       "exitCode": 0,
-      "seconds": 6.903,
+      "seconds": 7.745,
       "result": {
         "findings": [],
         "documents": 1,
@@ -171,7 +171,7 @@
       "repository": "FasterXML/jackson-core",
       "commit": "7ab93981240a74a486b7800e57df165ad7896d2d",
       "exitCode": 0,
-      "seconds": 9.466,
+      "seconds": 12.417,
       "result": {
         "findings": [],
         "documents": 2,
@@ -182,7 +182,7 @@
       "repository": "FasterXML/jackson-databind",
       "commit": "a37ac97fce60295212f510cc790af2b65785100a",
       "exitCode": 0,
-      "seconds": 14.473,
+      "seconds": 19.784,
       "result": {
         "findings": [],
         "documents": 2,
@@ -193,7 +193,7 @@
       "repository": "ben-manes/caffeine",
       "commit": "e972fb0ee497fa1d0aa9c4a931b037782d951707",
       "exitCode": 0,
-      "seconds": 9.412,
+      "seconds": 16.554,
       "result": {
         "findings": [],
         "documents": 1,
@@ -204,7 +204,7 @@
       "repository": "junit-team/junit5",
       "commit": "2b484caa962ad9b0d9a6af5d2c25100b6a8f4ef6",
       "exitCode": 0,
-      "seconds": 8.133,
+      "seconds": 14.712,
       "result": {
         "findings": [],
         "documents": 1,
@@ -215,7 +215,7 @@
       "repository": "qos-ch/slf4j",
       "commit": "90658112710a99a6ff7dbb2db0c1d13f8fb456f8",
       "exitCode": 0,
-      "seconds": 2.337,
+      "seconds": 3.945,
       "result": {
         "findings": [],
         "documents": 1,
@@ -226,7 +226,7 @@
       "repository": "jhy/jsoup",
       "commit": "088614f4a1454232a1f03c63b7f80742f1f2a854",
       "exitCode": 0,
-      "seconds": 2.839,
+      "seconds": 6.461,
       "result": {
         "findings": [],
         "documents": 1,
@@ -237,7 +237,7 @@
       "repository": "apache/logging-log4j2",
       "commit": "30e117e54bc91da42e90a2c0a6f8cd5c3fefe023",
       "exitCode": 0,
-      "seconds": 5.72,
+      "seconds": 10.888,
       "result": {
         "findings": [],
         "documents": 1,
@@ -248,7 +248,7 @@
       "repository": "resilience4j/resilience4j",
       "commit": "7e3ab5252ed380b596e25240f19376a4435570b8",
       "exitCode": 0,
-      "seconds": 3.922,
+      "seconds": 7.887,
       "result": {
         "findings": [],
         "documents": 1,

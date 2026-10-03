@@ -274,3 +274,35 @@ link targets, local/project Javadoc labels and unknown dependency namespaces.
 Maven verify passes 49 core tests, the CLI test and both Maven integration builds.
 Gradle check/validatePlugins and both TestKit tests pass. Declared document context
 is the next step for legacy lists and optional consumer files.
+
+== Reviewed document context
+
+validation/document-contexts.json declares five opt-in exceptions against the exact
+corpus pins: two short third-party Cache references, two optional spelling inputs,
+and inline old-API names in one migration document. The legacy exception applies
+only to JD001 inline references; Java blocks, other checks and current namespaces
+are still checked. Each exception includes its review reason. No upstream file was
+changed, and no blanket migration-file or spelling-directory exclusion was added.
+
+The configured stress scan reports 12 verified errors and zero known false positives
+across the same 20 repositories and 477 documents, with zero input errors.
+validation/corpus-configured-after.json records the raw results, applied context
+and configuration checksum; validation/context-triage.json verifies preservation
+of all ten earlier errors plus the recovered CacheSubject and ListAppender imports.
+The unconfigured scan still contains 12 known false positives. Configured observed
+precision does not establish recall or accuracy on unseen repositories.
+
+The corpus runner rejects context overrides whose repository/commit pins do not
+match the corpus manifest. The original default corpus remains at the same three
+verified findings. Final Maven verify passes 52 core tests, the CLI test and two
+Maven integration builds; Gradle check/validatePlugins and both TestKit tests pass.
+The new exception regressions preserve other documents, missing references,
+code blocks, and a deprecation warning on an exempted missing-member reference.
+The 500-document/5,000-class benchmark completes in 4.693 seconds on this Mac/JDK 17
+while corpus scans run concurrently, within the five-second budget. Self-docs emit
+no findings. New releases and registry uploads remain deferred.
+
+[source,shell]
+----
+python3 scripts/corpus.py --offline --expanded --context-config validation/document-contexts.json --require-triage validation/context-triage.json --output validation/corpus-configured-after.json
+----

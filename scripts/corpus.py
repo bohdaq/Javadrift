@@ -24,12 +24,22 @@ parser.add_argument('--output', type=Path, default=PROJECT / 'validation/corpus-
 parser.add_argument('--offline', action='store_true')
 parser.add_argument('--expanded', action='store_true', help='Stress scan all Markdown/AsciiDoc files')
 parser.add_argument('--require-triage', type=Path)
+parser.add_argument('--context-config', type=Path, help='Explicit document-context overrides tied to corpus commit pins')
 args = parser.parse_args()
 args.cache.mkdir(parents=True, exist_ok=True)
 jar = args.jar.resolve()
 if not jar.is_file():
     parser.error('Build the CLI first')
 manifest = json.loads(args.manifest.read_text())
+contexts = {}
+if args.context_config:
+    context_manifest = json.loads(args.context_config.read_text())
+    pins = {entry['repository']: entry['commit'] for entry in manifest['repositories']}
+    for context in context_manifest['repositories']:
+        repo = context['repository']
+        if repo in contexts or pins.get(repo) != context['commit']:
+            parser.error(f'Duplicate context or mismatched commit pin: {repo}')
+        contexts[repo] = context['config']
 
 def git(checkout, *arguments):
     return subprocess.check_output(['git', '-C', str(checkout), *arguments], stderr=subprocess.PIPE)
@@ -56,9 +66,14 @@ def scan(entry):
             contents.extractall(root, filter='data')
         archive.unlink()
         command = [args.java, '-Xmx768m', '-jar', str(jar), 'check', '--root', str(root), '--format', 'json']
-        if args.expanded:
+        if args.expanded or repo in contexts:
+            configuration = json.loads(json.dumps(contexts.get(repo, {})))
+            if args.expanded:
+                docs = configuration.setdefault('docs', {})
+                docs.update(include=['**/*.md', '**/*.adoc'],
+                            exclude=['**/target/**', '**/build/**', '**/.git/**', '**/node_modules/**'])
             config = root / 'corpus-scope.yml'
-            config.write_text("docs:\n  include: ['**/*.md', '**/*.adoc']\n  exclude: ['**/target/**', '**/build/**', '**/.git/**', '**/node_modules/**']\n")
+            config.write_text(json.dumps(configuration))
             command += ['--config', str(config)]
         started = time.perf_counter()
         process = subprocess.run(command, text=True, capture_output=True, timeout=120)
@@ -66,6 +81,8 @@ def scan(entry):
                'seconds': round(time.perf_counter() - started, 3)}
         if process.returncode in (0, 1) and process.stdout.lstrip().startswith('{'):
             row['result'] = json.loads(process.stdout)
+            if repo in contexts:
+                row['documentContext'] = contexts[repo]
         else:
             row['error'] = process.stderr.strip() or process.stdout.strip()
         return row
@@ -80,6 +97,8 @@ report = {'schemaVersion': 1, 'jarSha256': hashlib.sha256(jar.read_bytes()).hexd
           'summary': {'repositories': len(rows), 'errors': len(errors),
                       'documents': sum(r.get('result', {}).get('documents', 0) for r in rows),
                       'findings': len(findings)}}
+if args.context_config:
+    report['contextConfigSha256'] = hashlib.sha256(args.context_config.read_bytes()).hexdigest()
 args.output.parent.mkdir(parents=True, exist_ok=True)
 args.output.write_text(json.dumps(report, indent=2) + '\n')
 print(json.dumps(report['summary']))

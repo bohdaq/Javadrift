@@ -182,7 +182,7 @@ public final class Analyzer {
     }
     static void add(Path root,Config config,Set<Finding> out,DocReader.Document doc,DocReader.Fragment f,int offset,Check check,String ref,String message,String suggestion) {
         Severity severity=config.severity(check);if(severity==Severity.OFF)return;
-        if(config.ignore.stream().anyMatch(g->Glob.matches(g,ref)))return;
+        if(config.ignore.stream().anyMatch(g->Glob.matches(g,ref)) || config.exempted(relative(root,doc.path()),check,ref,f.kind()))return;
         String[] lines=doc.text().split("\\n",-1);
         int at=f.lineAt(offset)-1;
         if(ignored(lines,at) || (f.kind()==DocReader.Kind.BLOCK && ignored(lines,f.line()-2)))return;

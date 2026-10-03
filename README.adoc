@@ -310,3 +310,31 @@ project or helper declaration sharing at least three namespace components. This
 recovers mistyped packages while keeping unknown optional dependency namespaces
 outside inferred ownership. Configure sources.basePackages for complete namespace
 coverage; duplicate simple names and cross-project naming can still be ambiguous.
+
+== Declared document exceptions
+
+When a document deliberately mentions an old or third-party API, or links an
+optional consumer file, declare the exception in docs.exemptions. Each entry
+requires a file glob, check ID, reference glob and review reason. The optional
+kind limits it to inline code (CODE), fenced/listing code (BLOCK), or links (LINK).
+Other files, references and checks continue to report findings. These exceptions
+apply to full scans and history findings and are opt-in; defaults are unchanged.
+
+[source,yaml]
+----
+docs:
+  exemptions:
+    - file: '**/migration.adoc'
+      check: JD001
+      reference: 'old.api.*'
+      kind: CODE
+      reason: Inline names describe the old library API
+    - file: '**/configuration.md'
+      check: JD007
+      reference: dictionary.txt
+      kind: LINK
+      reason: Optional consumer override file
+----
+
+Use exact file/reference patterns when possible. Exceptions express reviewed intent;
+they do not prove that the referenced third-party API or optional file is valid.
