@@ -41,7 +41,7 @@ for case in manifest['cases']:
         subprocess.run(['git', 'clone', '--no-checkout', '--filter=blob:none',
                         f'https://github.com/{repo}.git', str(cache)], check=True,
                        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-    for commit in (case['base'], case['head']):
+    for commit in (case['base'], case['head'], case.get('fixedHead', case['head'])):
         if subprocess.run(['git', '-C', str(cache), 'cat-file', '-e', f'{commit}^{{commit}}'],
                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode:
             if args.offline:
@@ -53,8 +53,9 @@ for case in manifest['cases']:
                        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
         git(root, 'checkout', '--detach', case['head'])
         doc = root / case['document']
-        old = git(cache, 'show', f"{case['base']}:{case['document']}")
-        current = git(cache, 'show', f"{case['head']}:{case['document']}")
+        natural = case['methodology'] == 'natural-stale-then-doc-fix'
+        old = git(cache, 'show', f"{case['head'] if natural else case['base']}:{case['document']}")
+        current = git(cache, 'show', f"{case.get('fixedHead', case['head'])}:{case['document']}")
         config = Path(directory) / 'replay.yml'
         config.write_text('docs:\n  include: [' + json.dumps(case['document']) + ']\nchecks:\n' +
                           ''.join(f'  JD{i:03}: off\n' for i in range(1, 10) if i != 4))
@@ -64,6 +65,8 @@ for case in manifest['cases']:
                                                      for name in case['expectedRemovedNames'])]
         missing = [name for name in case['expectedRemovedNames'] if not any(
             name in f['reference'] or name in f['message'] for f in targets)]
+        if natural:
+            git(root, 'checkout', '--detach', '--force', case['fixedHead'])
         doc.write_bytes(current)
         fixed = run(root, config, case['base'])
         remaining = [f for f in fixed['findings'] if any(name in f['reference'] or name in f['message']
@@ -74,7 +77,7 @@ for case in manifest['cases']:
         print(case['id'], 'PASS' if row['passed'] else 'FAIL', 'stale', len(stale['findings']),
               'fixed', len(fixed['findings']), flush=True)
 report = {'schemaVersion': 1, 'jarSha256': hashlib.sha256(jar.read_bytes()).hexdigest(),
-          'methodology': 'Real upstream code refactoring commits with parent docs restored in a temporary checkout; then original updated docs restored. No synthetic commits or invented API examples.',
+          'methodology': 'Case methodology distinguishes reconstructed parent docs from unchanged naturally stale upstream revisions followed by actual documentation-fix commits. No synthetic commits or invented API examples.',
           'runs': rows, 'passed': all(r['passed'] for r in rows)}
 args.output.write_text(json.dumps(report, indent=2) + '\n')
 if not report['passed']:

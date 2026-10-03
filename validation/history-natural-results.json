@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "jarSha256": "ea8101a3b4b12dc833908470d7aa56610f36c473a36fe0f08f81cdfe9a05e745",
+  "methodology": "Case methodology distinguishes reconstructed parent docs from unchanged naturally stale upstream revisions followed by actual documentation-fix commits. No synthetic commits or invented API examples.",
+  "runs": [
+    {
+      "id": "retrofit-natural-converter",
+      "repository": "square/retrofit",
+      "base": "23034249f028253d6b53babaa1d7664b4f2d765f",
+      "head": "fe6d0f9b2a68063a086fa9da80d04293fbe3becf",
+      "fixedHead": "61f97fc5856f320f2b7ae52b9a297f9d18591e8f",
+      "document": "retrofit-converters/README.md",
+      "expectedRemovedNames": [
+        "converter"
+      ],
+      "methodology": "natural-stale-then-doc-fix",
+      "staleFindings": [
+        {
+          "file": "retrofit-converters/README.md",
+          "line": 12,
+          "column": 6,
+          "checkId": "JD004",
+          "severity": "ERROR",
+          "reference": "converter",
+          "message": "Removed symbol `converter` is still documented",
+          "suggestion": "Did you mean `converterFactory()`? Added since 23034249f028253d6b53babaa1d7664b4f2d765f."
+        },
+        {
+          "file": "retrofit-converters/README.md",
+          "line": 12,
+          "column": 20,
+          "checkId": "JD004",
+          "severity": "ERROR",
+          "reference": "ProtoConverter",
+          "message": "Removed symbol `ProtoConverter` is still documented",
+          "suggestion": null
+        }
+      ],
+      "fixedFindings": [],
+      "passed": true,
+      "missingTargets": []
+    },
+    {
+      "id": "commonmark-natural-heading",
+      "repository": "commonmark/commonmark-java",
+      "base": "263f0e5e7d92e136beb27f0c9e0f04e72fe0a74e",
+      "head": "6508cead27d0db7a25048fb6d8be517e2fa29c8f",
+      "fixedHead": "a5da23ccd1c1f4aa26b61a85241fceaa6dae0f98",
+      "document": "README.md",
+      "expectedRemovedNames": [
+        "HeaderIdExtension"
+      ],
+      "methodology": "natural-stale-then-doc-fix",
+      "staleFindings": [
+        {
+          "file": "README.md",
+          "line": 219,
+          "column": 12,
+          "checkId": "JD004",
+          "severity": "ERROR",
+          "reference": "HeaderIdExtension",
+          "message": "Removed symbol `HeaderIdExtension` is still documented",
+          "suggestion": null
+        }
+      ],
+      "fixedFindings": [],
+      "passed": true,
+      "missingTargets": []
+    }
+  ],
+  "passed": true
+}

@@ -26,6 +26,8 @@ public final class CallArguments {
         return Optional.empty();
     }
     public static boolean matches(SymbolIndex.Member member,List<String> args,SymbolIndex index) {
+        // Ellipses in documentation stand for omitted arguments, not a call arity.
+        if(args.stream().anyMatch(a->a.equals("...")||a.equals("…")))return true;
         int count=member.parameters().size();
         if(!member.method() || (!member.varargs() && args.size()!=count) || (member.varargs() && args.size()<count-1))return false;
         for(int i=0;i<args.size();i++) {

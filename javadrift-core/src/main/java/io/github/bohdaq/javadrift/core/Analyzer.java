@@ -137,6 +137,16 @@ public final class Analyzer {
         try {
             if(link)path=URI.create(path).getPath();
             Path target=link?(path.startsWith("/")?root.resolve(path.substring(1)):doc.path().getParent().resolve(path)):root.resolve(path);
+            if(link && f.language().equals("xref")) {
+                // Antora page IDs are rooted at their module's pages family.
+                for(Path module=doc.path().getParent();module!=null && module.startsWith(root);module=module.getParent()) {
+                    if(module.getParent()!=null && module.getParent().getFileName().toString().equals("modules")) {
+                        target=path.startsWith("./")||path.startsWith("../")
+                            ?doc.path().getParent().resolve(path):module.resolve("pages").resolve(path);
+                        break;
+                    }
+                }
+            }
             // Escaping links include GitHub sibling-repo and wiki navigation.
             // They are outside the repository-file check's scope.
             if(link && (path.startsWith("/") || !target.toAbsolutePath().normalize().startsWith(root.toAbsolutePath().normalize())))return;

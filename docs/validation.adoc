@@ -136,3 +136,32 @@ are saved in validation/release-0.1.0.json.
 
 Maven Central and the Gradle Plugin Portal remain unpublished; their adapters
 can be built locally. This first preview does not claim a 1.0 accuracy guarantee.
+
+== Expanded documentation and natural history
+
+The expanded source-only stress scan covers all Markdown/AsciiDoc files in the
+same 20 pinned repositories: 477 documents, zero input errors. The original pass
+emitted 1,936 findings. Antora page IDs were incorrectly treated as document-relative
+paths, and argument ellipses were incorrectly treated as real call arguments.
+Module page resolution and placeholder handling remove 1,351 path reports and
+five signature reports. Regression tests retain missing-page detection, ordinary
+relative links and literal string argument checks.
+
+The corrected stress pass emits 580 findings (504 paths, 41 types, 31 members,
+four signatures). These remaining findings are not fully triaged and must not be
+used as a precision claim. They include generated site assets, historical API
+mentions in changelogs, example/test types and ambiguous snippet paths. Raw
+before/after results are in validation/corpus-expanded-before.json and
+validation/corpus-expanded-after.json. No upstream build or example was executed.
+
+Two naturally stale upstream revisions also pass JD004 replay: Retrofit's converter
+API and CommonMark's heading extension. Unlike the five reconstructed cases, the
+stale documents are unchanged at the actual pinned source revision. Restoring the
+actual subsequent documentation-fix commit clears the targeted findings. See
+validation/history-natural.json and validation/history-natural-results.json.
+
+[source,shell]
+----
+python3 scripts/corpus.py --expanded --output validation/corpus-expanded-after.json
+python3 scripts/history-replay.py --manifest validation/history-natural.json --output validation/history-natural-results.json
+----

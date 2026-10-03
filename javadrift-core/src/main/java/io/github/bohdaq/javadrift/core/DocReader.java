@@ -57,7 +57,7 @@ public final class DocReader {
             }
             if(fenced) {block.append(line).append('\n');continue;}
             if(trim.startsWith("//"))continue;
-            Matcher m=inline.matcher(line);while(m.find())result.add(new Fragment(m.group(1)!=null?m.group(1):m.group(2),i+1,m.start()+1+(m.group(1)!=null?1:5),m.group(1)!=null?Kind.CODE:Kind.LINK,""));
+            Matcher m=inline.matcher(line);while(m.find())result.add(new Fragment(m.group(1)!=null?m.group(1):m.group(2),i+1,m.start()+1+(m.group(1)!=null?1:5),m.group(1)!=null?Kind.CODE:Kind.LINK,m.group(1)==null && m.group().startsWith("xref:")?"xref":""));
         }
         if(fenced)result.add(new Fragment(block.toString(),start+1,1,Kind.BLOCK,language));
         return result;
