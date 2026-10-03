@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.1",
+  "scope": "Maven Central plugin; temporary standalone consumer; initially empty local Maven repository",
+  "jdk": 17,
+  "runs": [
+    {"name": "valid-strict", "exitCode": 0, "expectedExitCode": 0, "findings": 0},
+    {"name": "stale-warn-only", "exitCode": 0, "expectedExitCode": 0, "findings": 1},
+    {"name": "stale-strict", "exitCode": 1, "expectedExitCode": 1, "findings": 1},
+    {"name": "invalid-config-warn-only", "exitCode": 1, "expectedExitCode": 1},
+    {"name": "restored-strict", "exitCode": 0, "expectedExitCode": 0, "findings": 0}
+  ],
+  "artifactsResolvedFromCentral": ["javadrift", "javadrift-core", "javadrift-maven-plugin"],
+  "passed": true
+}

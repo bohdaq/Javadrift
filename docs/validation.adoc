@@ -605,3 +605,22 @@ integration builds; Gradle check/validatePlugins passes five TestKit cases.
 The source-built CLI passes all 33 packaged scenarios and scans this repository
 without findings. These results concern current source; doctor is not in the
 published 0.3.1 CLI. See link:doctor.adoc[doctor usage and limitations].
+
+== Published Maven CI consumer
+
+The standalone example in examples/published-maven resolves the published 0.3.1
+Maven plugin from Central, starts in warn-only mode and includes a copyable GitHub
+Actions workflow saving its JSON report. The smoke script copies the sample to a
+temporary directory and starts with an empty local repository. Resolver tracking
+confirms the parent, core and Maven plugin POMs came from Central; Javadrift source
+is never built or installed during this walkthrough.
+
+All five local JDK 17 scenarios pass: valid strict, stale warn-only, stale strict,
+invalid configuration in warn-only mode, and restored strict. Valid/restored
+reports contain one document, one type and no findings. Stale reports retain
+exactly JD002 for demo.RegistryApi#missing; only strict mode fails. Missing
+configuration fails without leaving a previous report that could be mistaken
+for current results. Machine-readable evidence is in
+validation/published-maven-local.json. A dedicated CI job repeats these checks
+and saves reports and logs, including on failure. This validates the released
+0.3.1 artifacts rather than unreleased changes in the current checkout.

@@ -163,6 +163,11 @@ The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
 javadrift.format, javadrift.output and javadrift.skip system properties.
 For a development checkout, run mvn install before using its plugin version.
 
+See link:examples/published-maven/README.adoc[the published Maven CI sample]
+for a standalone POM, a copyable warn-only workflow and strict adoption. Its
+automated walkthrough starts with an empty local Maven repository and uses only
+published 0.3.1 artifacts, without installing this checkout.
+
 === Maven from a custom repository
 
 If your organization hosts the Maven plugin in Nexus, Artifactory, GitHub

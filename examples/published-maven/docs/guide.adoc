@@ -1,0 +1,3 @@
+= API guide
+
+Call `demo.RegistryApi#greet` to create a greeting.

@@ -1,0 +1,58 @@
+= Published Maven plugin in CI
+
+This standalone Java 17 sample resolves javadrift-maven-plugin 0.3.1 and its
+engine from Maven Central. It needs Maven 3.9+ and a JDK 17 or newer, with network
+access for the initial dependency download. It does not require building or
+installing Javadrift locally, additional repositories, or publishing credentials.
+
+From this directory:
+
+[source,shell]
+----
+mvn -B verify
+cat target/javadrift.json
+----
+
+The POM binds the plugin to verify and starts in warn-only mode. The sample's
+javadrift.yml selects docs/guide.adoc; the other instructions and variants are
+outside that scan scope. The plugin compiles the project and uses its compile
+classpath automatically.
+
+To exercise a stale reference without changing the tracked guide, copy this
+sample to a temporary directory, then run:
+
+[source,shell]
+----
+cp variants/stale.adoc docs/guide.adoc
+mvn -B verify -Djavadrift.warnOnly=true
+mvn -B verify -Djavadrift.warnOnly=false
+----
+
+Both reports contain JD002 for the missing member. Warn-only succeeds; strict
+mode fails the Maven build. Input/configuration errors still fail in warn-only
+mode. Switch the POM's javadrift.warnOnly property or the CI command to false
+after reviewing and fixing findings.
+
+Copy the POM plugin block and javadrift.yml to your own project, adjust the docs
+selection, and copy link:.github/workflows/docs.yml[the workflow] to your
+repository's .github/workflows directory. The workflow uses ordinary Maven
+verify and saves target/javadrift.json, including after failure. This nested
+workflow is a copyable sample and does not run automatically in Javadrift's repo.
+
+For a multi-module project, place the plugin on the reactor root with
+inherited=false. Its output parent directory must already exist; create it in
+CI if a packaging=pom root does not otherwise produce target.
+
+From the Javadrift repository root, exercise an isolated consumer using only
+published artifacts:
+
+[source,shell]
+----
+python3 scripts/smoke-published-maven.py --output validation-results/published-maven.json
+----
+
+The script copies this sample into a temporary directory and starts with an empty
+local Maven repository. It verifies valid, stale strict/warn-only, invalid-config
+and restored cases, and saves JSON reports and Maven logs. It never runs mvn
+install on Javadrift or edits the tracked sample. This verifies published 0.3.1,
+not newer engine changes in the current checkout.

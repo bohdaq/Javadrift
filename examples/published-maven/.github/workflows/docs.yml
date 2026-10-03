@@ -1,0 +1,23 @@
+name: documentation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Build and report stale documentation
+        run: mvn -B verify -Djavadrift.warnOnly=true
+      - name: Save the documentation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: javadrift-documentation
+          path: target/javadrift.json
+          if-no-files-found: warn

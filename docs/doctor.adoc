@@ -31,8 +31,8 @@ java -jar javadrift-cli/target/javadrift.jar doctor --root /path/to/project \
 ----
 
 Exit codes are 0 when setup checks pass, 1 for setup warnings and 2 for invalid
-inputs. WARN covers no selected documents, no production sources or compiled
-project inputs, and explicitly selected empty compiled outputs. Missing build
+inputs. WARN covers no selected documents, the absence of both production
+sources and compiled project inputs, and explicitly selected empty compiled outputs. Missing build
 outputs are informational when source indexing is available: compile the project
 for generated/inherited APIs or snippet checks. A runtime without javac is
 accepted while JD008 is disabled; enabled JD008 requires a full JDK supporting

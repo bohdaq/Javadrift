@@ -1,0 +1,23 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>demo</groupId><artifactId>published-maven-sample</artifactId><version>1.0.0</version>
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <javadrift.warnOnly>true</javadrift.warnOnly>
+  </properties>
+  <build><plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.13.0</version>
+    </plugin>
+    <plugin>
+      <groupId>io.github.bohdaq</groupId><artifactId>javadrift-maven-plugin</artifactId><version>0.3.1</version>
+      <inherited>false</inherited>
+      <executions><execution><goals><goal>check</goal></goals></execution></executions>
+      <configuration>
+        <format>json</format><output>${project.build.directory}/javadrift.json</output>
+      </configuration>
+    </plugin>
+  </plugins></build>
+</project>
