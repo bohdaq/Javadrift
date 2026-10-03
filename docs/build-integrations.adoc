@@ -1,0 +1,170 @@
+= Build integrations
+
+Maven and Gradle setup, custom registries, compiled inputs and GitHub reporting.
+For the standalone CLI, see link:../README.adoc[the quick start].
+
+== Compiled projects and Maven
+
+Compiled classes under Maven target/classes and Gradle build/classes/java/main
+or build/classes/kotlin/main override source declarations. This covers generated
+APIs and compiled Kotlin without executing class initializers. For custom outputs
+use repeatable --class-dir options. Supply dependencies with --classpath using
+the platform path separator. JD006 reads Maven coordinates or the project section
+of YAML; Gradle users can set project.groupId/artifactId/version in YAML.
+
+Version checking uses a non-snapshot project version or the highest local numeric
+Git tag for a snapshot (optional v prefix). It never looks up releases online.
+Without a release tag, snapshot projects skip JD006. Maven property placeholders
+are expanded only from that POM's properties; unresolved placeholders are skipped.
+
+Version 0.4.0 is available from Maven Central. Use this block in the reactor
+root POM; no custom repository or local installation is needed:
+
+[source,xml]
+----
+<plugin>
+  <groupId>io.github.bohdaq</groupId>
+  <artifactId>javadrift-maven-plugin</artifactId>
+  <version>0.4.0</version>
+  <inherited>false</inherited>
+  <executions><execution><goals><goal>check</goal></goals></execution></executions>
+</plugin>
+----
+
+The aggregator checks root docs against all selected reactor modules. It forks
+the compile phase to make reactor class outputs available before root verify.
+The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
+javadrift.format, javadrift.output and javadrift.skip system properties.
+For a development checkout, run mvn install before using its plugin version.
+
+See link:../examples/published-maven/README.adoc[the published Maven CI sample]
+for a standalone POM, a copyable warn-only workflow and strict adoption. Its
+automated walkthrough starts with an empty local Maven repository and uses only
+published 0.4.0 artifacts, without installing this checkout.
+
+=== Maven from a custom repository
+
+If your organization hosts the Maven plugin in Nexus, Artifactory, GitHub
+Packages or another Maven-compatible registry, add that registry to the
+`pluginRepositories` section of the consuming POM (or to a Maven settings
+profile):
+
+[source,xml]
+----
+<pluginRepositories>
+  <pluginRepository>
+    <id>company-releases</id>
+    <url>https://maven.example.com/repository/releases/</url>
+  </pluginRepository>
+</pluginRepositories>
+----
+
+Keep credentials in `~/.m2/settings.xml` or your CI secret store; do not commit
+them to the POM. The repository must contain the published Javadrift plugin,
+core and their POM metadata. A GitHub Release download URL is an asset store,
+not a Maven repository, so it cannot be used directly in `pluginRepositories`.
+For an unpublished build use `mvn install` and the local Maven repository as
+described above.
+
+== Gradle
+
+Version 0.3.1 of io.github.bohdaq.javadrift has been submitted to the Gradle
+Plugin Portal and is pending first-publication approval. After approval, use:
+
+[source,kotlin]
+----
+plugins { id("io.github.bohdaq.javadrift") version "0.3.1" }
+repositories { mavenCentral() }
+javadrift { warnOnly.set(true) }
+----
+
+The 0.4.0 plugin update will follow first-publication approval. Until then, use
+the included source build below for current adapter changes.
+
+Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
+plugin release is published, add this repository as an included plugin build
+in the consuming project's settings script:
+
+[source,kotlin]
+----
+pluginManagement { includeBuild("/path/to/Javadrift") }
+includeBuild("/path/to/Javadrift") // Resolve the analysis engine from source too.
+----
+
+Then apply it in build.gradle.kts:
+
+[source,kotlin]
+----
+plugins { id("io.github.bohdaq.javadrift") }
+repositories { mavenCentral() }
+javadrift { warnOnly.set(true) }
+----
+
+=== Gradle from a custom plugin repository
+
+For a Maven-compatible internal registry, add it to `pluginManagement` before
+the plugin is resolved:
+
+[source,kotlin]
+----
+pluginManagement {
+    repositories {
+        maven { url = uri("https://maven.example.com/repository/releases/") }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+----
+
+If the plugin is published through a repository that requires authentication,
+configure credentials through Gradle properties or the CI environment, for
+example `repoUser` and `repoPassword`; keep those values out of source control.
+The custom repository must expose Gradle plugin marker metadata and the
+`javadrift-core` Maven module. A GitHub Release asset cannot be used as a
+Gradle plugin repository. For a checkout without a published plugin, retain
+`includeBuild("/path/to/Javadrift")`.
+
+The analysis engine uses the consumer's dependency repositories, separately from
+plugin resolution. Add the same custom Maven repository to `repositories` in
+build.gradle.kts, with `mavenCentral()` for third-party engine dependencies. With
+a source checkout, the second includeBuild above substitutes local core instead.
+
+The javadriftCheck task joins check and compiles Java source sets in the project
+and its subprojects first. It writes a report under the build reports directory.
+Use javadrift.since and javadrift.format extension properties for history and
+output. Full scans can be up to date; diff mode always runs. Configuration,
+baselines, Git refs and repository file changes are tracked as inputs.
+
+== GitHub Actions and SARIF
+
+The composite action lives in javadrift-action/. It requires a release tag with
+the CLI jar and SHA-256 checksum. The release workflow produces those assets
+when a version tag is pushed. Version v0.4.0 adds setup diagnostics to baseline
+maintenance, isolated Gradle analysis and optional-check setup examples.
+The runner needs JDK 17+; diff mode also needs a checkout with full history.
+
+[source,yaml]
+----
+steps:
+  - uses: actions/checkout@v4
+    with:
+      fetch-depth: 0
+  - uses: actions/setup-java@v4
+    with:
+      distribution: temurin
+      java-version: '17'
+  - uses: bohdaq/Javadrift/javadrift-action@v0.4.0
+    with:
+      version: v0.4.0
+      warn-only: 'true'
+----
+
+[source,shell]
+----
+java -jar javadrift.jar check --format sarif --output findings.sarif
+----
+
+SARIF 2.1.0 includes stable rule IDs, locations and baseline fingerprints. Use
+GitHub's upload-sarif action with the generated report; grant security-events
+write permission in that consuming workflow.
+

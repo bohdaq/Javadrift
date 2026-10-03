@@ -1,5 +1,9 @@
 = Javadrift
 
+image:https://github.com/bohdaq/Javadrift/actions/workflows/build.yml/badge.svg?branch=main[Build,link=https://github.com/bohdaq/Javadrift/actions/workflows/build.yml]
+image:https://github.com/bohdaq/Javadrift/actions/workflows/validation.yml/badge.svg?branch=main[Pinned validation,link=https://github.com/bohdaq/Javadrift/actions/workflows/validation.yml]
+image:https://github.com/bohdaq/Javadrift/actions/workflows/performance.yml/badge.svg?branch=main[Performance,link=https://github.com/bohdaq/Javadrift/actions/workflows/performance.yml]
+
 Javadrift finds documentation that has drifted away from your Java or Kotlin API:
 missing types and methods, outdated calls, broken repository links and more.
 It reads Markdown and AsciiDoc, compares references with source declarations or
@@ -232,20 +236,12 @@ publication or new release is needed.
 
 == Compiled projects and Maven
 
-Compiled classes under Maven target/classes and Gradle build/classes/java/main
-or build/classes/kotlin/main override source declarations. This covers generated
-APIs and compiled Kotlin without executing class initializers. For custom outputs
-use repeatable --class-dir options. Supply dependencies with --classpath using
-the platform path separator. JD006 reads Maven coordinates or the project section
-of YAML; Gradle users can set project.groupId/artifactId/version in YAML.
+Javadrift discovers main compiled classes from Maven and Gradle output directories.
+Use --class-dir for custom outputs and --classpath for dependencies. Build outputs
+first so generated APIs and bytecode reflect your current sources.
 
-Version checking uses a non-snapshot project version or the highest local numeric
-Git tag for a snapshot (optional v prefix). It never looks up releases online.
-Without a release tag, snapshot projects skip JD006. Maven property placeholders
-are expanded only from that POM's properties; unresolved placeholders are skipped.
-
-Version 0.4.0 is available from Maven Central. Use this block in the reactor
-root POM; no custom repository or local installation is needed:
+Version 0.4.0 is available from Maven Central. Add this plugin under build/plugins
+in the reactor root POM, then run mvn verify:
 
 [source,xml]
 ----
@@ -258,117 +254,24 @@ root POM; no custom repository or local installation is needed:
 </plugin>
 ----
 
-The aggregator checks root docs against all selected reactor modules. It forks
-the compile phase to make reactor class outputs available before root verify.
-The plugin supports javadrift.since, javadrift.warnOnly, javadrift.config,
-javadrift.format, javadrift.output and javadrift.skip system properties.
-For a development checkout, run mvn install before using its plugin version.
-
-See link:examples/published-maven/README.adoc[the published Maven CI sample]
-for a standalone POM, a copyable warn-only workflow and strict adoption. Its
-automated walkthrough starts with an empty local Maven repository and uses only
-published 0.4.0 artifacts, without installing this checkout.
-
-=== Maven from a custom repository
-
-If your organization hosts the Maven plugin in Nexus, Artifactory, GitHub
-Packages or another Maven-compatible registry, add that registry to the
-`pluginRepositories` section of the consuming POM (or to a Maven settings
-profile):
-
-[source,xml]
-----
-<pluginRepositories>
-  <pluginRepository>
-    <id>company-releases</id>
-    <url>https://maven.example.com/repository/releases/</url>
-  </pluginRepository>
-</pluginRepositories>
-----
-
-Keep credentials in `~/.m2/settings.xml` or your CI secret store; do not commit
-them to the POM. The repository must contain the published Javadrift plugin,
-core and their POM metadata. A GitHub Release download URL is an asset store,
-not a Maven repository, so it cannot be used directly in `pluginRepositories`.
-For an unpublished build use `mvn install` and the local Maven repository as
-described above.
+Start with mvn verify -Djavadrift.warnOnly=true to review findings. The aggregator
+checks root docs against selected reactor modules and forks compilation first.
+See link:examples/published-maven/README.adoc[the published Maven sample] or
+link:docs/build-integrations.adoc[compiled inputs, plugin options and custom repositories].
 
 == Gradle
 
-Version 0.3.1 of io.github.bohdaq.javadrift has been submitted to the Gradle
-Plugin Portal and is pending first-publication approval. After approval, use:
-
-[source,kotlin]
-----
-plugins { id("io.github.bohdaq.javadrift") version "0.3.1" }
-repositories { mavenCentral() }
-javadrift { warnOnly.set(true) }
-----
-
-The 0.4.0 plugin update will follow first-publication approval. Until then, use
-the included source build below for current adapter changes.
-
-Build and test the Gradle adapter with ./gradlew check validatePlugins. Until a
-plugin release is published, add this repository as an included plugin build
-in the consuming project's settings script:
-
-[source,kotlin]
-----
-pluginManagement { includeBuild("/path/to/Javadrift") }
-includeBuild("/path/to/Javadrift") // Resolve the analysis engine from source too.
-----
-
-Then apply it in build.gradle.kts:
-
-[source,kotlin]
-----
-plugins { id("io.github.bohdaq.javadrift") }
-repositories { mavenCentral() }
-javadrift { warnOnly.set(true) }
-----
-
-=== Gradle from a custom plugin repository
-
-For a Maven-compatible internal registry, add it to `pluginManagement` before
-the plugin is resolved:
-
-[source,kotlin]
-----
-pluginManagement {
-    repositories {
-        maven { url = uri("https://maven.example.com/repository/releases/") }
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-----
-
-If the plugin is published through a repository that requires authentication,
-configure credentials through Gradle properties or the CI environment, for
-example `repoUser` and `repoPassword`; keep those values out of source control.
-The custom repository must expose Gradle plugin marker metadata and the
-`javadrift-core` Maven module. A GitHub Release asset cannot be used as a
-Gradle plugin repository. For a checkout without a published plugin, retain
-`includeBuild("/path/to/Javadrift")`.
-
-The analysis engine uses the consumer's dependency repositories, separately from
-plugin resolution. Add the same custom Maven repository to `repositories` in
-build.gradle.kts, with `mavenCentral()` for third-party engine dependencies. With
-a source checkout, the second includeBuild above substitutes local core instead.
-
-The javadriftCheck task joins check and compiles Java source sets in the project
-and its subprojects first. It writes a report under the build reports directory.
-Use javadrift.since and javadrift.format extension properties for history and
-output. Full scans can be up to date; diff mode always runs. Configuration,
-baselines, Git refs and repository file changes are tracked as inputs.
+The initial 0.3.1 Gradle Plugin Portal submission awaits approval. Until it is
+available, use the included source build described in
+link:docs/build-integrations.adoc#_gradle[Gradle setup]. The javadriftCheck task joins
+check and compiles selected Java projects before scanning. See the
+link:examples/local-adoption/README.adoc[Java/Kotlin adoption sample] for a working
+consumer. The 0.4.0 plugin update will follow first-publication approval.
 
 == GitHub Actions and SARIF
 
-The composite action lives in javadrift-action/. It requires a release tag with
-the CLI jar and SHA-256 checksum. The release workflow produces those assets
-when a version tag is pushed. Version v0.4.0 adds setup diagnostics to baseline
-maintenance, isolated Gradle analysis and optional-check setup examples.
-The runner needs JDK 17+; diff mode also needs a checkout with full history.
+Add Javadrift to a workflow after checkout and Java setup. Start in warn-only mode;
+remove that input when you are ready to fail CI on findings:
 
 [source,yaml]
 ----
@@ -386,197 +289,71 @@ steps:
       warn-only: 'true'
 ----
 
-[source,shell]
-----
-java -jar javadrift.jar check --format sarif --output findings.sarif
-----
-
-SARIF 2.1.0 includes stable rule IDs, locations and baseline fingerprints. Use
-GitHub's upload-sarif action with the generated report; grant security-events
-write permission in that consuming workflow.
+The Action uses the published CLI with checksum verification. Full Git history
+is needed for --since. JSON, GitHub annotations and SARIF are available; see
+link:docs/build-integrations.adoc#_github_actions_and_sarif[reporting and SARIF setup].
 
 == Advanced checks
 
-JD003 validates argument counts and clear literal types against overloads,
-including varargs. It leaves unknown expression types alone. JD005 flags
-references to types or members deprecated with forRemoval=true. Both default
-to warnings; set failOn to warning to enforce them.
-
-JD008 and JD009 remain off by default. Enable them explicitly:
-
-[source,yaml]
-----
-checks:
-  snippet-compile: warning
-  unknown-property: warning
-snippets:
-  imports: ['com.acme.OrderService']
-  release: '17'
-----
-
-JD008 compiles each Java fence as a complete unit, class members, then statements.
-Supply compiled project classes and dependencies first. Annotation processing
-is disabled and bytecode stays in memory. A line consisting of three dots, a
-Java comment containing only three dots, or a javadrift:skip line comment skips
-the whole block. Every block is isolated; variables do not carry between fences.
-Complete units with package declarations must supply their own imports.
-Compilation uses a JDK and the configured release (17 by default).
-
-JD009 checks dotted inline keys and dotted assignments in code blocks against
-production .properties/YAML resources, Spring configuration metadata in source
-resources, literal System.getProperty calls and Spring Value annotations.
-Third-party keys, dynamically declared keys and source-only ConfigurationProperties
-beans without metadata need ignore patterns. It does not infer arbitrary Java
-configuration APIs or every YAML example's intended schema.
-
-Follow link:docs/optional-checks.adoc[optional checks setup and validation] for a
-runnable Jackson-backed sample, complete dependency classpaths on Linux/macOS and
-Windows, reviewed stale cases, and warning/strict behavior.
+Overload checks and deprecation-for-removal checks default to warnings. Java snippet
+compilation and configuration-key checks are opt-in. See
+link:docs/analysis-reference.adoc#_advanced_checks[check behavior] and
+link:docs/optional-checks.adoc[the runnable optional-checks guide].
 
 == Current limits
 
-Java and Kotlin sources are indexed without building upstream projects. Kotlin
-uses a syntax parser to index public/protected classes, interfaces, objects,
-companions, properties, functions, aliases and project extension functions.
-Private/internal declarations and test sources are excluded from the public API.
-Their existing type names can resolve documentation references without exposing members. Default arguments
-and trailing varargs contribute conservative signatures. Source properties and
-default argument signatures remain available alongside compiled JVM methods.
-Git diff mode compares both Java and Kotlin declarations.
-
-This is declaration indexing, without Kotlin compiler type resolution. Imported
-aliases, dependency extensions, Kotlin-specific compiler plugins and JVM name
-mangling are not fully resolved. Non-final varargs are treated conservatively;
-Kotlin deprecation levels are not modeled as Java forRemoval. JD008 compiles Java
-snippets only. The embedded Kotlin parser adds roughly 60 MB to the CLI download.
-
-AsciiDoc support covers backtick
-code, source/listing blocks and link/xref targets; it does not expand include
-macros, attributes or resolve anchors. Markdown anchors and external URLs are
-not checked. Build class outputs before checking so they describe current sources.
-
-The 0.4.0 preview implements all nine check IDs and build integrations.
-The small corpus does not establish broad accuracy; adoption gates and the
-Gradle Plugin Portal's first-publication approval remain pending. Maven Central
-artifacts are published. See
-link:docs/validation.adoc[validation evidence] and link:docs/roadmap.adoc[roadmap].
-
-== Corpus-driven precision rules
-
-An inline empty-parentheses reference such as JavaFile.writeTo() names a method;
-its arity is checked in fenced examples, or when inline arguments are supplied.
-Links escaping the checkout (including GitHub wiki and sibling repository links)
-are outside the repository-path check.
-
-Source indexing uses src trees and flat root Java files. Other Java templates
-are skipped. Source variants with the same qualified name contribute their API
-union, conservatively; compiled outputs replace that union with the selected API.
-Use --class-dir for nonstandard build output layouts.
-
-== Publishing adapters
-
-The CLI and Maven Central artifacts for 0.4.0 are published. The initial Gradle
-Plugin Portal submission awaits approval; use the included source build described
-above until it is available. Maintainers can follow
-link:docs/publishing.adoc[the publishing setup] for credentials and release workflows.
-
-== Documentation path context
-
-Inline paths can resolve from the document's module or documentation workspace as
-well as the repository root. Outside root documents, bare build filenames and
-inline directory mentions are treated conservatively as consumer-project conventions.
-Explicit links and named source files still report missing targets. Home-directory
-path fragments are not interpreted as repository paths.
-
-For Maven site inputs, linked HTML can resolve to its Markdown/AsciiDoc input.
-Generated Javadoc routes can resolve to an outer Java source file, package directory
-or module POM. This checks source-backed paths without building a site; it does not
-validate generated nested-class pages or anchors. Extensionless AsciiDoc xrefs are
-same-document anchors. Symlinked documentation resolves links from its actual source
-directory. GitHub contribution-template links can use the repository root context.
-
-== Historical documentation and type ownership
-
-Changelogs, CHANGES/HISTORY files and release-notes documents describe older APIs.
-By default their API, version, property and snippet checks are skipped in both
-full and diff scans; repository links and paths are still checked. Override
-this scope with docs.historical (an empty list checks every included document):
-
-[source,yaml]
-----
-docs:
-  historical: []
-----
-
-Existing test, test-fixture and Maven site example declarations provide type-name
-hints, without contributing public APIs or member checks. Malformed auxiliary
-sources are ignored; malformed production sources remain input errors. JVM nested
-names such as Outer$Inner resolve to source names, and Kotlin ::class is a class literal.
-
-Without sources.basePackages, unknown-type checks use packages actually represented
-in the public index and known outer types. Mixed library/example projects skip
-conventional example, com.example and org.example namespaces. This avoids claiming
-ownership of optional dependencies and consumer placeholders, but can miss a stale
-type in a removed or mistyped subpackage. Configure sources.basePackages with your
-project namespace roots to enforce checks across all their subpackages, including
-example namespaces. Existing APIs and member references remain checked.
-
-== Reference context
-
-PlantUML, Mermaid, DOT and Graphviz blocks do not undergo Java API checks;
-ordinary Java blocks still do. Javadoc links supply the owner of short member
-labels, so a linked java.time.Clock method is not checked against a local Clock.
-External API validity requires a configured classpath; external URLs are not fetched.
-
-GitHub tree/HEAD and blob/HEAD links resolve against repository files, including
-multiline Markdown links. Inline src/main, src/test and src/testFixtures directory
-conventions can resolve to an existing module directory; explicit file links remain
-relative to their document. No module source filename is inferred from another module.
-
-An unknown qualified type can also be checked when its simple name matches a known
-project or helper declaration sharing at least three namespace components. This
-recovers mistyped packages while keeping unknown optional dependency namespaces
-outside inferred ownership. Configure sources.basePackages for complete namespace
-coverage; duplicate simple names and cross-project naming can still be ambiguous.
+Javadrift indexes declarations and references conservatively. It does not resolve
+all compiler semantics, verify external URLs or prove prose claims correct.
+Kotlin compiler type resolution and Kotlin snippet compilation are not supported.
+The reviewed corpus provides regression coverage, not a broad accuracy guarantee.
+See link:docs/analysis-reference.adoc#_current_limits[language and format limitations]
+and link:docs/validation.adoc[validation evidence].
 
 == Declared document exceptions
 
-When a document deliberately mentions an old or third-party API, or links an
-optional consumer file, declare the exception in docs.exemptions. Each entry
-requires a file glob, check ID, reference glob and review reason. The optional
-kind limits it to inline code (CODE), fenced/listing code (BLOCK), or links (LINK).
-Other files, references and checks continue to report findings. These exceptions
-apply to full scans and history findings and are opt-in; defaults are unchanged.
-
-[source,yaml]
-----
-docs:
-  exemptions:
-    - file: '**/migration.adoc'
-      check: JD001
-      reference: 'old.api.*'
-      kind: CODE
-      reason: Inline names describe the old library API
-    - file: '**/configuration.md'
-      check: JD007
-      reference: dictionary.txt
-      kind: LINK
-      reason: Optional consumer override file
-----
-
-Use exact file/reference patterns when possible. Exceptions express reviewed intent;
-they do not prove that the referenced third-party API or optional file is valid.
+For intentional old-API mentions or optional consumer inputs, use a narrowly scoped
+docs.exemptions entry with a review reason. Avoid suppressing an entire document.
+See link:docs/analysis-reference.adoc#_declared_document_exceptions[configuration syntax]
+and link:docs/triage.adoc[reviewing findings and exceptions].
 
 == Continuous validation
 
-The pinned validation workflow runs on pushes and pull requests using the current
-source-built CLI. It checks both corpus scopes against active triage, fails when a
-known error disappears or an unreviewed finding appears, and replays five reconstructed
-and four naturally stale Java/Kotlin source-history cases. Reports are uploaded as the
-pinned-validation-reports artifact, including after validation failures.
-See link:docs/triage.adoc[reviewing findings and updating exceptions].
+CI checks reviewed corpus findings, nine Java/Kotlin history cases and performance
+regressions. Reports are saved as workflow artifacts. See
+link:docs/triage.adoc[validation gates], link:docs/history-review.adoc[history evidence]
+and link:docs/performance.adoc[performance checks].
 
-The performance workflow compares large Java and mixed Java/Kotlin scans against
-the reference commit on the same runner. It records repeated scan times and peak
-RSS, flags substantial regressions, and uploads the javadrift-performance artifact.
-See link:docs/performance.adoc[benchmark commands, measurements and thresholds].
+== FAQ
+
+What should I do about a false positive?::
+  Start with --warn-only and inspect the referenced source and document context.
+  Supply missing dependencies or narrow sources.basePackages where appropriate.
+  Use a reviewed baseline for existing findings or a precise docs.exemptions entry
+  for intentional references. See link:docs/triage.adoc[the review guide].
+
+When do I need a classpath?::
+  Source-only checks work without building. Compile first for generated APIs, and
+  supply --classpath for dependency APIs or Java snippet compilation. Entries use
+  the platform separator: colon on Linux/macOS, semicolon on Windows. See
+  link:docs/optional-checks.adoc#_build_the_snippet_classpath[classpath examples].
+
+Does it support Kotlin?::
+  Yes: source declarations, compiled JVM classes and Git history. It does not use
+  Kotlin compiler type resolution, and JD008 compiles Java snippets only. See
+  link:docs/analysis-reference.adoc#_current_limits[the full Kotlin limits].
+
+What do the exit codes mean?::
+  For check: 0 means no findings at the failure threshold, 1 means findings meet
+  that threshold, and 2 means invalid inputs or configuration. --warn-only changes
+  finding failures to success; input errors still return 2. Doctor and baseline
+  commands have their own documented status meanings.
+
+== Further reading
+
+* link:docs/analysis-reference.adoc[Analysis reference]: check details, path resolution,
+  historical documentation, type ownership and exceptions.
+* link:docs/build-integrations.adoc[Build integrations]: Maven/Gradle, custom repositories,
+  compiled inputs and SARIF.
+* link:docs/doctor.adoc[Setup diagnostics] and link:docs/baselines.adoc[baseline maintenance].
+* link:docs/local-setup.adoc[Building from source] and link:docs/roadmap.adoc[roadmap].
+* link:docs/publishing.adoc[Maintainer publishing guide].

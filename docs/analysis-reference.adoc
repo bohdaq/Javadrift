@@ -1,0 +1,170 @@
+= Analysis reference
+
+Detailed check behavior, reference resolution and intentional exceptions. For a
+first scan, see link:../README.adoc[the quick start].
+
+== Advanced checks
+
+JD003 validates argument counts and clear literal types against overloads,
+including varargs. It leaves unknown expression types alone. JD005 flags
+references to types or members deprecated with forRemoval=true. Both default
+to warnings; set failOn to warning to enforce them.
+
+JD008 and JD009 remain off by default. Enable them explicitly:
+
+[source,yaml]
+----
+checks:
+  snippet-compile: warning
+  unknown-property: warning
+snippets:
+  imports: ['com.acme.OrderService']
+  release: '17'
+----
+
+JD008 compiles each Java fence as a complete unit, class members, then statements.
+Supply compiled project classes and dependencies first. Annotation processing
+is disabled and bytecode stays in memory. A line consisting of three dots, a
+Java comment containing only three dots, or a javadrift:skip line comment skips
+the whole block. Every block is isolated; variables do not carry between fences.
+Complete units with package declarations must supply their own imports.
+Compilation uses a JDK and the configured release (17 by default).
+
+JD009 checks dotted inline keys and dotted assignments in code blocks against
+production .properties/YAML resources, Spring configuration metadata in source
+resources, literal System.getProperty calls and Spring Value annotations.
+Third-party keys, dynamically declared keys and source-only ConfigurationProperties
+beans without metadata need ignore patterns. It does not infer arbitrary Java
+configuration APIs or every YAML example's intended schema.
+
+Follow link:optional-checks.adoc[optional checks setup and validation] for a
+runnable Jackson-backed sample, complete dependency classpaths on Linux/macOS and
+Windows, reviewed stale cases, and warning/strict behavior.
+
+== Current limits
+
+Java and Kotlin sources are indexed without building upstream projects. Kotlin
+uses a syntax parser to index public/protected classes, interfaces, objects,
+companions, properties, functions, aliases and project extension functions.
+Private/internal declarations and test sources are excluded from the public API.
+Their existing type names can resolve documentation references without exposing members. Default arguments
+and trailing varargs contribute conservative signatures. Source properties and
+default argument signatures remain available alongside compiled JVM methods.
+Git diff mode compares both Java and Kotlin declarations.
+
+This is declaration indexing, without Kotlin compiler type resolution. Imported
+aliases, dependency extensions, Kotlin-specific compiler plugins and JVM name
+mangling are not fully resolved. Non-final varargs are treated conservatively;
+Kotlin deprecation levels are not modeled as Java forRemoval. JD008 compiles Java
+snippets only. The embedded Kotlin parser adds roughly 60 MB to the CLI download.
+
+AsciiDoc support covers backtick
+code, source/listing blocks and link/xref targets; it does not expand include
+macros, attributes or resolve anchors. Markdown anchors and external URLs are
+not checked. Build class outputs before checking so they describe current sources.
+
+The 0.4.0 preview implements all nine check IDs and build integrations.
+The small corpus does not establish broad accuracy; adoption gates and the
+Gradle Plugin Portal's first-publication approval remain pending. Maven Central
+artifacts are published. See
+link:validation.adoc[validation evidence] and link:roadmap.adoc[roadmap].
+
+== Corpus-driven precision rules
+
+An inline empty-parentheses reference such as JavaFile.writeTo() names a method;
+its arity is checked in fenced examples, or when inline arguments are supplied.
+Links escaping the checkout (including GitHub wiki and sibling repository links)
+are outside the repository-path check.
+
+Source indexing uses src trees and flat root Java files. Other Java templates
+are skipped. Source variants with the same qualified name contribute their API
+union, conservatively; compiled outputs replace that union with the selected API.
+Use --class-dir for nonstandard build output layouts.
+
+== Documentation path context
+
+Inline paths can resolve from the document's module or documentation workspace as
+well as the repository root. Outside root documents, bare build filenames and
+inline directory mentions are treated conservatively as consumer-project conventions.
+Explicit links and named source files still report missing targets. Home-directory
+path fragments are not interpreted as repository paths.
+
+For Maven site inputs, linked HTML can resolve to its Markdown/AsciiDoc input.
+Generated Javadoc routes can resolve to an outer Java source file, package directory
+or module POM. This checks source-backed paths without building a site; it does not
+validate generated nested-class pages or anchors. Extensionless AsciiDoc xrefs are
+same-document anchors. Symlinked documentation resolves links from its actual source
+directory. GitHub contribution-template links can use the repository root context.
+
+== Historical documentation and type ownership
+
+Changelogs, CHANGES/HISTORY files and release-notes documents describe older APIs.
+By default their API, version, property and snippet checks are skipped in both
+full and diff scans; repository links and paths are still checked. Override
+this scope with docs.historical (an empty list checks every included document):
+
+[source,yaml]
+----
+docs:
+  historical: []
+----
+
+Existing test, test-fixture and Maven site example declarations provide type-name
+hints, without contributing public APIs or member checks. Malformed auxiliary
+sources are ignored; malformed production sources remain input errors. JVM nested
+names such as Outer$Inner resolve to source names, and Kotlin ::class is a class literal.
+
+Without sources.basePackages, unknown-type checks use packages actually represented
+in the public index and known outer types. Mixed library/example projects skip
+conventional example, com.example and org.example namespaces. This avoids claiming
+ownership of optional dependencies and consumer placeholders, but can miss a stale
+type in a removed or mistyped subpackage. Configure sources.basePackages with your
+project namespace roots to enforce checks across all their subpackages, including
+example namespaces. Existing APIs and member references remain checked.
+
+== Reference context
+
+PlantUML, Mermaid, DOT and Graphviz blocks do not undergo Java API checks;
+ordinary Java blocks still do. Javadoc links supply the owner of short member
+labels, so a linked java.time.Clock method is not checked against a local Clock.
+External API validity requires a configured classpath; external URLs are not fetched.
+
+GitHub tree/HEAD and blob/HEAD links resolve against repository files, including
+multiline Markdown links. Inline src/main, src/test and src/testFixtures directory
+conventions can resolve to an existing module directory; explicit file links remain
+relative to their document. No module source filename is inferred from another module.
+
+An unknown qualified type can also be checked when its simple name matches a known
+project or helper declaration sharing at least three namespace components. This
+recovers mistyped packages while keeping unknown optional dependency namespaces
+outside inferred ownership. Configure sources.basePackages for complete namespace
+coverage; duplicate simple names and cross-project naming can still be ambiguous.
+
+== Declared document exceptions
+
+When a document deliberately mentions an old or third-party API, or links an
+optional consumer file, declare the exception in docs.exemptions. Each entry
+requires a file glob, check ID, reference glob and review reason. The optional
+kind limits it to inline code (CODE), fenced/listing code (BLOCK), or links (LINK).
+Other files, references and checks continue to report findings. These exceptions
+apply to full scans and history findings and are opt-in; defaults are unchanged.
+
+[source,yaml]
+----
+docs:
+  exemptions:
+    - file: '**/migration.adoc'
+      check: JD001
+      reference: 'old.api.*'
+      kind: CODE
+      reason: Inline names describe the old library API
+    - file: '**/configuration.md'
+      check: JD007
+      reference: dictionary.txt
+      kind: LINK
+      reason: Optional consumer override file
+----
+
+Use exact file/reference patterns when possible. Exceptions express reviewed intent;
+they do not prove that the referenced third-party API or optional file is valid.
+
